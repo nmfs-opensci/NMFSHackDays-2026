@@ -1,0 +1,161 @@
+[
+  {
+    "objectID": "topics-2026/index.html",
+    "href": "topics-2026/index.html",
+    "title": "HackHours 2026",
+    "section": "",
+    "text": "During these stand-alone informal sessions we will get introduced to a variety of tools for ocean data access and analysis in Python and R. We will be using the NOAA Fisheries Openscapes JupyterHub and you will not need to install anything.\nWhen: Fridays 11am Pacific/2pm Eastern. Register (open to all) Zoom registration",
+    "crumbs": [
+      "2026 Topics"
+    ]
+  },
+  {
+    "objectID": "topics-2026/index.html#schedule",
+    "href": "topics-2026/index.html#schedule",
+    "title": "HackHours 2026",
+    "section": "Schedule",
+    "text": "Schedule\n\nFeb 6 - Intro to Boosted Regression Trees in Python (Eli Holmes) \nFeb 13 - Big Data BRT application: creating global chlorophyll density at depth profiles (Eli Holmes) \nFeb 20 -\nFeb 27 -\nMar 6 -\nMar 13 -\nMar 20 -\nMar 27 -\nApr 3 -\nApr 10 -\nApr 17 -\nApr 24 -\nMay 1 -\nMay 8 -\nMay 15 -\nMay 22 - skipping for Memorial Day long weekend\nMay 29 -",
+    "crumbs": [
+      "2026 Topics"
+    ]
+  },
+  {
+    "objectID": "topics-2026/2026-02-06-intro-brt/index.html",
+    "href": "topics-2026/2026-02-06-intro-brt/index.html",
+    "title": "Intro to BRT - Python",
+    "section": "",
+    "text": "In this session, you will get an introduction using Boosted Regression Trees to make predictions.",
+    "crumbs": [
+      "Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics-2026/2026-02-06-intro-brt/index.html#tutorials-1",
+    "href": "topics-2026/2026-02-06-intro-brt/index.html#tutorials-1",
+    "title": "Intro to BRT - Python",
+    "section": "Tutorials",
+    "text": "Tutorials",
+    "crumbs": [
+      "Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics-2026/2026-02-06-intro-brt/index.html#how-to-download-and-open-the-tutorials",
+    "href": "topics-2026/2026-02-06-intro-brt/index.html#how-to-download-and-open-the-tutorials",
+    "title": "Intro to BRT - Python",
+    "section": "How to download and open the tutorials",
+    "text": "How to download and open the tutorials\n\nJupyter Hub\n\nStart the Jupyter Hub server &lt;nmfs-openscapes.2i2c.cloud&gt;\nClick the orange Open in Jupyter Hub button\n\n\n\nColab\n\nClick the Open in Colab button\n\n\n\nDownload\n\nDownload to your local computer\nYou will need to have Python and Jupyter Lab installed\nInstall any needed packages\n\n\n\nHow to clone the git repository\nAfter cloning, you will need to navigate to the tutorials in the topics-2025 directory.\nNever cloned the NMFSHackDays-2026 repo?\ncd ~\ngit clone https://github.com/nmfs-opensci/NMFSHackDays-2026\nHave cloned it but need to update? This is going to destroy any changes that you made to the repo to make it match the current state of the repo on GitHub.\ncd ~/NMFSHackDays-2026\ngit fetch origin\ngit reset --hard origin/main",
+    "crumbs": [
+      "Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "content/setup.html",
+    "href": "content/setup.html",
+    "title": "Quick Start",
+    "section": "",
+    "text": "For those already familiar with JupyterLab and unix.\n\nGitHub Account\nA GitHub account is required to gain access to the JupyterHub and to clone the tutorials used in the Hackhours.\nHow do I get the tutorials into the JupyterHub?\n\nYou can upload files.\nEasiest is probably cloning a repo into the hub. See the JupyterHub Skills section if you do not know how to do this.\n\n\n\nAuthenticating to GitHub\nThis is a little different on the JupyterHub. See git authentication.\nFor content that uses the NASA Earthdata repository, you will need an Earthdata Login account. Please visit https://urs.earthdata.nasa.gov to register and manage your Earthdata Login account. This account is free to create. Please jot down your username and password, as you need to enter it in the tutorials.\n\n\nWhen done, please stop the JupyterHub\nIf you are in JupyterLab in the browser:\n\nFile &gt; Hub Control Panel &gt; Stop my server\n\nIf you are in RStudio and you still have the JupyterLab tab open in your browser:\n\nGo to the JupyterLab tab\nFile &gt; Hub Control Panel &gt; Stop my server\n\nIf you are in RStudio and you do not have the JupyterLab tab open in your browser because you closed that tab:\n\nGo to the url https://&lt;jupyterhub url&gt;/user/&lt;your username in the hub&gt;/lab/ That will open the JupyterLab tab\nFile &gt; Hub Control Panel &gt; Stop my server"
+  },
+  {
+    "objectID": "content/jhub.html",
+    "href": "content/jhub.html",
+    "title": "NMFS HackHours 2026",
+    "section": "",
+    "text": "The NMFS Openscapes JupyterHub is managed by Openscapes and developed in partnership with the International Interactive Computing Collaboration 2i2c. Launched in September 2024, the NMFS Openscapes JupyterHub joins the NASA Openscapes JupyterHub in providing a curated interactive computing platform to support training in earth and life science visualization, computing and analysis. The NMFS Openscapes JupyterHub supports workshops and trainings run by NOAA Fisheries."
+  },
+  {
+    "objectID": "coc.html",
+    "href": "coc.html",
+    "title": "Code of Conduct",
+    "section": "",
+    "text": "We are dedicated to providing a harassment-free learning experience for everyone. We do not tolerate harassment of participants in any form. Sexual language and imagery is not appropriate either in-person or virtual form, including the Discussion boards and Chats. Participants (including event volunteers and organizers) violating these rules may be sanctioned or expelled from the event at the discretion of the organizers.",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "coc.html#definition-of-harassment",
+    "href": "coc.html#definition-of-harassment",
+    "title": "Code of Conduct",
+    "section": "Definition of Harassment",
+    "text": "Definition of Harassment\nHarassment includes, but is not limited to:\n\nVerbal comments that harass based on sexual orientation, disability, physical appearance, body size, race, age, religion.\nSexual images in public spaces\nDeliberate intimidation, stalking, or following\nHarassing photography or recording\nSustained disruption of talks or other events\nInappropriate physical contact\nUnwelcome sexual attention\nAdvocating for, or encouraging, any of the above behavior",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "coc.html#expectations",
+    "href": "coc.html#expectations",
+    "title": "Code of Conduct",
+    "section": "Expectations",
+    "text": "Expectations\nParticipants asked to stop any harassing behavior are expected to comply immediately. If a participant engages in harassing behavior, the organizers retain the right to take any actions to keep the event a welcoming environment for all participants. This includes warning the offender or expulsion from the event.\nThe organizers may take action to redress anything designed to, or with the clear impact of, disrupting the event or making the environment hostile for any participants. We expect participants to follow these rules at all the event venues and event-related social activities.",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "coc.html#reporting-a-violation",
+    "href": "coc.html#reporting-a-violation",
+    "title": "Code of Conduct",
+    "section": "Reporting a violation",
+    "text": "Reporting a violation\nHarassment and other code of conduct violations reduce the value of the event for everyone. If someone makes you or anyone else feel unsafe or unwelcome, please report it as soon as possible.\nIf you feel comfortable contacting someone associated with our event, you may speak with one of the event organizers in person or contact an organizer on a private channel.",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "content/hackhours.html",
+    "href": "content/hackhours.html",
+    "title": "Hackhours",
+    "section": "",
+    "text": "These sessions are for NOAA staff to gain more familiarity with Jupyter Hubs and working with spatial data, esp big data hosted in the cloud in databases, via code and via geospatial packages in R and Python.\nFor more data science trainings and resource, see: * https://sites.google.com/noaa.gov/nmfs-hq-st-open-science/trainings * https://coastwatch.noaa.gov/cwn/training-courses.html * https://ioos.github.io/ioos_code_lab/content/intro.html",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "content/hackhours.html#about-nmfs-open-science",
+    "href": "content/hackhours.html#about-nmfs-open-science",
+    "title": "Hackhours",
+    "section": "About NMFS Open Science",
+    "text": "About NMFS Open Science\nWe provide technical and infrastructure support for any groups within NOAA Fisheries who would like computing support for their workshops or trainings; See our training page (NOAA internal). In September 2024, we launched a JupyterHub with a variety of specialized computing environments tailored to needs in fisheries and ocean modeling. We also support the development of a Docker stack tailored to R and Python workflows. We run regular workshops and trainings in reproducible science. See NMFS Openscapes and NMFS Open Science. If at NOAA see our internal site and the tabs for News and Training.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "content/reuse.html",
+    "href": "content/reuse.html",
+    "title": "Reuse Statement",
+    "section": "",
+    "text": "This content is released under CC0 Creative Commons.\nPermissive Re-Mix and No Attribution Needed: You may reuse the NMFS Open Science content in this repository—excluding the NMFS Open Science logo and any NOAA logos—in any way you like. You do not need permission. You do not need to give attribution, but if you use large parts of tutorials or content it is polite to give acknowledgement of the source. Please check each repository for its reuse statement. Some of the content is from outside of NMFS Open Science. This will be noted and you should check the original content for its reuse statement.",
+    "crumbs": [
+      "Reuse Statement"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "HackHours 2025",
+    "section": "",
+    "text": "During these stand-alone informal sessions we will get introduced to a variety of tools for ocean data access and analysis in Python and R. We will be using the NOAA Fisheries Openscapes Jupyter Hub and you will not need to install anything.\nWhen: Fridays 11am Pacific/2pm Eastern. Register (open to all) Zoom registration"
+  },
+  {
+    "objectID": "index.html#junejuly-schedule-links-to-content-on-left",
+    "href": "index.html#junejuly-schedule-links-to-content-on-left",
+    "title": "HackHours 2025",
+    "section": "June/July Schedule (links to content on left)",
+    "text": "June/July Schedule (links to content on left)\n\nJune 6 - CNNs for gridded earth data (xarray + tensorflow): Part I\nJune 13 - CNNs for gridded earth data (xarray + tensorflow): Part II\nJune 20 - CNNs for gridded earth data (xbatcher and Colab): Part III\nJune 27 - Writing R code with LLMs (Simon Couch, Posit) repo - Video (NOAA only)\nJuly 4 HOLIDAY\nJuly 11 - LLMs in R Shiny apps (Nic Crane) repo - Video (NOAA only)\nJuly 18 - ML cloud-classification using PACE spectral data (Sean Foley, NASA) info notebook Video (NOAA only)\nJuly 25 - Vision CNN models for fisheries applications (Michael Akridge, NOAA)\nAug 1 - LLMs in StreamLit Apps (Boris Shapkin, Alfred Wegener Institute)"
+  },
+  {
+    "objectID": "index.html#spring-schedule-links-to-content-on-left",
+    "href": "index.html#spring-schedule-links-to-content-on-left",
+    "title": "HackHours 2025",
+    "section": "Spring Schedule (links to content on left)",
+    "text": "Spring Schedule (links to content on left)\n\nFeb 7 - Q&A and Intro to the Ocean Data Science JupyterHub and Friday HackHours\nFeb 14 - Accessing NASA Earth Observation data in Python (Eli Holmes) \nFeb 21 - Accessing NASA Earth Observation data in R (Eli Holmes) \nFeb 28 - Working with ERDDAP data in Python: CoastWatch tutorials (Sunny Hospital, Polarwatch; Daisy Shi, CoastWatch) \nMar 7 - Working with ERDDAP data in R: CoastWatch tutorials (Sunny Hospital, Polarwatch; Daisy Shi, CoastWatch) \nMar 14 - Using LLMs in R to improve data dashboards (Carl Boettiger, UC Berkeley) \nMar 21 - VirtualiZarr, Dask and Holoviz to explore NODD data (Rich Signell, Open Science Consulting) \nMar 28 - Working with data on OPeNDAP servers in Python & R  \nApr 4 - xarray + GPU integration (Negin Sobhani, UCAR and Max Jones, Development Seed) \nApr 11 - Accessing CEFI data on OPeNDAP, AWS and Google (Chia-Wei Hsu, NOAA PSL) \nApr 18 - Creating a Cloud-Native dataset of streamflows and publishing to NODD (Google Buckets) \nApr 25 - Working with acoustic data in Python: echopype (Wu-Jung Lee, UW APL) \nMay 2 - Coiled demo – parallel processing for big data pipelines (Coiled team)\nMay 9 - PACE Hyperspectral Ocean Color Data Access and Visualization (light penetration depths in the ocean and other light attributes) \nMay 16 - PACE Hyperspectral Ocean Color Data Access and Visualization (phytoplankton species abundance) \nMay 22 (7am PT/10am ET) - EDMW 3-hour Workshop on working with PACE hyperspectral data Register here\nMay 30 - Machine-Learning with Ocean Data: gap-filling with CNNs"
+  }
+]

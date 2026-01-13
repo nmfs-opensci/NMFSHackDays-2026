@@ -1,0 +1,38 @@
+# Info for Contributors
+
+## Rebuilding GitHub Pages
+
+Pages are served from main branch on docs folder.
+
+```
+remotes::install_deps(dependencies=TRUE, upgrade="always")
+```
+Then Render in a terminal **from RStudio server** with
+
+```
+quarto render
+````
+Don't run this in Jupyter Lab terminal because any R code that gets rerun (is not cached) will fail because it will try to use GDAL installed in conda environment and that is incompatible with the R spatial packages. The Jupyter notebooks are pre-run in Jupyter Lab so are not ever re-run.
+
+## Adding download links
+
+This is used https://github.com/shafayetShafee/downloadthis
+
+Format is `{{< downloadthis 0-earthdata-catalog.ipynb dname=“0-earthdata-catalog.ipynb” >}}`
+
+## Images
+
+So that external images appear if the user downloads the notebooks, use full links to images like
+<nmfs-opensci.github.io/NMFSHackDays-2025/topics-2025/images/longhurst.png>
+
+Alternatively, you can copy and paste the image into the markdown and it will be incorporated into the notebook.
+
+
+## Notice
+
+All contributions (except by the repo owners) must be opened via pull requests on GitHub. Per the GitHub Terms of Use: "Whenever you make a contribution to a repository containing notice of a license, you license your contribution under the same terms, and you agree that you have the right to license your contribution under those terms."
+
+If your contribution is significant and you are not a U.S. Government employee, you are welcome to add your name and copyright date to the NOTICE header. If you are a U.S. Government employee, the U.S. Government retains the copyright. 
+
+U.S. Federal law prevents the Government from accepting gratuitous services unless certain conditions are met. By submitting a pull request, you acknowledge that your services are offered without expectation of payment and that you expressly waive any future pay claims against the U.S. Government related to your contribution.
+
