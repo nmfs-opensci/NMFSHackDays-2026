@@ -1,15 +1,12 @@
 ---
-title: NASA Earth Data - Python
+title: CHLA-Z
 ---
 
-In this session, you will get an introduction to the [earthaccess](https://earthaccess.readthedocs.io/en/latest/) Python library for accessing data from [earthdata.nasa.gov/](https://www.earthdata.nasa.gov/). You will also get a short introduction to [xarray](https://docs.xarray.dev/en/stable/) for working with data cubes. Link to originals tutorials: [EDMW Workshop](https://nmfs-opensci.github.io/EDMW-EarthData-Workshop-2024/).
+In this session, you will get an introduction using Boosted Regression Trees to make predictions.
 
 # Tutorials
 
-* [earthdata-catalog](0-earthdata-catalog.html)
-* [earthaccess](1-earthaccess.html)
-* [subset-and-plot](2-subset-and-plot.html)
-* [data-cubes](4-data-cubes.html)
+* 
 
 ## Tutorials
 
@@ -34,17 +31,17 @@ In this session, you will get an introduction to the [earthaccess](https://earth
 
 After cloning, you will need to navigate to the tutorials in the `topics-2025` directory.
 
-Never cloned the NMFSHackDays-2025 repo?
+Never cloned the NMFSHackDays-2026 repo?
 
 ```
 cd ~
-git clone https://github.com/nmfs-opensci/NMFSHackDays-2025
+git clone https://github.com/nmfs-opensci/NMFSHackDays-2026
 ```
 
 Have cloned it but need to update? This is going to destroy any changes that you made to the repo to make it match the current state of the repo on GitHub.
 
 ```  
-cd ~/NMFSHackDays-2025
+cd ~/NMFSHackDays-2026
 git fetch origin
 git reset --hard origin/main
 ```

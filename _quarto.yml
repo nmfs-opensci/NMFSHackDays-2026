@@ -61,7 +61,7 @@ website:
         - text: "---"
         - section: "Intro to BRTs"
           href: topics-2026/2026-02-06-intro-brt/index.html
-        - section: "CHLA-Z - Creating a global daily chlorophyll density at depth estimates"
+        - section: "CHLA-Z"
           href: topics-2026/2026-02-13-chla-z/index.html
         - text: "---"
         - href: content/reuse.md
