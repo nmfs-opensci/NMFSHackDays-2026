@@ -2,22 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/index.html</loc>
-    <lastmod>2026-02-27T01:29:09.446Z</lastmod>
+    <lastmod>2026-02-27T19:25:48.670Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/index.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/matchups.html</loc>
+    <lastmod>2026-02-27T01:45:22.162Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/index.html</loc>
     <lastmod>2026-02-27T01:29:09.436Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_2D.html</loc>
-    <lastmod>2026-02-27T01:46:09.662Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/index.html</loc>
+    <lastmod>2026-02-27T19:33:04.023Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/setup.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/reuse.html</loc>
     <lastmod>2026-02-27T01:29:09.256Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/jhub.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/hackhours.html</loc>
     <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
@@ -25,23 +29,23 @@
     <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/hackhours.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/jhub.html</loc>
     <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/reuse.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/setup.html</loc>
     <lastmod>2026-02-27T01:29:09.256Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/index.html</loc>
-    <lastmod>2026-02-27T01:29:09.426Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_2D.html</loc>
+    <lastmod>2026-02-27T01:46:09.662Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/index.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/index.html</loc>
     <lastmod>2026-02-27T01:29:09.436Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/matchups.html</loc>
-    <lastmod>2026-02-27T01:45:22.162Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/BRT_Argo_CHLA.html</loc>
+    <lastmod>2026-02-27T19:41:05.165Z</lastmod>
   </url>
 </urlset>

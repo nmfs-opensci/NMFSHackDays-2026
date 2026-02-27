@@ -2,26 +2,72 @@
 title: "HackHours 2026"
 ---
 
-During these stand-alone informal sessions we will get introduced to a variety of tools for ocean data access and analysis in Python and R. We will be using the NOAA Fisheries Openscapes JupyterHub and you will not need to install anything. 
+**How to run the tutorials?** In the tutorial, you will see a button to open in the JupyterHub. 
+You can also download notebooks. Or you can open in Colab using the link in table. 
 
-**When:** Fridays 11am Pacific/2pm Eastern. **Register (open to all)** [Zoom registration](https://zoom.us/meeting/register/r-Zx5bztTdyylSEHe4Snug)
+| Date | Topic | Notebook {{ l1 }} | Notebook {{ d1 }} | Recording | Colab |
+| :---- | :----: | :------: | :-------: |  :-------: | :-------:|
+| Feb 27  | Intro to BRT: PACE + Bio Argo   | [{{ l1 }}][brt-n] |  <a href="https://fish-pace.github.io/hackweek-2025/_sources/presentations/notebooks/notebooks/BRT_Argo_CHLA.ipynb" download>{{ d1 }}</a> |  [{{ v0 }}][brt-v] | [{{ c1 }}][brt-c] |
+| Mar 6 | Intro to BRT: Fish Survey Data + PACE |    | [{{ l1 }}][mu-n] |  <a href="https://fish-pace.github.io/hackweek-2025/_sources/presentations/notebooks/matchups.ipynb" download>{{ d1 }}</a> |  [{{ v0 }}][mu-v] | [{{ c1 }}][mu-c] |
 
-## Schedule
+## Additional Tuturials
 
-* Feb 6 - Intro to Boosted Regression Trees in Python (Eli Holmes) {{< fa brands python >}}
-* Feb 13 - Big Data BRT application: creating global chlorophyll density at depth profiles (Eli Holmes) {{< fa brands python >}}
-* Feb 20 -
-* Feb 27 -
-* Mar 6 -
-* Mar 13 -
-* Mar 20 -
-* Mar 27 -
-* Apr 3 - 
-* Apr 10 -
-* Apr 17 -
-* Apr 24 -
-* May 1 -
-* May 8 -
-* May 15 -
-* May 22 - skipping for Memorial Day long weekend
-* May 29 -
+See [prior year HackHours](https://nmfs-opensci.github.io/NOAAHackDays/). [Fish-PACE tutorials](https://fish-pace.github.io/hackweek-2025/presentations/tutorials.html)
+
+[jh-n]: ""
+[jh-l]: https://docs.google.com/presentation/d/13hEJXGTW0baH1TtP9GDzpu61HTk8LSipQL8fzF53CZ0/present
+[jh-d]: ""
+[jh-v]: https://youtu.be/-5q8ogDpH-A
+
+[git-n]: https://fish-pace.github.io/hackweek-2025/preliminary/git.html
+[git-l]: https://docs.google.com/presentation/d/1JuS8pNoq0__TyQMsTcXvvmSO8eaxJkAcxJQIlVpM2XA/present
+[git-d]: ""
+[git-v]: https://youtu.be/MxrktCV2k_c
+
+[ed-n]: notebooks/pace_earthdata_access
+[ed-l]: https://docs.google.com/presentation/d/1PKJJ6139McB6WyPb1-z8YnlCjDa6k9jgcdSH3NpEkHc/present
+[ed-d]: notebooks/pace_earthdata_access.ipynb
+[ed-v]: https://youtu.be/dlLSfh1eXLY
+[ed-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/pace_earthdata_access.ipynb
+
+[rrs-n]: notebooks/vizualization_rrs
+[rrs-l]: ""
+[rrs-d]: notebooks/vizualization_rrs.ipynb
+[rrs-v]: https://youtu.be/PpWlTDGvXA8
+[rrs-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/vizualization_rrs.ipynb
+
+[mu-n]: https://fish-pace.github.io/hackweek-2025/presentations/notebooks/matchups.html
+[mu-l]: ""
+[mu-d]: https://fish-pace.github.io/hackweek-2025/presentations/notebooks/matchups.ipynb
+[mu-v]: ""
+[mu-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/matchups.ipynb
+
+[moana-n]: notebooks/vizualization_moana
+[moana-l]: ""
+[moana-d]: notebooks/vizualization_moana.ipynb
+[moana-v]: https://youtu.be/9pH9j0qXtZA
+[moana-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/vizualization_moana.ipynb
+
+[wc-n]: notebooks/water_classification
+[wc-l]: ""
+[wc-d]: notebooks/water_classification.ipynb
+[wc-v]: https://youtu.be/LzLeNGE-DCI
+[wc-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/water_classification.ipynb
+
+[kd-n]: notebooks/kd_vizualization
+[kd-l]: ""
+[kd-d]: notebooks/kd_vizualization.ipynb
+[kd-v]: https://youtu.be/nsdx1O1Q_ow
+[kd-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/kd_vizualization.ipynb
+
+[cnn-n]: notebooks/CNN_2D
+[cnn-l]: ""
+[cnn-d]: notebooks/CNN_2D.ipynb
+[cnn-v]: ""
+[cnn-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/CNN_2D.ipynb
+
+[brt-n]: https://fish-pace.github.io/hackweek-2025/presentations/notebooks/BRT_Argo_CHLA.html
+[brt-l]: https://fish-pace.github.io/chla-z/text_and_talks/chla_depth_talk_2.html#/title-slide
+[brt-d]: https://fish-pace.github.io/hackweek-2025/presentations/notebooks/BRT_Argo_CHLA.ipynb
+[brt-v]: ""
+[brt-c]: https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/BRT_Argo_CHLA.ipynb
