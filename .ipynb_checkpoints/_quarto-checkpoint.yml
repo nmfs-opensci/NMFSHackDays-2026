@@ -1,0 +1,86 @@
+project: 
+  type: website
+  output-dir: docs
+  render:
+    - "*.*"
+
+default-image-extension: ""
+    
+resources:
+  - topics/images
+  - widgets/jupyterhub_link_widget.html
+  - widgets/widget-popout.html
+  
+execute:
+  freeze: auto
+  
+website:
+  page-navigation: true  
+  title: "NMFS HackHours 2026"
+  favicon: "images/favicon-16x16.png"
+  site-url: https://nmfs-opensci.github.io/NMFSHackDays-2026
+  repo-url: https://github.com/nmfs-opensci/NMFSHackDays-2026
+  repo-actions: [edit, issue, source]
+  
+  page-footer: <img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="NMFS Open Science logo" style="width:150px"><br />NMFS Open Science
+
+  navbar:
+    background: primary
+    search: true
+    right: 
+      - icon: server
+        href: https://nmfs-openscapes.2i2c.cloud/
+        text: "JupyterHub"
+      - icon: wechat
+        href: https://github.com/orgs/nmfs-openscapes/discussions/categories/hackhours
+        text: "Discussions"
+      - icon: github
+        href: https://github.com/nmfs-opensci/NMFSHackDays-2026
+        text: "repo"
+      - icon: globe
+        href: https://github.com/nmfs-opensci
+        text: "GH org"
+  sidebar:
+    - id: home
+      logo: https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true
+      style: "docked"
+      collapse-level: 1
+      toc-expand: false
+      pinned: true
+      align: left
+      contents:
+        - href: content/hackhours.md
+          text: About
+        - href: content/hackhours.md
+          text: About
+        - section: JupyterHub Skills
+          href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
+        - text: "2026 Topics"
+          href: index.html
+        - text: "---"
+        - section: "Intro to BRTs"
+          href: topics/2026-02-27/BRT_2D.html
+        - section: "CHLA-Z"
+          href: topics-2026/2026-02-13/matchups.html
+        - text: "---"
+        - href: content/reuse.md
+          text: Reuse Statement
+        - href: coc.md
+          text: Code of Conduct
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: [cosmo, theme-dark.scss]
+    code-background: true
+    code-copy: true
+    css: styles.css
+    toc: true
+    toc-depth: 2
+    include-before-body:
+      - translate.html
+      - widgets/widget-popout.html
+      
+#filters:
+#  - include-files.lua
+#  - quarto

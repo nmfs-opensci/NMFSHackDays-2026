@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Simple Machine-Learning: Boosted Regression Predictions – NMFS HackHours 2026</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../topics-2026/2026-02-13/matchups.html" rel="next">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-69259211bff4de149c509f6620516e6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">NMFS HackHours 2026</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://nmfs-openscapes.2i2c.cloud/"> <i class="bi bi-server" role="img">
+</i> 
+<span class="menu-text">JupyterHub</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/orgs/nmfs-openscapes/discussions/categories/hackhours"> <i class="bi bi-wechat" role="img">
+</i> 
+<span class="menu-text">Discussions</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nmfs-opensci/NMFSHackDays-2026"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">repo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nmfs-opensci"> <i class="bi bi-globe" role="img">
+</i> 
+<span class="menu-text">GH org</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../topics/2026-02-27/BRT_2D.html">Intro to BRTs</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../index.html" class="sidebar-logo-link">
+      <img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../content/hackhours.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../content/hackhours.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">JupyterHub Skills</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2026 Topics</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Intro to BRTs</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">CHLA-Z</span></span>
+  </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../content/reuse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reuse Statement</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../coc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Code of Conduct</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#overview-of-the-modeling-steps" id="toc-overview-of-the-modeling-steps" class="nav-link" data-scroll-target="#overview-of-the-modeling-steps">Overview of the modeling steps</a></li>
+  <li><a href="#variables-in-the-model" id="toc-variables-in-the-model" class="nav-link" data-scroll-target="#variables-in-the-model">Variables in the model</a></li>
+  <li><a href="#dealing-with-nans" id="toc-dealing-with-nans" class="nav-link" data-scroll-target="#dealing-with-nans">Dealing with NaNs</a></li>
+  <li><a href="#load-the-libraries" id="toc-load-the-libraries" class="nav-link" data-scroll-target="#load-the-libraries">Load the libraries</a></li>
+  <li><a href="#prepare-the-indian-ocean-dataset" id="toc-prepare-the-indian-ocean-dataset" class="nav-link" data-scroll-target="#prepare-the-indian-ocean-dataset">Prepare the Indian Ocean Dataset</a>
+  <ul class="collapse">
+  <li><a href="#create-random-sample-of-log-chl-from-the-indian-ocean-dataset" id="toc-create-random-sample-of-log-chl-from-the-indian-ocean-dataset" class="nav-link" data-scroll-target="#create-random-sample-of-log-chl-from-the-indian-ocean-dataset">Create random sample of log CHL from the Indian Ocean dataset</a></li>
+  <li><a href="#create-the-train-test-dataset" id="toc-create-the-train-test-dataset" class="nav-link" data-scroll-target="#create-the-train-test-dataset">Create the train-test dataset</a></li>
+  <li><a href="#fit-a-brt" id="toc-fit-a-brt" class="nav-link" data-scroll-target="#fit-a-brt">Fit a BRT</a></li>
+  <li><a href="#compare-to-the-test-data" id="toc-compare-to-the-test-data" class="nav-link" data-scroll-target="#compare-to-the-test-data">Compare to the test data</a></li>
+  <li><a href="#make-a-prediction-of-the-whole-region" id="toc-make-a-prediction-of-the-whole-region" class="nav-link" data-scroll-target="#make-a-prediction-of-the-whole-region">Make a prediction of the whole region</a></li>
+  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1">Summary</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.dev/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-02-27/BRT_2D.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-02-27/BRT_2D.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<div id="google_translate_element"></div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+    function openJupyterWidget(notebookUrl) {
+        let encodedNotebookUrl = encodeURIComponent(notebookUrl);
+        let popupUrl = `https://nmfs-opensci.github.io/NMFSHackDays-2025/widgets/jupyterhub_link_widget.html?notebook=${encodedNotebookUrl}`;
+        let popupWindow = window.open(popupUrl, "JupyterWidget", "width=600,height=400");
+        if (!popupWindow) {
+            alert("Popup blocked! Please allow popups for this site.");
+        }
+    }
+</script>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Simple Machine-Learning: Boosted Regression Predictions</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Author:</strong> Eli Holmes (NOAA)<br> Last updated: November 19, 2025</p>
+<p><a href="https://colab.research.google.com/github/fish-pace/2025-tutorials/blob/main/BRT_2D.ipynb"><img src="https://img.shields.io/badge/Open_in_Colab-blue?style=for-the-badge" class="img-fluid" alt="Colab Badge"></a> <a href="javascript:void(0);" onclick="openJupyterWidget('https://github.com/fish-pace/2025-tutorials/blob/main/BRT_2D.ipynb');"> <img src="https://img.shields.io/badge/Open_in_JupyterHub-orange?style=for-the-badge" alt="JupyterHub Badge"> </a> <a href="https://github.com/fish-pace/2025-tutorials/blob/main/BRT_2D.ipynb"><img src="https://img.shields.io/badge/Download-grey?style=for-the-badge" class="img-fluid" alt="Download Badge"></a> <a href="https://workshop.nmfs-openscapes.2i2c.cloud/hub/user-redirect/lab?fromURL=https://raw.githubusercontent.com/fish-pace/2025-tutorials/main/BRT_2D.ipynb"><img src="https://img.shields.io/badge/Workshop_Hub-green?style=for-the-badge" class="img-fluid" alt="JupyterHub"></a></p>
+<blockquote class="blockquote">
+<p>📘 Learning Objectives</p>
+<ol type="1">
+<li>Understand the basics of prediction</li>
+<li>Learn the format that your training data should be in</li>
+<li>Learn to fit a Boosted Regression Tree</li>
+<li>Evaluate fit</li>
+<li>Make predictions with your model</li>
+</ol>
+</blockquote>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important notes for this tutorial
+</div>
+</div>
+<section id="the-functions-are-in-a-separate-file" class="level3 callout-body-container callout-body">
+<h3 class="anchored" data-anchor-id="the-functions-are-in-a-separate-file">The functions are in a separate file</h3>
+<p>The Python functions for doing tasks, like prepping the data and plotting, are in a separate file <code>ml_utils.py</code> and the functions are imported with <code>import ml_utils as mu</code>. You will need to run the import code to have access to the functions.</p>
+</section>
+</div>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>In this tutorial we will predict a numerical variable (chl) using predictor variables, in this case SST, salinity, and season.</p>
+<p><span class="math display">\[
+\hat{y} \sim f(sst, so, season, location)
+\]</span></p>
+<p>We will use a classic non-linear prediction model: boosted regression trees (BRTs). Trees learn a big collection of if-else rules that split the response variable space. BRTs are non-linear: they can learn complicated non-linear relationships like “very high CHL only occurs when SST is low and it’s winter and we are above a certain latitude threshold.” They can handle complex interactions between variables (SST × salinity × season × location).</p>
+<p>The goal is to create a predicted map of CHL given our predictor variables on a given day.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./Supporting_files/y_pred.png" class="img-fluid figure-img"></p>
+<figcaption>BRT pred map</figcaption>
+</figure>
+</div>
+</section>
+<section id="overview-of-the-modeling-steps" class="level2">
+<h2 class="anchored" data-anchor-id="overview-of-the-modeling-steps">Overview of the modeling steps</h2>
+<ol type="1">
+<li>Create your sampling dataframe: spatial samples with response (what you are trying to predict), latitude, longitude, date.</li>
+<li>Create your predictor dataframe. In this example we have an 3D cube (time, lat, lon) with all the variables and we sample from that.</li>
+<li>Fit model</li>
+<li>Make predictions</li>
+</ol>
+<p>The hard part is the data prep. We need a dataframe that looks like this. Just showing the first 5 samples. <code>y</code> is what we are predicting and it is the true values we have (from some type of observation) and the variables to the right are what we train on. The ocean mask just tells up what to ignore (it’s land).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>time</th>
+<th>lat</th>
+<th>lon</th>
+<th>y</th>
+<th>sst</th>
+<th>so</th>
+<th>sin_time</th>
+<th>cos_time</th>
+<th>x_geo</th>
+<th>y_geo</th>
+<th>z_geo</th>
+<th>ocean_mask</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2020-07-03</td>
+<td>12.25</td>
+<td>63.50</td>
+<td>-1.273</td>
+<td>27.84</td>
+<td>34.82</td>
+<td>0.017</td>
+<td>1.000</td>
+<td>0.431</td>
+<td>0.904</td>
+<td>0.212</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2020-01-15</td>
+<td>28.75</td>
+<td>74.25</td>
+<td>-0.522</td>
+<td>24.11</td>
+<td>35.21</td>
+<td>-0.142</td>
+<td>-0.990</td>
+<td>0.257</td>
+<td>0.932</td>
+<td>0.482</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>2020-03-28</td>
+<td>-2.00</td>
+<td>88.75</td>
+<td>-2.004</td>
+<td>29.47</td>
+<td>34.55</td>
+<td>0.651</td>
+<td>0.759</td>
+<td>0.030</td>
+<td>0.999</td>
+<td>-0.035</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2020-10-09</td>
+<td>5.75</td>
+<td>59.25</td>
+<td>-1.618</td>
+<td>26.33</td>
+<td>34.90</td>
+<td>-0.843</td>
+<td>0.538</td>
+<td>0.504</td>
+<td>0.863</td>
+<td>0.100</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>2020-12-22</td>
+<td>17.50</td>
+<td>46.50</td>
+<td>-0.931</td>
+<td>22.88</td>
+<td>35.40</td>
+<td>-0.149</td>
+<td>-0.989</td>
+<td>0.675</td>
+<td>0.737</td>
+<td>0.300</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="variables-in-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="variables-in-the-model">Variables in the model</h2>
+<p>A nice thing about BRTs is that we do not need to normalize (standardize) our predictor variables. BRTs work by splitting our predictors and normalizing has no effect. This is different than many other types of models that will perform much better with normalization.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 26%">
+<col style="width: 20%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Spatial Variation</th>
+<th>Temporal Variation</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>sst</code>, <code>so</code></td>
+<td>✅ Varies by lat/lon</td>
+<td>✅ Varies by time</td>
+<td>Numeric</td>
+</tr>
+<tr class="even">
+<td><code>sin_time</code>, <code>cos_time</code></td>
+<td>❌ Same across lat/lon</td>
+<td>✅ Varies by time</td>
+<td>Cyclical</td>
+</tr>
+<tr class="odd">
+<td><code>x_geo</code>,<code>y_geo</code>, <code>z_geo</code></td>
+<td>✅ Varies by lat/lon</td>
+<td>❌ Static</td>
+<td>-1 to 1</td>
+</tr>
+<tr class="even">
+<td><code>ocean_mask</code></td>
+<td>✅ Varies by lat/lon</td>
+<td>❌ Static</td>
+<td>Binary (0=land, 1=ocean)</td>
+</tr>
+<tr class="odd">
+<td><code>y</code> (log CHL)</td>
+<td>✅ Varies by lat/lon</td>
+<td>✅ Varies by time</td>
+<td>Numeric</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><strong><code>sst</code> and <code>so</code></strong>: These are our core predictor variables.</p></li>
+<li><p><strong><code>sin_time</code> and <code>cos_time</code></strong>: These introduce seasonality into our model. The models can learn seasonally dependent patterns, e.g., chlorophyll blooms in spring. The <code>sin_time</code> and <code>cos_time</code> features use cyclical encoding (sine/cosine).</p></li>
+<li><p><strong><code>x_geo</code>, <code>y_geo</code>, and <code>z_geo</code></strong>: This is a dimensionless geometric encoding of location on the globe that is -1 to 1. This works better than lat/lon for machine-learning tasks. Including these location variables allows the model to learn location specific relationships.</p></li>
+<li><p><strong><code>ocean_mask</code></strong>: This tells the model which pixels are land (0) vs ocean (1).</p></li>
+<li><p><strong><code>y</code> (response)</strong>: The model trains on this. For our model it is logged CHL and it is roughly centered near 0.</p></li>
+</ul>
+<p><em>Note, neither bathymetry nor distance from coast improved the model by any appreciable amount over the model we use here. SST (upwelling signal) and salinity (river outflow signal) are highly correlated with chlorophyll in this region with strong seasonal patterns.</em></p>
+</section>
+<section id="dealing-with-nans" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-nans">Dealing with NaNs</h2>
+<p>In our application, NaNs in y (in our case CHL) appear over land and when obscured by clouds. Our BRT fitting function needs us to remove any rows in our dataframe where y is NaN. NaNs in our predictor variables are less common, but can happen. BRTs functions typically filter out any training data that have NaNs in the predictor variables so we will ignore those NaNs. We just have to make sure that missing values, or areas to ignore like land or cloud are coded as NaN and not something like -99.</p>
+</section>
+<section id="load-the-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="load-the-libraries">Load the libraries</h2>
+<ul>
+<li>core data handling and plotting libraries</li>
+<li>our custom functions in <code>ml_utils.py</code></li>
+</ul>
+<div id="cell-4" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Uncomment this line and run if you are in Colab; leave in the !. That is part of the cmd</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># !pip install zarr gcsfs --quiet</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-5" class="cell" data-execution_count="95">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Core data handling and plotting libraries ---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr       <span class="co"># for working with labeled multi-dimensional arrays</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np        <span class="co"># for numerical operations on arrays</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt  <span class="co"># for creating plots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-6" class="cell" data-execution_count="96">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Custom python functions ---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># this requires that tensorflow and keras are available</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os, importlib</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Looks to see if you have the file already and if not, downloads from GitHub</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> os.path.exists(<span class="st">"ml_utils.py"</span>):</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>wget <span class="op">-</span>q https:<span class="op">//</span>raw.githubusercontent.com<span class="op">/</span>fish<span class="op">-</span>pace<span class="op">/</span><span class="dv">2025</span><span class="op">-</span>tutorials<span class="op">/</span>main<span class="op">/</span>ml_utils.py</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ml_utils <span class="im">as</span> mu</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>importlib.<span class="bu">reload</span>(mu)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="96">
+<pre><code>&lt;module 'ml_utils' from '/home/jovyan/2025-tutorials/ml_utils.py'&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="prepare-the-indian-ocean-dataset" class="level1">
+<h1>Prepare the Indian Ocean Dataset</h1>
+<p>This is a dataset for the Indian Ocean with a variety of variables, including chlorophyll which will will try to predict using SST, salinity, location and season. The data are in Google Object Storage as a chunked Zarr file. It has files that are chunks of 100 days of data. When we go to get data we will get these files. How we load our data will determine if our xarray dataset “knows” about the chunks and this will make a big difference to speed and memory usage. <code>xarray.open_dataset</code> will not know the chunking while <code>xarray.open_zarr</code> will.</p>
+<div id="cell-8" class="cell" data-execution_count="97">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Indian Ocean Dataset</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note use open_zarr instead of open_dataset to preserve the chunking</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>data_full <span class="op">=</span> xr.open_zarr(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"gcs://nmfs_odp_nwfsc/CB/mind_the_chl_gap/IO.zarr"</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    storage_options<span class="op">=</span>{<span class="st">"token"</span>: <span class="st">"anon"</span>}, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    consolidated<span class="op">=</span><span class="va">True</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># slice to a smaller lat/lon segment</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>data_full <span class="op">=</span> data_full.sel(lat<span class="op">=</span><span class="bu">slice</span>(<span class="dv">35</span>, <span class="op">-</span><span class="dv">5</span>), lon<span class="op">=</span><span class="bu">slice</span>(<span class="dv">45</span>,<span class="dv">90</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># subset out predictors, response and land mask</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>pred_var <span class="op">=</span> [<span class="st">"sst"</span>, <span class="st">"so"</span>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>resp_var <span class="op">=</span> <span class="st">"CHL_cmes-gapfree"</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>land_mask <span class="op">=</span> <span class="st">"CHL_cmes-land"</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> data_full[pred_var <span class="op">+</span> [resp_var, land_mask]]</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dataset.rename({resp_var: <span class="st">"y"</span>, land_mask: <span class="st">"land_mask"</span>})</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># IMPORTANT! log our response so it is symmetric (Normal-ish)</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>dataset[<span class="st">"y"</span>] <span class="op">=</span> np.log(dataset[<span class="st">"y"</span>])</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># remove years with no response (y), sst or salinity data; these will be all NaN</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>vars_to_check <span class="op">=</span> [<span class="st">"y"</span>, <span class="st">"so"</span>, <span class="st">"sst"</span>]</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>drop <span class="op">=</span> dataset[vars_to_check].to_array().isnull().<span class="bu">all</span>([<span class="st">"lat"</span>, <span class="st">"lon"</span>]).<span class="bu">any</span>(<span class="st">"variable"</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dataset.sel(time<span class="op">=~</span>drop)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Make ocean mask</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark where SST (sea surface temperature) is always missing; these are likely lakes</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>dataset[<span class="st">"land_mask"</span>] <span class="op">=</span> dataset[<span class="st">"land_mask"</span>] <span class="op">==</span> <span class="dv">0</span> <span class="co"># make ocean 1 instead of land</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>invalid_ocean <span class="op">=</span> np.isnan(dataset[<span class="st">"sst"</span>]).<span class="bu">all</span>(dim<span class="op">=</span><span class="st">"time"</span>) </span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>dataset[<span class="st">"land_mask"</span>] <span class="op">=</span> dataset[<span class="st">"land_mask"</span>].where(<span class="op">~</span>invalid_ocean, other<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dataset.rename({<span class="st">"land_mask"</span>: <span class="st">"ocean_mask"</span>})</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Add location and seasonality variables</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> mu.add_spherical_coords(dataset)  <span class="co"># add lat/lon variables to dataset</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> mu.add_seasonal_time_features(dataset)</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co"># fix chunking to be consistent</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dataset.chunk({<span class="st">'time'</span>: <span class="dv">100</span>, <span class="st">'lat'</span>: <span class="op">-</span><span class="dv">1</span>, <span class="st">'lon'</span>: <span class="op">-</span><span class="dv">1</span>})</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="97">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1f1f1f;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 5GB
+Dimensions:     (time: 8475, lat: 149, lon: 181)
+Coordinates:
+  * lat         (lat) float32 596B 32.0 31.75 31.5 31.25 ... -4.5 -4.75 -5.0
+  * lon         (lon) float32 724B 45.0 45.25 45.5 45.75 ... 89.5 89.75 90.0
+  * time        (time) datetime64[ns] 68kB 1997-10-01 1997-10-02 ... 2020-12-31
+Data variables:
+    sst         (time, lat, lon) float32 914MB dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;
+    so          (time, lat, lon) float32 914MB dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;
+    y           (time, lat, lon) float32 914MB dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;
+    ocean_mask  (lat, lon) bool 27kB dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;
+    x_geo       (lat, lon) float32 108kB dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;
+    y_geo       (lat, lon) float32 108kB dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;
+    z_geo       (lat, lon) float32 108kB dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;
+    sin_time    (time, lat, lon) float32 914MB dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;
+    cos_time    (time, lat, lon) float32 914MB dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;
+Attributes: (12/92)
+    Conventions:                     CF-1.8, ACDD-1.3
+    DPM_reference:                   GC-UD-ACRI-PUG
+    IODD_reference:                  GC-UD-ACRI-PUG
+    acknowledgement:                 The Licensees will ensure that original ...
+    citation:                        The Licensees will ensure that original ...
+    cmems_product_id:                OCEANCOLOUR_GLO_BGC_L3_MY_009_103
+    ...                              ...
+    time_coverage_end:               2024-04-18T02:58:23Z
+    time_coverage_resolution:        P1D
+    time_coverage_start:             2024-04-16T21:12:05Z
+    title:                           cmems_obs-oc_glo_bgc-plankton_my_l3-mult...
+    westernmost_longitude:           -180.0
+    westernmost_valid_longitude:     -180.0</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-eeb6bd4a-6952-40d8-8c29-e04ec9bdb39f" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-eeb6bd4a-6952-40d8-8c29-e04ec9bdb39f" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span class="xr-has-index">time</span>: 8475</li><li><span class="xr-has-index">lat</span>: 149</li><li><span class="xr-has-index">lon</span>: 181</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-7a2dd1a8-44bd-4cf6-9cce-199acb8f071f" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-7a2dd1a8-44bd-4cf6-9cce-199acb8f071f" class="xr-section-summary">Coordinates: <span>(3)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lat</span></div><div class="xr-var-dims">(lat)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">32.0 31.75 31.5 ... -4.5 -4.75 -5.0</div><input id="attrs-22cc8fef-fbea-4cef-ace2-076779cd86db" class="xr-var-attrs-in" type="checkbox"><label for="attrs-22cc8fef-fbea-4cef-ace2-076779cd86db" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-e3a76504-9759-444b-9daa-6e1e7c032755" class="xr-var-data-in" type="checkbox"><label for="data-e3a76504-9759-444b-9daa-6e1e7c032755" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>latitude</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd></dl></div><div class="xr-var-data"><pre>array([32.  , 31.75, 31.5 , 31.25, 31.  , 30.75, 30.5 , 30.25, 30.  , 29.75,
+       29.5 , 29.25, 29.  , 28.75, 28.5 , 28.25, 28.  , 27.75, 27.5 , 27.25,
+       27.  , 26.75, 26.5 , 26.25, 26.  , 25.75, 25.5 , 25.25, 25.  , 24.75,
+       24.5 , 24.25, 24.  , 23.75, 23.5 , 23.25, 23.  , 22.75, 22.5 , 22.25,
+       22.  , 21.75, 21.5 , 21.25, 21.  , 20.75, 20.5 , 20.25, 20.  , 19.75,
+       19.5 , 19.25, 19.  , 18.75, 18.5 , 18.25, 18.  , 17.75, 17.5 , 17.25,
+       17.  , 16.75, 16.5 , 16.25, 16.  , 15.75, 15.5 , 15.25, 15.  , 14.75,
+       14.5 , 14.25, 14.  , 13.75, 13.5 , 13.25, 13.  , 12.75, 12.5 , 12.25,
+       12.  , 11.75, 11.5 , 11.25, 11.  , 10.75, 10.5 , 10.25, 10.  ,  9.75,
+        9.5 ,  9.25,  9.  ,  8.75,  8.5 ,  8.25,  8.  ,  7.75,  7.5 ,  7.25,
+        7.  ,  6.75,  6.5 ,  6.25,  6.  ,  5.75,  5.5 ,  5.25,  5.  ,  4.75,
+        4.5 ,  4.25,  4.  ,  3.75,  3.5 ,  3.25,  3.  ,  2.75,  2.5 ,  2.25,
+        2.  ,  1.75,  1.5 ,  1.25,  1.  ,  0.75,  0.5 ,  0.25,  0.  , -0.25,
+       -0.5 , -0.75, -1.  , -1.25, -1.5 , -1.75, -2.  , -2.25, -2.5 , -2.75,
+       -3.  , -3.25, -3.5 , -3.75, -4.  , -4.25, -4.5 , -4.75, -5.  ],
+      dtype=float32)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lon</span></div><div class="xr-var-dims">(lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">45.0 45.25 45.5 ... 89.5 89.75 90.0</div><input id="attrs-8072cf86-57c3-49fb-8f54-440c403fb0f2" class="xr-var-attrs-in" type="checkbox"><label for="attrs-8072cf86-57c3-49fb-8f54-440c403fb0f2" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d6e25297-6005-42df-b931-ee8cc2d3eb44" class="xr-var-data-in" type="checkbox"><label for="data-d6e25297-6005-42df-b931-ee8cc2d3eb44" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>longitude</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd></dl></div><div class="xr-var-data"><pre>array([45.  , 45.25, 45.5 , 45.75, 46.  , 46.25, 46.5 , 46.75, 47.  , 47.25,
+       47.5 , 47.75, 48.  , 48.25, 48.5 , 48.75, 49.  , 49.25, 49.5 , 49.75,
+       50.  , 50.25, 50.5 , 50.75, 51.  , 51.25, 51.5 , 51.75, 52.  , 52.25,
+       52.5 , 52.75, 53.  , 53.25, 53.5 , 53.75, 54.  , 54.25, 54.5 , 54.75,
+       55.  , 55.25, 55.5 , 55.75, 56.  , 56.25, 56.5 , 56.75, 57.  , 57.25,
+       57.5 , 57.75, 58.  , 58.25, 58.5 , 58.75, 59.  , 59.25, 59.5 , 59.75,
+       60.  , 60.25, 60.5 , 60.75, 61.  , 61.25, 61.5 , 61.75, 62.  , 62.25,
+       62.5 , 62.75, 63.  , 63.25, 63.5 , 63.75, 64.  , 64.25, 64.5 , 64.75,
+       65.  , 65.25, 65.5 , 65.75, 66.  , 66.25, 66.5 , 66.75, 67.  , 67.25,
+       67.5 , 67.75, 68.  , 68.25, 68.5 , 68.75, 69.  , 69.25, 69.5 , 69.75,
+       70.  , 70.25, 70.5 , 70.75, 71.  , 71.25, 71.5 , 71.75, 72.  , 72.25,
+       72.5 , 72.75, 73.  , 73.25, 73.5 , 73.75, 74.  , 74.25, 74.5 , 74.75,
+       75.  , 75.25, 75.5 , 75.75, 76.  , 76.25, 76.5 , 76.75, 77.  , 77.25,
+       77.5 , 77.75, 78.  , 78.25, 78.5 , 78.75, 79.  , 79.25, 79.5 , 79.75,
+       80.  , 80.25, 80.5 , 80.75, 81.  , 81.25, 81.5 , 81.75, 82.  , 82.25,
+       82.5 , 82.75, 83.  , 83.25, 83.5 , 83.75, 84.  , 84.25, 84.5 , 84.75,
+       85.  , 85.25, 85.5 , 85.75, 86.  , 86.25, 86.5 , 86.75, 87.  , 87.25,
+       87.5 , 87.75, 88.  , 88.25, 88.5 , 88.75, 89.  , 89.25, 89.5 , 89.75,
+       90.  ], dtype=float32)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">time</span></div><div class="xr-var-dims">(time)</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">1997-10-01 ... 2020-12-31</div><input id="attrs-32bc7571-5107-41b6-bac1-379f9ab853eb" class="xr-var-attrs-in" type="checkbox"><label for="attrs-32bc7571-5107-41b6-bac1-379f9ab853eb" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-4d7b492b-d9ae-4d97-a643-0d18c21acced" class="xr-var-data-in" type="checkbox"><label for="data-4d7b492b-d9ae-4d97-a643-0d18c21acced" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>axis :</span></dt><dd>T</dd><dt><span>comment :</span></dt><dd>Data is averaged over the day</dd><dt><span>long_name :</span></dt><dd>time centered on the day</dd><dt><span>standard_name :</span></dt><dd>time</dd></dl></div><div class="xr-var-data"><pre>array(['1997-10-01T00:00:00.000000000', '1997-10-02T00:00:00.000000000',
+       '1997-10-03T00:00:00.000000000', ..., '2020-12-29T00:00:00.000000000',
+       '2020-12-30T00:00:00.000000000', '2020-12-31T00:00:00.000000000'],
+      shape=(8475,), dtype='datetime64[ns]')</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-a2e4e940-5245-4ebb-a840-ef9207647af0" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-a2e4e940-5245-4ebb-a840-ef9207647af0" class="xr-section-summary">Data variables: <span>(9)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>sst</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;</div><input id="attrs-1210202e-9a64-46e7-be54-53eed9159026" class="xr-var-attrs-in" type="checkbox"><label for="attrs-1210202e-9a64-46e7-be54-53eed9159026" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-abc935b5-dfee-4f3b-b1e4-7bcd174ebf3e" class="xr-var-data-in" type="checkbox"><label for="data-abc935b5-dfee-4f3b-b1e4-7bcd174ebf3e" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Sea surface temperature</dd><dt><span>nameCDM :</span></dt><dd>Sea_surface_temperature_surface</dd><dt><span>nameECMWF :</span></dt><dd>Sea surface temperature</dd><dt><span>product_type :</span></dt><dd>analysis</dd><dt><span>shortNameECMWF :</span></dt><dd>sst</dd><dt><span>standard_name :</span></dt><dd>sea_surface_temperature</dd><dt><span>units :</span></dt><dd>K</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>871.90 MiB</td>
+<td>10.29 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(8475, 149, 181)</td>
+<td>(100, 149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">85 chunks in 5 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="159" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="10" y1="28" x2="80" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="28" style="stroke-width:2"></line> <line x1="13" y1="3" x2="13" y2="31"></line> <line x1="16" y1="6" x2="16" y2="34"></line> <line x1="20" y1="10" x2="20" y2="39"></line> <line x1="24" y1="14" x2="24" y2="42"></line> <line x1="28" y1="18" x2="28" y2="46"></line> <line x1="31" y1="21" x2="31" y2="49"></line> <line x1="35" y1="25" x2="35" y2="54"></line> <line x1="39" y1="29" x2="39" y2="57"></line> <line x1="43" y1="33" x2="43" y2="61"></line> <line x1="46" y1="36" x2="46" y2="64"></line> <line x1="50" y1="40" x2="50" y2="69"></line> <line x1="54" y1="44" x2="54" y2="72"></line> <line x1="58" y1="48" x2="58" y2="76"></line> <line x1="61" y1="51" x2="61" y2="79"></line> <line x1="65" y1="55" x2="65" y2="84"></line> <line x1="69" y1="59" x2="69" y2="87"></line> <line x1="73" y1="63" x2="73" y2="91"></line> <line x1="76" y1="66" x2="76" y2="94"></line> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 80.58823529411765,70.58823529411765 80.58823529411765,98.90251199105148 10.0,28.314276696933828" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="39" y2="0" style="stroke-width:2"></line> <line x1="13" y1="3" x2="42" y2="3"></line> <line x1="16" y1="6" x2="46" y2="6"></line> <line x1="20" y1="10" x2="50" y2="10"></line> <line x1="24" y1="14" x2="53" y2="14"></line> <line x1="28" y1="18" x2="57" y2="18"></line> <line x1="31" y1="21" x2="61" y2="21"></line> <line x1="35" y1="25" x2="65" y2="25"></line> <line x1="39" y1="29" x2="68" y2="29"></line> <line x1="43" y1="33" x2="72" y2="33"></line> <line x1="46" y1="36" x2="76" y2="36"></line> <line x1="50" y1="40" x2="80" y2="40"></line> <line x1="54" y1="44" x2="83" y2="44"></line> <line x1="58" y1="48" x2="87" y2="48"></line> <line x1="61" y1="51" x2="91" y2="51"></line> <line x1="65" y1="55" x2="95" y2="55"></line> <line x1="69" y1="59" x2="98" y2="59"></line> <line x1="73" y1="63" x2="102" y2="63"></line> <line x1="76" y1="66" x2="106" y2="66"></line> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="39" y1="0" x2="109" y2="70" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 39.402299531717766,0.0 109.99053482583543,70.58823529411765 80.58823529411765,70.58823529411765" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <line x1="80" y1="98" x2="109" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <line x1="109" y1="70" x2="109" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="80.58823529411765,70.58823529411765 109.99053482583543,70.58823529411765 109.99053482583543,98.90251199105148 80.58823529411765,98.90251199105148" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="95.289385" y="118.902512" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="129.990535" y="84.745374" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,129.990535,84.745374)">149</text> <text x="35.294118" y="83.608394" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,35.294118,83.608394)">8475</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>so</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;</div><input id="attrs-ca479356-7b2e-4a52-bfb0-41f414994c45" class="xr-var-attrs-in" type="checkbox"><label for="attrs-ca479356-7b2e-4a52-bfb0-41f414994c45" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-f15b0b96-cc25-4421-b33c-31410f63209a" class="xr-var-data-in" type="checkbox"><label for="data-f15b0b96-cc25-4421-b33c-31410f63209a" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_ChunkSizes :</span></dt><dd>[1, 7, 341, 720]</dd><dt><span>cell_methods :</span></dt><dd>area: mean</dd><dt><span>long_name :</span></dt><dd>mean sea water salinity at 0.49 metres below ocean surface</dd><dt><span>standard_name :</span></dt><dd>sea_water_salinity</dd><dt><span>unit_long :</span></dt><dd>Practical Salinity Unit</dd><dt><span>units :</span></dt><dd>1e-3</dd><dt><span>valid_max :</span></dt><dd>28336</dd><dt><span>valid_min :</span></dt><dd>1</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>871.90 MiB</td>
+<td>10.29 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(8475, 149, 181)</td>
+<td>(100, 149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">85 chunks in 5 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="159" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="10" y1="28" x2="80" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="28" style="stroke-width:2"></line> <line x1="13" y1="3" x2="13" y2="31"></line> <line x1="16" y1="6" x2="16" y2="34"></line> <line x1="20" y1="10" x2="20" y2="39"></line> <line x1="24" y1="14" x2="24" y2="42"></line> <line x1="28" y1="18" x2="28" y2="46"></line> <line x1="31" y1="21" x2="31" y2="49"></line> <line x1="35" y1="25" x2="35" y2="54"></line> <line x1="39" y1="29" x2="39" y2="57"></line> <line x1="43" y1="33" x2="43" y2="61"></line> <line x1="46" y1="36" x2="46" y2="64"></line> <line x1="50" y1="40" x2="50" y2="69"></line> <line x1="54" y1="44" x2="54" y2="72"></line> <line x1="58" y1="48" x2="58" y2="76"></line> <line x1="61" y1="51" x2="61" y2="79"></line> <line x1="65" y1="55" x2="65" y2="84"></line> <line x1="69" y1="59" x2="69" y2="87"></line> <line x1="73" y1="63" x2="73" y2="91"></line> <line x1="76" y1="66" x2="76" y2="94"></line> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 80.58823529411765,70.58823529411765 80.58823529411765,98.90251199105148 10.0,28.314276696933828" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="39" y2="0" style="stroke-width:2"></line> <line x1="13" y1="3" x2="42" y2="3"></line> <line x1="16" y1="6" x2="46" y2="6"></line> <line x1="20" y1="10" x2="50" y2="10"></line> <line x1="24" y1="14" x2="53" y2="14"></line> <line x1="28" y1="18" x2="57" y2="18"></line> <line x1="31" y1="21" x2="61" y2="21"></line> <line x1="35" y1="25" x2="65" y2="25"></line> <line x1="39" y1="29" x2="68" y2="29"></line> <line x1="43" y1="33" x2="72" y2="33"></line> <line x1="46" y1="36" x2="76" y2="36"></line> <line x1="50" y1="40" x2="80" y2="40"></line> <line x1="54" y1="44" x2="83" y2="44"></line> <line x1="58" y1="48" x2="87" y2="48"></line> <line x1="61" y1="51" x2="91" y2="51"></line> <line x1="65" y1="55" x2="95" y2="55"></line> <line x1="69" y1="59" x2="98" y2="59"></line> <line x1="73" y1="63" x2="102" y2="63"></line> <line x1="76" y1="66" x2="106" y2="66"></line> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="39" y1="0" x2="109" y2="70" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 39.402299531717766,0.0 109.99053482583543,70.58823529411765 80.58823529411765,70.58823529411765" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <line x1="80" y1="98" x2="109" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <line x1="109" y1="70" x2="109" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="80.58823529411765,70.58823529411765 109.99053482583543,70.58823529411765 109.99053482583543,98.90251199105148 80.58823529411765,98.90251199105148" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="95.289385" y="118.902512" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="129.990535" y="84.745374" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,129.990535,84.745374)">149</text> <text x="35.294118" y="83.608394" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,35.294118,83.608394)">8475</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>y</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;</div><input id="attrs-bca75498-680b-4cc1-ad48-9e7bd645b7e7" class="xr-var-attrs-in" type="checkbox"><label for="attrs-bca75498-680b-4cc1-ad48-9e7bd645b7e7" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-b14707f3-933f-41be-8fde-05ac82c3e91d" class="xr-var-data-in" type="checkbox"><label for="data-b14707f3-933f-41be-8fde-05ac82c3e91d" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>Conventions :</span></dt><dd>CF-1.8, ACDD-1.3</dd><dt><span>DPM_reference :</span></dt><dd>GC-UD-ACRI-PUG</dd><dt><span>IODD_reference :</span></dt><dd>GC-UD-ACRI-PUG</dd><dt><span>acknowledgement :</span></dt><dd>The Licensees will ensure that original CMEMS products - or value added products or derivative works developed from CMEMS Products including publications and pictures - shall credit CMEMS by explicitly making mention of the originator (CMEMS) in the  following manner:  &lt;Generated using CMEMS Products, production centre ACRI-ST&gt;</dd><dt><span>ancillary_variables :</span></dt><dd>flags CHL_uncertainty</dd><dt><span>citation :</span></dt><dd>The Licensees will ensure that original CMEMS products - or value added products or derivative works developed from CMEMS Products including publications and pictures - shall credit CMEMS by explicitly making mention of the originator (CMEMS) in the  following manner:  &lt;Generated using CMEMS Products, production centre ACRI-ST&gt;</dd><dt><span>cmems_product_id :</span></dt><dd>OCEANCOLOUR_GLO_BGC_L4_MY_009_104</dd><dt><span>cmems_production_unit :</span></dt><dd>OC-ACRI-NICE-FR</dd><dt><span>comment :</span></dt><dd>average</dd><dt><span>contact :</span></dt><dd>servicedesk.cmems@acri-st.fr</dd><dt><span>copernicusmarine_version :</span></dt><dd>1.3.1</dd><dt><span>coverage_content_type :</span></dt><dd>modelResult</dd><dt><span>creation_date :</span></dt><dd>2023-11-29 UTC</dd><dt><span>creation_time :</span></dt><dd>01:06:50 UTC</dd><dt><span>creator_email :</span></dt><dd>servicedesk.cmems@acri-st.fr</dd><dt><span>creator_name :</span></dt><dd>ACRI</dd><dt><span>creator_url :</span></dt><dd>http://marine.copernicus.eu</dd><dt><span>date_created :</span></dt><dd>2023-11-29T01:06:50Z</dd><dt><span>distribution_statement :</span></dt><dd>See CMEMS Data License</dd><dt><span>duration_time :</span></dt><dd>PT146878S</dd><dt><span>earth_radius :</span></dt><dd>6378.137</dd><dt><span>easternmost_longitude :</span></dt><dd>180.0</dd><dt><span>easternmost_valid_longitude :</span></dt><dd>180.00001525878906</dd><dt><span>file_quality_index :</span></dt><dd>0</dd><dt><span>geospatial_bounds :</span></dt><dd>POLYGON ((90.000000 -180.000000, 90.000000 180.000000, -90.000000 180.000000, -90.000000 -180.000000, 90.000000 -180.000000))</dd><dt><span>geospatial_bounds_crs :</span></dt><dd>EPSG:4326</dd><dt><span>geospatial_bounds_vertical_crs :</span></dt><dd>EPSG:5829</dd><dt><span>geospatial_lat_max :</span></dt><dd>89.97916412353516</dd><dt><span>geospatial_lat_min :</span></dt><dd>-89.97917175292969</dd><dt><span>geospatial_lon_max :</span></dt><dd>179.9791717529297</dd><dt><span>geospatial_lon_min :</span></dt><dd>-179.9791717529297</dd><dt><span>geospatial_vertical_max :</span></dt><dd>0</dd><dt><span>geospatial_vertical_min :</span></dt><dd>0</dd><dt><span>geospatial_vertical_positive :</span></dt><dd>up</dd><dt><span>grid_mapping :</span></dt><dd>Equirectangular</dd><dt><span>grid_resolution :</span></dt><dd>4.638312339782715</dd><dt><span>history :</span></dt><dd>Created using software developed at ACRI-ST</dd><dt><span>id :</span></dt><dd>20231121_cmems_obs-oc_glo_bgc-plankton_myint_l4-gapfree-multi-4km_P1D</dd><dt><span>input_files_reprocessings :</span></dt><dd>Processors versions: MODIS R2022.0NRT/VIIRSN R2022.0.1NRT/OLCIA 07.02/VIIRSJ1 R2022.0NRT/OLCIB 07.02</dd><dt><span>institution :</span></dt><dd>ACRI</dd><dt><span>keywords :</span></dt><dd>EARTH SCIENCE &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; CHLOROPHYLL</dd><dt><span>keywords_vocabulary :</span></dt><dd>NASA Global Change Master Directory (GCMD) Science Keywords</dd><dt><span>lat_step :</span></dt><dd>0.0416666679084301</dd><dt><span>license :</span></dt><dd>See CMEMS Data License</dd><dt><span>lon_step :</span></dt><dd>0.0416666679084301</dd><dt><span>long_name :</span></dt><dd>Chlorophyll-a concentration - Mean of the binned pixels</dd><dt><span>naming_authority :</span></dt><dd>CMEMS</dd><dt><span>nb_bins :</span></dt><dd>37324800</dd><dt><span>nb_equ_bins :</span></dt><dd>8640</dd><dt><span>nb_grid_bins :</span></dt><dd>37324800</dd><dt><span>nb_valid_bins :</span></dt><dd>19169208</dd><dt><span>netcdf_version_id :</span></dt><dd>4.3.3.1 of Jul  8 2016 18:15:50 $</dd><dt><span>northernmost_latitude :</span></dt><dd>90.0</dd><dt><span>northernmost_valid_latitude :</span></dt><dd>58.08333206176758</dd><dt><span>overall_quality :</span></dt><dd>mode=myint</dd><dt><span>parameter :</span></dt><dd>Chlorophyll-a concentration</dd><dt><span>parameter_code :</span></dt><dd>CHL</dd><dt><span>pct_bins :</span></dt><dd>100.0</dd><dt><span>pct_valid_bins :</span></dt><dd>51.357831790123456</dd><dt><span>period_duration_day :</span></dt><dd>P1D</dd><dt><span>period_end_day :</span></dt><dd>20231121</dd><dt><span>period_start_day :</span></dt><dd>20231121</dd><dt><span>platform :</span></dt><dd>Aqua,Suomi-NPP,Sentinel-3a,JPSS-1 (NOAA-20),Sentinel-3b</dd><dt><span>processing_level :</span></dt><dd>L4</dd><dt><span>product_level :</span></dt><dd>4</dd><dt><span>product_name :</span></dt><dd>20231121_cmems_obs-oc_glo_bgc-plankton_myint_l4-gapfree-multi-4km_P1D</dd><dt><span>product_type :</span></dt><dd>day</dd><dt><span>project :</span></dt><dd>CMEMS</dd><dt><span>publication :</span></dt><dd>Gohin, F., Druon, J. N., Lampert, L. (2002). A five channel chlorophyll concentration algorithm applied to SeaWiFS data processed by SeaDAS in coastal waters. International journal of remote sensing, 23(8), 1639-1661 + Hu, C., Lee, Z., Franz, B. (2012). Chlorophyll a algorithms for oligotrophic oceans: A novel approach based on three-band reflectance difference. Journal of Geophysical Research, 117(C1). doi: 10.1029/2011jc007395</dd><dt><span>publisher_email :</span></dt><dd>servicedesk.cmems@mercator-ocean.eu</dd><dt><span>publisher_name :</span></dt><dd>CMEMS</dd><dt><span>publisher_url :</span></dt><dd>http://marine.copernicus.eu</dd><dt><span>references :</span></dt><dd>http://www.globcolour.info GlobColour has been originally funded by ESA with data from ESA, NASA, NOAA and GeoEye. This version has received funding from the European Community s Seventh Framework Programme ([FP7/2007-2013]) under grant agreement n. 282723 [OSS2015 project].</dd><dt><span>registration :</span></dt><dd>5</dd><dt><span>sensor :</span></dt><dd>Moderate Resolution Imaging Spectroradiometer,Visible Infrared Imaging Radiometer Suite,Ocean and Land Colour Instrument</dd><dt><span>sensor_name :</span></dt><dd>MODISA,VIIRSN,OLCIa,VIIRSJ1,OLCIb</dd><dt><span>sensor_name_list :</span></dt><dd>MOD,VIR,OLA,VJ1,OLB</dd><dt><span>site_name :</span></dt><dd>GLO</dd><dt><span>software_name :</span></dt><dd>globcolour_l3_reproject</dd><dt><span>software_version :</span></dt><dd>2022.2</dd><dt><span>source :</span></dt><dd>surface observation</dd><dt><span>southernmost_latitude :</span></dt><dd>-90.0</dd><dt><span>southernmost_valid_latitude :</span></dt><dd>-78.58333587646484</dd><dt><span>standard_name :</span></dt><dd>mass_concentration_of_chlorophyll_a_in_sea_water</dd><dt><span>standard_name_vocabulary :</span></dt><dd>NetCDF Climate and Forecast (CF) Metadata Convention</dd><dt><span>start_date :</span></dt><dd>2023-11-20 UTC</dd><dt><span>start_time :</span></dt><dd>15:24:55 UTC</dd><dt><span>stop_date :</span></dt><dd>2023-11-22 UTC</dd><dt><span>stop_time :</span></dt><dd>08:12:52 UTC</dd><dt><span>summary :</span></dt><dd>CMEMS product: cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D,  generated by ACRI-ST</dd><dt><span>time_coverage_duration :</span></dt><dd>PT146878S</dd><dt><span>time_coverage_end :</span></dt><dd>2023-11-22T08:12:52Z</dd><dt><span>time_coverage_resolution :</span></dt><dd>P1D</dd><dt><span>time_coverage_start :</span></dt><dd>2023-11-20T15:24:55Z</dd><dt><span>title :</span></dt><dd>cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D</dd><dt><span>type :</span></dt><dd>surface</dd><dt><span>units :</span></dt><dd>milligram m-3</dd><dt><span>valid_max :</span></dt><dd>1000.0</dd><dt><span>valid_min :</span></dt><dd>0.0</dd><dt><span>westernmost_longitude :</span></dt><dd>-180.0</dd><dt><span>westernmost_valid_longitude :</span></dt><dd>-180.0</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>871.90 MiB</td>
+<td>10.29 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(8475, 149, 181)</td>
+<td>(100, 149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">85 chunks in 6 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="159" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="10" y1="28" x2="80" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="28" style="stroke-width:2"></line> <line x1="13" y1="3" x2="13" y2="31"></line> <line x1="16" y1="6" x2="16" y2="34"></line> <line x1="20" y1="10" x2="20" y2="39"></line> <line x1="24" y1="14" x2="24" y2="42"></line> <line x1="28" y1="18" x2="28" y2="46"></line> <line x1="31" y1="21" x2="31" y2="49"></line> <line x1="35" y1="25" x2="35" y2="54"></line> <line x1="39" y1="29" x2="39" y2="57"></line> <line x1="43" y1="33" x2="43" y2="61"></line> <line x1="46" y1="36" x2="46" y2="64"></line> <line x1="50" y1="40" x2="50" y2="69"></line> <line x1="54" y1="44" x2="54" y2="72"></line> <line x1="58" y1="48" x2="58" y2="76"></line> <line x1="61" y1="51" x2="61" y2="79"></line> <line x1="65" y1="55" x2="65" y2="84"></line> <line x1="69" y1="59" x2="69" y2="87"></line> <line x1="73" y1="63" x2="73" y2="91"></line> <line x1="76" y1="66" x2="76" y2="94"></line> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 80.58823529411765,70.58823529411765 80.58823529411765,98.90251199105148 10.0,28.314276696933828" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="39" y2="0" style="stroke-width:2"></line> <line x1="13" y1="3" x2="42" y2="3"></line> <line x1="16" y1="6" x2="46" y2="6"></line> <line x1="20" y1="10" x2="50" y2="10"></line> <line x1="24" y1="14" x2="53" y2="14"></line> <line x1="28" y1="18" x2="57" y2="18"></line> <line x1="31" y1="21" x2="61" y2="21"></line> <line x1="35" y1="25" x2="65" y2="25"></line> <line x1="39" y1="29" x2="68" y2="29"></line> <line x1="43" y1="33" x2="72" y2="33"></line> <line x1="46" y1="36" x2="76" y2="36"></line> <line x1="50" y1="40" x2="80" y2="40"></line> <line x1="54" y1="44" x2="83" y2="44"></line> <line x1="58" y1="48" x2="87" y2="48"></line> <line x1="61" y1="51" x2="91" y2="51"></line> <line x1="65" y1="55" x2="95" y2="55"></line> <line x1="69" y1="59" x2="98" y2="59"></line> <line x1="73" y1="63" x2="102" y2="63"></line> <line x1="76" y1="66" x2="106" y2="66"></line> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="39" y1="0" x2="109" y2="70" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 39.402299531717766,0.0 109.99053482583543,70.58823529411765 80.58823529411765,70.58823529411765" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <line x1="80" y1="98" x2="109" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <line x1="109" y1="70" x2="109" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="80.58823529411765,70.58823529411765 109.99053482583543,70.58823529411765 109.99053482583543,98.90251199105148 80.58823529411765,98.90251199105148" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="95.289385" y="118.902512" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="129.990535" y="84.745374" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,129.990535,84.745374)">149</text> <text x="35.294118" y="83.608394" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,35.294118,83.608394)">8475</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>ocean_mask</span></div><div class="xr-var-dims">(lat, lon)</div><div class="xr-var-dtype">bool</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;</div><input id="attrs-2d1332dc-6ae7-43a7-8a9a-b630e3f10bc5" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-2d1332dc-6ae7-43a7-8a9a-b630e3f10bc5" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-833dcaea-53d9-4062-b3a9-0efc0fd2cfd7" class="xr-var-data-in" type="checkbox"><label for="data-833dcaea-53d9-4062-b3a9-0efc0fd2cfd7" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>26.34 kiB</td>
+<td>26.34 kiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(149, 181)</td>
+<td>(149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 16 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">bool numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="170" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2"></line> <line x1="0" y1="98" x2="120" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="98" style="stroke-width:2"></line> <line x1="120" y1="0" x2="120" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 120.0,0.0 120.0,98.78453038674034 0.0,98.78453038674034" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="60.000000" y="118.784530" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="140.000000" y="49.392265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,140.000000,49.392265)">149</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>x_geo</span></div><div class="xr-var-dims">(lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;</div><input id="attrs-3b2593f7-de30-4aa2-89b5-cee2b38825ef" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-3b2593f7-de30-4aa2-89b5-cee2b38825ef" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-0601a87d-91cd-40b1-85b1-38eb471de0aa" class="xr-var-data-in" type="checkbox"><label for="data-0601a87d-91cd-40b1-85b1-38eb471de0aa" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>105.35 kiB</td>
+<td>105.35 kiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(149, 181)</td>
+<td>(149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 1 graph layer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="170" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2"></line> <line x1="0" y1="98" x2="120" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="98" style="stroke-width:2"></line> <line x1="120" y1="0" x2="120" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 120.0,0.0 120.0,98.78453038674034 0.0,98.78453038674034" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="60.000000" y="118.784530" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="140.000000" y="49.392265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,140.000000,49.392265)">149</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>y_geo</span></div><div class="xr-var-dims">(lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;</div><input id="attrs-c1836b8e-8848-4c9d-ac58-1a91147fdd81" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-c1836b8e-8848-4c9d-ac58-1a91147fdd81" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-413999b0-86bc-45b6-98f5-d1439412b28f" class="xr-var-data-in" type="checkbox"><label for="data-413999b0-86bc-45b6-98f5-d1439412b28f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>105.35 kiB</td>
+<td>105.35 kiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(149, 181)</td>
+<td>(149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 1 graph layer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="170" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2"></line> <line x1="0" y1="98" x2="120" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="98" style="stroke-width:2"></line> <line x1="120" y1="0" x2="120" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 120.0,0.0 120.0,98.78453038674034 0.0,98.78453038674034" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="60.000000" y="118.784530" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="140.000000" y="49.392265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,140.000000,49.392265)">149</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>z_geo</span></div><div class="xr-var-dims">(lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(149, 181), meta=np.ndarray&gt;</div><input id="attrs-18bd4bad-ff90-4d19-9ff3-5c3722713ede" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-18bd4bad-ff90-4d19-9ff3-5c3722713ede" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d6b8172d-275b-4218-9e36-fd761145d559" class="xr-var-data-in" type="checkbox"><label for="data-d6b8172d-275b-4218-9e36-fd761145d559" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>105.35 kiB</td>
+<td>105.35 kiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(149, 181)</td>
+<td>(149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 1 graph layer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="170" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2"></line> <line x1="0" y1="98" x2="120" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="98" style="stroke-width:2"></line> <line x1="120" y1="0" x2="120" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 120.0,0.0 120.0,98.78453038674034 0.0,98.78453038674034" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="60.000000" y="118.784530" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="140.000000" y="49.392265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,140.000000,49.392265)">149</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>sin_time</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;</div><input id="attrs-ca051cb9-7312-469e-b952-35e7c772c9d1" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-ca051cb9-7312-469e-b952-35e7c772c9d1" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-1229bdde-af59-49c5-b546-8abf1c91387f" class="xr-var-data-in" type="checkbox"><label for="data-1229bdde-af59-49c5-b546-8abf1c91387f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>871.90 MiB</td>
+<td>10.29 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(8475, 149, 181)</td>
+<td>(100, 149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">85 chunks in 1 graph layer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="159" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="10" y1="28" x2="80" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="28" style="stroke-width:2"></line> <line x1="13" y1="3" x2="13" y2="31"></line> <line x1="16" y1="6" x2="16" y2="34"></line> <line x1="20" y1="10" x2="20" y2="39"></line> <line x1="24" y1="14" x2="24" y2="42"></line> <line x1="28" y1="18" x2="28" y2="46"></line> <line x1="31" y1="21" x2="31" y2="49"></line> <line x1="35" y1="25" x2="35" y2="54"></line> <line x1="39" y1="29" x2="39" y2="57"></line> <line x1="43" y1="33" x2="43" y2="61"></line> <line x1="46" y1="36" x2="46" y2="64"></line> <line x1="50" y1="40" x2="50" y2="69"></line> <line x1="54" y1="44" x2="54" y2="72"></line> <line x1="58" y1="48" x2="58" y2="76"></line> <line x1="61" y1="51" x2="61" y2="79"></line> <line x1="65" y1="55" x2="65" y2="84"></line> <line x1="69" y1="59" x2="69" y2="87"></line> <line x1="73" y1="63" x2="73" y2="91"></line> <line x1="76" y1="66" x2="76" y2="94"></line> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 80.58823529411765,70.58823529411765 80.58823529411765,98.90251199105148 10.0,28.314276696933828" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="39" y2="0" style="stroke-width:2"></line> <line x1="13" y1="3" x2="42" y2="3"></line> <line x1="16" y1="6" x2="46" y2="6"></line> <line x1="20" y1="10" x2="50" y2="10"></line> <line x1="24" y1="14" x2="53" y2="14"></line> <line x1="28" y1="18" x2="57" y2="18"></line> <line x1="31" y1="21" x2="61" y2="21"></line> <line x1="35" y1="25" x2="65" y2="25"></line> <line x1="39" y1="29" x2="68" y2="29"></line> <line x1="43" y1="33" x2="72" y2="33"></line> <line x1="46" y1="36" x2="76" y2="36"></line> <line x1="50" y1="40" x2="80" y2="40"></line> <line x1="54" y1="44" x2="83" y2="44"></line> <line x1="58" y1="48" x2="87" y2="48"></line> <line x1="61" y1="51" x2="91" y2="51"></line> <line x1="65" y1="55" x2="95" y2="55"></line> <line x1="69" y1="59" x2="98" y2="59"></line> <line x1="73" y1="63" x2="102" y2="63"></line> <line x1="76" y1="66" x2="106" y2="66"></line> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="39" y1="0" x2="109" y2="70" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 39.402299531717766,0.0 109.99053482583543,70.58823529411765 80.58823529411765,70.58823529411765" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <line x1="80" y1="98" x2="109" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <line x1="109" y1="70" x2="109" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="80.58823529411765,70.58823529411765 109.99053482583543,70.58823529411765 109.99053482583543,98.90251199105148 80.58823529411765,98.90251199105148" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="95.289385" y="118.902512" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="129.990535" y="84.745374" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,129.990535,84.745374)">149</text> <text x="35.294118" y="83.608394" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,35.294118,83.608394)">8475</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>cos_time</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(100, 149, 181), meta=np.ndarray&gt;</div><input id="attrs-b8cc293f-e8e9-4a38-ac39-9895e32a1c81" class="xr-var-attrs-in" type="checkbox" disabled=""><label for="attrs-b8cc293f-e8e9-4a38-ac39-9895e32a1c81" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-50eccadd-4204-4a83-b7f9-a313f1f8835b" class="xr-var-data-in" type="checkbox"><label for="data-50eccadd-4204-4a83-b7f9-a313f1f8835b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>871.90 MiB</td>
+<td>10.29 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(8475, 149, 181)</td>
+<td>(100, 149, 181)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">85 chunks in 1 graph layer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float32 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="159" height="148" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="10" y1="28" x2="80" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="28" style="stroke-width:2"></line> <line x1="13" y1="3" x2="13" y2="31"></line> <line x1="16" y1="6" x2="16" y2="34"></line> <line x1="20" y1="10" x2="20" y2="39"></line> <line x1="24" y1="14" x2="24" y2="42"></line> <line x1="28" y1="18" x2="28" y2="46"></line> <line x1="31" y1="21" x2="31" y2="49"></line> <line x1="35" y1="25" x2="35" y2="54"></line> <line x1="39" y1="29" x2="39" y2="57"></line> <line x1="43" y1="33" x2="43" y2="61"></line> <line x1="46" y1="36" x2="46" y2="64"></line> <line x1="50" y1="40" x2="50" y2="69"></line> <line x1="54" y1="44" x2="54" y2="72"></line> <line x1="58" y1="48" x2="58" y2="76"></line> <line x1="61" y1="51" x2="61" y2="79"></line> <line x1="65" y1="55" x2="65" y2="84"></line> <line x1="69" y1="59" x2="69" y2="87"></line> <line x1="73" y1="63" x2="73" y2="91"></line> <line x1="76" y1="66" x2="76" y2="94"></line> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 80.58823529411765,70.58823529411765 80.58823529411765,98.90251199105148 10.0,28.314276696933828" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="39" y2="0" style="stroke-width:2"></line> <line x1="13" y1="3" x2="42" y2="3"></line> <line x1="16" y1="6" x2="46" y2="6"></line> <line x1="20" y1="10" x2="50" y2="10"></line> <line x1="24" y1="14" x2="53" y2="14"></line> <line x1="28" y1="18" x2="57" y2="18"></line> <line x1="31" y1="21" x2="61" y2="21"></line> <line x1="35" y1="25" x2="65" y2="25"></line> <line x1="39" y1="29" x2="68" y2="29"></line> <line x1="43" y1="33" x2="72" y2="33"></line> <line x1="46" y1="36" x2="76" y2="36"></line> <line x1="50" y1="40" x2="80" y2="40"></line> <line x1="54" y1="44" x2="83" y2="44"></line> <line x1="58" y1="48" x2="87" y2="48"></line> <line x1="61" y1="51" x2="91" y2="51"></line> <line x1="65" y1="55" x2="95" y2="55"></line> <line x1="69" y1="59" x2="98" y2="59"></line> <line x1="73" y1="63" x2="102" y2="63"></line> <line x1="76" y1="66" x2="106" y2="66"></line> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="80" y2="70" style="stroke-width:2"></line> <line x1="39" y1="0" x2="109" y2="70" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 39.402299531717766,0.0 109.99053482583543,70.58823529411765 80.58823529411765,70.58823529411765" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="80" y1="70" x2="109" y2="70" style="stroke-width:2"></line> <line x1="80" y1="98" x2="109" y2="98" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="80" y1="70" x2="80" y2="98" style="stroke-width:2"></line> <line x1="109" y1="70" x2="109" y2="98" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="80.58823529411765,70.58823529411765 109.99053482583543,70.58823529411765 109.99053482583543,98.90251199105148 80.58823529411765,98.90251199105148" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="95.289385" y="118.902512" font-size="1.0rem" font-weight="100" text-anchor="middle">181</text> <text x="129.990535" y="84.745374" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,129.990535,84.745374)">149</text> <text x="35.294118" y="83.608394" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,35.294118,83.608394)">8475</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li></ul></div></li><li class="xr-section-item"><input id="section-8406efa9-7de0-4fd2-8074-43806257dfb5" class="xr-section-summary-in" type="checkbox"><label for="section-8406efa9-7de0-4fd2-8074-43806257dfb5" class="xr-section-summary">Indexes: <span>(3)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-index-name"><div>lat</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-2ce32bdc-1cc2-40fb-8936-e220c8f43e50" class="xr-index-data-in" type="checkbox"><label for="index-2ce32bdc-1cc2-40fb-8936-e220c8f43e50" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([ 32.0, 31.75,  31.5, 31.25,  31.0, 30.75,  30.5, 30.25,  30.0, 29.75,
+       ...
+       -2.75,  -3.0, -3.25,  -3.5, -3.75,  -4.0, -4.25,  -4.5, -4.75,  -5.0],
+      dtype='float32', name='lat', length=149))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>lon</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-efacb25c-155c-4d0c-8e90-8fd56a70c0b2" class="xr-index-data-in" type="checkbox"><label for="index-efacb25c-155c-4d0c-8e90-8fd56a70c0b2" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(Index([ 45.0, 45.25,  45.5, 45.75,  46.0, 46.25,  46.5, 46.75,  47.0, 47.25,
+       ...
+       87.75,  88.0, 88.25,  88.5, 88.75,  89.0, 89.25,  89.5, 89.75,  90.0],
+      dtype='float32', name='lon', length=181))</pre></div></li><li class="xr-var-item"><div class="xr-index-name"><div>time</div></div><div class="xr-index-preview">PandasIndex</div><input type="checkbox" disabled=""><label></label><input id="index-46bb0cf0-4574-4b50-a33f-491cbf46270d" class="xr-index-data-in" type="checkbox"><label for="index-46bb0cf0-4574-4b50-a33f-491cbf46270d" title="Show/Hide index repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-index-data"><pre>PandasIndex(DatetimeIndex(['1997-10-01', '1997-10-02', '1997-10-03', '1997-10-04',
+               '1997-10-05', '1997-10-06', '1997-10-07', '1997-10-08',
+               '1997-10-09', '1997-10-10',
+               ...
+               '2020-12-22', '2020-12-23', '2020-12-24', '2020-12-25',
+               '2020-12-26', '2020-12-27', '2020-12-28', '2020-12-29',
+               '2020-12-30', '2020-12-31'],
+              dtype='datetime64[ns]', name='time', length=8475, freq=None))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-9b4abb4d-d798-475e-9448-4f30bd52d92b" class="xr-section-summary-in" type="checkbox"><label for="section-9b4abb4d-d798-475e-9448-4f30bd52d92b" class="xr-section-summary">Attributes: <span>(92)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>Conventions :</span></dt><dd>CF-1.8, ACDD-1.3</dd><dt><span>DPM_reference :</span></dt><dd>GC-UD-ACRI-PUG</dd><dt><span>IODD_reference :</span></dt><dd>GC-UD-ACRI-PUG</dd><dt><span>acknowledgement :</span></dt><dd>The Licensees will ensure that original CMEMS products - or value added products or derivative works developed from CMEMS Products including publications and pictures - shall credit CMEMS by explicitly making mention of the originator (CMEMS) in the  following manner:  &lt;Generated using CMEMS Products, production centre ACRI-ST&gt;</dd><dt><span>citation :</span></dt><dd>The Licensees will ensure that original CMEMS products - or value added products or derivative works developed from CMEMS Products including publications and pictures - shall credit CMEMS by explicitly making mention of the originator (CMEMS) in the  following manner:  &lt;Generated using CMEMS Products, production centre ACRI-ST&gt;</dd><dt><span>cmems_product_id :</span></dt><dd>OCEANCOLOUR_GLO_BGC_L3_MY_009_103</dd><dt><span>cmems_production_unit :</span></dt><dd>OC-ACRI-NICE-FR</dd><dt><span>comment :</span></dt><dd>average</dd><dt><span>contact :</span></dt><dd>servicedesk.cmems@acri-st.fr</dd><dt><span>copernicusmarine_version :</span></dt><dd>1.3.1</dd><dt><span>creation_date :</span></dt><dd>2024-04-25 UTC</dd><dt><span>creation_time :</span></dt><dd>00:47:33 UTC</dd><dt><span>creator_email :</span></dt><dd>servicedesk.cmems@acri-st.fr</dd><dt><span>creator_name :</span></dt><dd>ACRI</dd><dt><span>creator_url :</span></dt><dd>http://marine.copernicus.eu</dd><dt><span>date_created :</span></dt><dd>2024-04-25T00:47:33Z</dd><dt><span>distribution_statement :</span></dt><dd>See CMEMS Data License</dd><dt><span>duration_time :</span></dt><dd>PT107179S</dd><dt><span>earth_radius :</span></dt><dd>6378.137</dd><dt><span>easternmost_longitude :</span></dt><dd>180.0</dd><dt><span>easternmost_valid_longitude :</span></dt><dd>180.00001525878906</dd><dt><span>file_quality_index :</span></dt><dd>0</dd><dt><span>geospatial_bounds :</span></dt><dd>POLYGON ((90.000000 -180.000000, 90.000000 180.000000, -90.000000 180.000000, -90.000000 -180.000000, 90.000000 -180.000000))</dd><dt><span>geospatial_bounds_crs :</span></dt><dd>EPSG:4326</dd><dt><span>geospatial_bounds_vertical_crs :</span></dt><dd>EPSG:5829</dd><dt><span>geospatial_lat_max :</span></dt><dd>89.97916412353516</dd><dt><span>geospatial_lat_min :</span></dt><dd>-89.97917175292969</dd><dt><span>geospatial_lon_max :</span></dt><dd>179.9791717529297</dd><dt><span>geospatial_lon_min :</span></dt><dd>-179.9791717529297</dd><dt><span>geospatial_vertical_max :</span></dt><dd>0</dd><dt><span>geospatial_vertical_min :</span></dt><dd>0</dd><dt><span>geospatial_vertical_positive :</span></dt><dd>up</dd><dt><span>grid_mapping :</span></dt><dd>Equirectangular</dd><dt><span>grid_resolution :</span></dt><dd>4.638312339782715</dd><dt><span>history :</span></dt><dd>Created using software developed at ACRI-ST</dd><dt><span>id :</span></dt><dd>20240417_cmems_obs-oc_glo_bgc-plankton_myint_l3-multi-4km_P1D</dd><dt><span>institution :</span></dt><dd>ACRI</dd><dt><span>keywords :</span></dt><dd>EARTH SCIENCE &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; CHLOROPHYLL, EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; PROTISTS &gt; PLANKTON &gt; PHYTOPLANKTON</dd><dt><span>keywords_vocabulary :</span></dt><dd>NASA Global Change Master Directory (GCMD) Science Keywords</dd><dt><span>lat_step :</span></dt><dd>0.0416666679084301</dd><dt><span>license :</span></dt><dd>See CMEMS Data License</dd><dt><span>lon_step :</span></dt><dd>0.0416666679084301</dd><dt><span>naming_authority :</span></dt><dd>CMEMS</dd><dt><span>nb_bins :</span></dt><dd>37324800</dd><dt><span>nb_equ_bins :</span></dt><dd>8640</dd><dt><span>nb_grid_bins :</span></dt><dd>37324800</dd><dt><span>nb_valid_bins :</span></dt><dd>9704694</dd><dt><span>netcdf_version_id :</span></dt><dd>4.3.3.1 of Jul  8 2016 18:15:50 $</dd><dt><span>northernmost_latitude :</span></dt><dd>90.0</dd><dt><span>northernmost_valid_latitude :</span></dt><dd>82.70833587646484</dd><dt><span>overall_quality :</span></dt><dd>mode=myint</dd><dt><span>parameter :</span></dt><dd>Chlorophyll-a concentration,Phytoplankton Functional Types</dd><dt><span>parameter_code :</span></dt><dd>CHL,DIATO,DINO,HAPTO,GREEN,PROKAR,PROCHLO,MICRO,NANO,PICO</dd><dt><span>pct_bins :</span></dt><dd>100.0</dd><dt><span>pct_valid_bins :</span></dt><dd>26.000659079218106</dd><dt><span>period_duration_day :</span></dt><dd>P1D</dd><dt><span>period_end_day :</span></dt><dd>20240417</dd><dt><span>period_start_day :</span></dt><dd>20240417</dd><dt><span>platform :</span></dt><dd>Aqua,Suomi-NPP,Sentinel-3a,JPSS-1 (NOAA-20),Sentinel-3b</dd><dt><span>processing_level :</span></dt><dd>L3</dd><dt><span>product_level :</span></dt><dd>3</dd><dt><span>product_name :</span></dt><dd>20240417_cmems_obs-oc_glo_bgc-plankton_myint_l3-multi-4km_P1D</dd><dt><span>product_type :</span></dt><dd>day</dd><dt><span>project :</span></dt><dd>CMEMS</dd><dt><span>publication :</span></dt><dd>Gohin, F., Druon, J. N., Lampert, L. (2002). A five channel chlorophyll concentration algorithm applied to SeaWiFS data processed by SeaDAS in coastal waters. International journal of remote sensing, 23(8), 1639-1661 + Hu, C., Lee, Z., Franz, B. (2012). Chlorophyll a algorithms for oligotrophic oceans: A novel approach based on three-band reflectance difference. Journal of Geophysical Research, 117(C1). doi: 10.1029/2011jc007395 + Xi H, Losa S N, Mangin A, Garnesson P, Bretagnon M, Demaria J, Soppa M A, Hembise Fanton d Andon O, Bracher A (2021) Global chlorophyll a concentrations of phytoplankton functional types with detailed uncertainty assessment using multi-sensor ocean color and sea surface temperature satellite products, JGR, in review.</dd><dt><span>publisher_email :</span></dt><dd>servicedesk.cmems@mercator-ocean.eu</dd><dt><span>publisher_name :</span></dt><dd>CMEMS</dd><dt><span>publisher_url :</span></dt><dd>http://marine.copernicus.eu</dd><dt><span>references :</span></dt><dd>http://www.globcolour.info GlobColour has been originally funded by ESA with data from ESA, NASA, NOAA and GeoEye. This version has received funding from the European Community s Seventh Framework Programme ([FP7/2007-2013]) under grant agreement n. 282723 [OSS2015 project].</dd><dt><span>registration :</span></dt><dd>5</dd><dt><span>sensor :</span></dt><dd>Moderate Resolution Imaging Spectroradiometer,Visible Infrared Imaging Radiometer Suite,Ocean and Land Colour Instrument</dd><dt><span>sensor_name :</span></dt><dd>MODISA,VIIRSN,OLCIa,VIIRSJ1,OLCIb</dd><dt><span>sensor_name_list :</span></dt><dd>MOD,VIR,OLA,VJ1,OLB</dd><dt><span>site_name :</span></dt><dd>GLO</dd><dt><span>software_name :</span></dt><dd>globcolour_l3_reproject</dd><dt><span>software_version :</span></dt><dd>2022.2</dd><dt><span>source :</span></dt><dd>surface observation</dd><dt><span>southernmost_latitude :</span></dt><dd>-90.0</dd><dt><span>southernmost_valid_latitude :</span></dt><dd>-66.33333587646484</dd><dt><span>standard_name_vocabulary :</span></dt><dd>NetCDF Climate and Forecast (CF) Metadata Convention</dd><dt><span>start_date :</span></dt><dd>2024-04-16 UTC</dd><dt><span>start_time :</span></dt><dd>21:12:05 UTC</dd><dt><span>stop_date :</span></dt><dd>2024-04-18 UTC</dd><dt><span>stop_time :</span></dt><dd>02:58:23 UTC</dd><dt><span>summary :</span></dt><dd>CMEMS product: cmems_obs-oc_glo_bgc-plankton_my_l3-multi-4km_P1D,  generated by ACRI-ST</dd><dt><span>time_coverage_duration :</span></dt><dd>PT107179S</dd><dt><span>time_coverage_end :</span></dt><dd>2024-04-18T02:58:23Z</dd><dt><span>time_coverage_resolution :</span></dt><dd>P1D</dd><dt><span>time_coverage_start :</span></dt><dd>2024-04-16T21:12:05Z</dd><dt><span>title :</span></dt><dd>cmems_obs-oc_glo_bgc-plankton_my_l3-multi-4km_P1D</dd><dt><span>westernmost_longitude :</span></dt><dd>-180.0</dd><dt><span>westernmost_valid_longitude :</span></dt><dd>-180.0</dd></dl></div></li></ul></div></div>
+</div>
+</div>
+<section id="create-random-sample-of-log-chl-from-the-indian-ocean-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="create-random-sample-of-log-chl-from-the-indian-ocean-dataset">Create random sample of log CHL from the Indian Ocean dataset</h2>
+<p>For this tutorial, we will create our observations by sampling from our dataset but in practice you would have a separate observation dataset from some sampling scheme. Note when working with cloud native data (meaning optimized for reading by chunking), you do not want to do something like a for loop. You need to use more a move clever approach so that you minimize the calls to the cloud dataset (because reading is the slow part). For learning, you don’t really have to care about this as long as you use toy examples but once you are trying to get data for 1000s of points, you do.</p>
+<p>For this example, we will train on sample data from 2020 and apply that to predictions in other years.</p>
+<div id="cell-10" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;jupyter&quot;,&quot;value&quot;:{&quot;source_hidden&quot;:true}}" data-execution_count="98">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample_points_fast(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    ds: xr.Dataset,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    year: <span class="bu">int</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    n: <span class="bu">int</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    y_name: <span class="bu">str</span> <span class="op">=</span> <span class="st">"y"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    mask_var: <span class="bu">str</span> <span class="op">=</span> <span class="st">"ocean_mask"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    seed: <span class="bu">int</span> <span class="op">=</span> <span class="dv">42</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Vectorized random sampler for chunked xarray/dask datasets (no loops).</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">    - Draws n random times from ds.sel(time=year)</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">    - Draws n random *continuous* lat/lon within the coord ranges</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">    - Snaps those lat/lon to the nearest grid cell (vectorized)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">    - Gathers y and mask using a single dask vindex, sets y=NaN where mask==False</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">    - Returns only rows with finite y</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">    pd.DataFrame with columns: ['time','lat','lon','y']</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">      - 'lat','lon' are the original random (continuous) coordinates</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">        (y is taken from the nearest grid cell).</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> dask.array <span class="im">as</span> da  <span class="co"># local import to keep dependencies scoped</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    dsy <span class="op">=</span> ds.sel(time<span class="op">=</span><span class="bu">str</span>(year))</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> dsy.sizes.get(<span class="st">"time"</span>, <span class="dv">0</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"No timesteps found for year </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ----- random time indices -----</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> dsy.sizes[<span class="st">"time"</span>]</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    t_idx <span class="op">=</span> rng.integers(<span class="dv">0</span>, T, size<span class="op">=</span>n)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ----- random continuous lat/lon, then snap to nearest grid index -----</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    lat_vals <span class="op">=</span> dsy[<span class="st">"lat"</span>].values</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    lon_vals <span class="op">=</span> dsy[<span class="st">"lon"</span>].values</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    lat_rand <span class="op">=</span> rng.uniform(lat_vals.<span class="bu">min</span>(), lat_vals.<span class="bu">max</span>(), size<span class="op">=</span>n)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    lon_rand <span class="op">=</span> rng.uniform(lon_vals.<span class="bu">min</span>(), lon_vals.<span class="bu">max</span>(), size<span class="op">=</span>n)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># searchsorted-based nearest-index that works for ascending or descending arrays</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> nearest_index(coord_vals, q):</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        asc <span class="op">=</span> coord_vals[<span class="dv">0</span>] <span class="op">&lt;=</span> coord_vals[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>        base <span class="op">=</span> coord_vals <span class="cf">if</span> asc <span class="cf">else</span> <span class="op">-</span>coord_vals</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        tgt  <span class="op">=</span> q          <span class="cf">if</span> asc <span class="cf">else</span> <span class="op">-</span>q</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> np.searchsorted(base, tgt, side<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>        idx0 <span class="op">=</span> np.clip(idx <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>, <span class="bu">len</span>(coord_vals) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>        idx1 <span class="op">=</span> np.clip(idx,     <span class="dv">0</span>, <span class="bu">len</span>(coord_vals) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>        pick_right <span class="op">=</span> np.<span class="bu">abs</span>(coord_vals[idx1] <span class="op">-</span> q) <span class="op">&lt;</span> np.<span class="bu">abs</span>(coord_vals[idx0] <span class="op">-</span> q)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.where(pick_right, idx1, idx0)</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    lat_i <span class="op">=</span> nearest_index(lat_vals, lat_rand)</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    lon_i <span class="op">=</span> nearest_index(lon_vals, lon_rand)</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ----- vindex gather for y and mask (single compute) -----</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    y_da <span class="op">=</span> dsy[y_name].data  <span class="co"># (time, lat, lon) dask array</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    y_s  <span class="op">=</span> y_da.vindex[t_idx, lat_i, lon_i]  <span class="co"># (n,)</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    m_da <span class="op">=</span> dsy[mask_var]</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">"time"</span> <span class="kw">in</span> m_da.dims:</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>        m_s <span class="op">=</span> m_da.data.vindex[t_idx, lat_i, lon_i]</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>        m_s <span class="op">=</span> m_da.data.vindex[lat_i, lon_i]</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    y_np, m_np <span class="op">=</span> da.compute(y_s, m_s)</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    <span class="co"># apply mask: keep only ocean</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    y_np <span class="op">=</span> np.where(m_np.astype(<span class="bu">bool</span>), y_np, np.nan)</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ----- assemble output; keep the random (continuous) lat/lon -----</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    times <span class="op">=</span> pd.to_datetime(dsy[<span class="st">"time"</span>].values[t_idx])</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"time"</span>: times,</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>         <span class="st">"lat"</span>:  lat_rand.astype(<span class="bu">float</span>),</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>         <span class="st">"lon"</span>:  lon_rand.astype(<span class="bu">float</span>),</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>         <span class="st">"y"</span>:    y_np.astype(<span class="bu">float</span>)}</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df.dropna(subset<span class="op">=</span>[<span class="st">"y"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-11" class="cell" data-execution_count="99">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> sample_points_fast(dataset, <span class="dv">2020</span>, <span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-12" class="cell" data-execution_count="100">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y_train.head(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="100">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">time</th>
+<th data-quarto-table-cell-role="th">lat</th>
+<th data-quarto-table-cell-role="th">lon</th>
+<th data-quarto-table-cell-role="th">y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2020-02-02</td>
+<td>3.071520</td>
+<td>60.639974</td>
+<td>-2.189335</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2020-06-09</td>
+<td>1.165537</td>
+<td>81.301786</td>
+<td>-2.116684</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>2020-06-07</td>
+<td>-3.377244</td>
+<td>67.206579</td>
+<td>-2.658942</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>2020-11-10</td>
+<td>11.264733</td>
+<td>52.720775</td>
+<td>-1.707955</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>2020-02-01</td>
+<td>23.638891</td>
+<td>59.068457</td>
+<td>-0.833890</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Here are where the samples in July land.</p>
+<div id="cell-14" class="cell" data-execution_count="101">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>dataset.ocean_mask.plot(ax<span class="op">=</span>ax, cmap<span class="op">=</span><span class="st">"gray"</span>, add_colorbar<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>july <span class="op">=</span> y_train[pd.to_datetime(y_train[<span class="st">"time"</span>]).dt.month <span class="op">==</span> <span class="dv">7</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>ax.scatter( july[<span class="st">"lon"</span>], july[<span class="st">"lat"</span>], s<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Longitude"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"Latitude"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#ax.set_aspect("equal", adjustable="box")</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"July sample points"</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BRT_2D_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="create-the-train-test-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="create-the-train-test-dataset">Create the train-test dataset</h2>
+<p>We want all our variables plus the y. Here I create a function called <code>create_training_dataset()</code> that gets the predictor variables for our lat/lon/time samples and returns a dataframe.</p>
+<div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;jupyter&quot;,&quot;value&quot;:{&quot;source_hidden&quot;:true}}" data-execution_count="102">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create_training_dataset function</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_training_dataset(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    ds: xr.Dataset,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    y_train: pd.DataFrame,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    num_var,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    cat_var,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">    Vectorized feature extraction at sampled points.</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">    ds : xr.Dataset</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">        Must contain coords 'time','lat','lon' and the variables in num_var+cat_var.</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">    y_train : pd.DataFrame</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">        Columns: ['time','lat','lon'] (continuous lat/lon; time-like)</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">    num_var, cat_var : list[str]</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">        Predictor variable names. Can be:</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">          - (time,lat,lon)</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">          - (lat,lon)</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">          - (time,)</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">        Scalars are also supported (broadcast).</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">    -------</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">    pd.DataFrame</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">        Columns: ['time','lat','lon'] + num_var + cat_var</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">        Values are gathered from the nearest grid cell/time stamp.</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> dask.array <span class="im">as</span> da</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- coordinate arrays from ds ---</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    lat_vals  <span class="op">=</span> ds[<span class="st">"lat"</span>].values</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    lon_vals  <span class="op">=</span> ds[<span class="st">"lon"</span>].values</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    time_vals <span class="op">=</span> np.asarray(ds[<span class="st">"time"</span>].values)  <span class="co"># datetime64</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- sample coordinates from y_train ---</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    lat_rand  <span class="op">=</span> np.asarray(y_train[<span class="st">"lat"</span>].values, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    lon_rand  <span class="op">=</span> np.asarray(y_train[<span class="st">"lon"</span>].values, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    time_rand <span class="op">=</span> pd.to_datetime(y_train[<span class="st">"time"</span>]).to_numpy(dtype<span class="op">=</span><span class="st">"datetime64[ns]"</span>)</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- nearest-index helpers (work for ascending or descending) ---</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> nearest_index_1d(coord_vals, q_vals):</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        asc <span class="op">=</span> coord_vals[<span class="dv">0</span>] <span class="op">&lt;=</span> coord_vals[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        base <span class="op">=</span> coord_vals <span class="cf">if</span> asc <span class="cf">else</span> <span class="op">-</span>coord_vals</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>        tgt  <span class="op">=</span> q_vals     <span class="cf">if</span> asc <span class="cf">else</span> <span class="op">-</span>q_vals</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>        idx  <span class="op">=</span> np.searchsorted(base, tgt, side<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>        idx0 <span class="op">=</span> np.clip(idx <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>, <span class="bu">len</span>(coord_vals) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>        idx1 <span class="op">=</span> np.clip(idx,     <span class="dv">0</span>, <span class="bu">len</span>(coord_vals) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>        pick_right <span class="op">=</span> np.<span class="bu">abs</span>(coord_vals[idx1] <span class="op">-</span> q_vals) <span class="op">&lt;</span> np.<span class="bu">abs</span>(coord_vals[idx0] <span class="op">-</span> q_vals)</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.where(pick_right, idx1, idx0)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> nearest_time_index(times, qtimes):</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>        t <span class="op">=</span> times.astype(<span class="st">"datetime64[ns]"</span>).astype(<span class="st">"int64"</span>)</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> qtimes.astype(<span class="st">"datetime64[ns]"</span>).astype(<span class="st">"int64"</span>)</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>        idx  <span class="op">=</span> np.searchsorted(t, q, side<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>        idx0 <span class="op">=</span> np.clip(idx <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>, <span class="bu">len</span>(t) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>        idx1 <span class="op">=</span> np.clip(idx,     <span class="dv">0</span>, <span class="bu">len</span>(t) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>        pick_right <span class="op">=</span> np.<span class="bu">abs</span>(t[idx1] <span class="op">-</span> q) <span class="op">&lt;</span> np.<span class="bu">abs</span>(t[idx0] <span class="op">-</span> q)</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.where(pick_right, idx1, idx0)</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- build index vectors for each sample ---</span></span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>    lat_i <span class="op">=</span> nearest_index_1d(lat_vals,  lat_rand)</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>    lon_i <span class="op">=</span> nearest_index_1d(lon_vals,  lon_rand)</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>    t_idx <span class="op">=</span> nearest_time_index(time_vals, time_rand)</span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- gather all predictors with dask vindex in one compute ---</span></span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> <span class="bu">list</span>(num_var) <span class="op">+</span> <span class="bu">list</span>(cat_var)</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>    gathers <span class="op">=</span> []</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> v <span class="kw">in</span> names:</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> v <span class="kw">not</span> <span class="kw">in</span> ds:</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">KeyError</span>(<span class="ss">f"Variable '</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">' not found in dataset."</span>)</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>        da_v <span class="op">=</span> ds[v]</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>        dims <span class="op">=</span> da_v.dims</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>        <span class="co"># reorder to a standard axis order before vindex</span></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> {<span class="st">"time"</span>,<span class="st">"lat"</span>,<span class="st">"lon"</span>} <span class="op">&lt;=</span> <span class="bu">set</span>(dims):</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> da_v.transpose(<span class="st">"time"</span>,<span class="st">"lat"</span>,<span class="st">"lon"</span>)</span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>            g <span class="op">=</span> x.data.vindex[t_idx, lat_i, lon_i]</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> {<span class="st">"lat"</span>,<span class="st">"lon"</span>} <span class="op">&lt;=</span> <span class="bu">set</span>(dims):</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> da_v.transpose(<span class="st">"lat"</span>,<span class="st">"lon"</span>)</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>            g <span class="op">=</span> x.data.vindex[lat_i, lon_i]</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> (<span class="st">"time"</span> <span class="kw">in</span> dims) <span class="kw">and</span> (<span class="st">"lat"</span> <span class="kw">not</span> <span class="kw">in</span> dims) <span class="kw">and</span> (<span class="st">"lon"</span> <span class="kw">not</span> <span class="kw">in</span> dims):</span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> da_v.transpose(<span class="st">"time"</span>, ...)</span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>            g <span class="op">=</span> x.data.vindex[t_idx]</span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> da_v.ndim <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># scalar → broadcast to length n</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>            g <span class="op">=</span> da.asarray(np.full_like(t_idx, fill_value<span class="op">=</span><span class="bu">float</span>(da_v.values), dtype<span class="op">=</span><span class="bu">float</span>))</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"Unsupported dims for '</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">': </span><span class="sc">{</span>dims<span class="sc">}</span><span class="ss">. "</span></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Expected (time,lat,lon), (lat,lon), (time,), or scalar."</span></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>        gathers.append(g)</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># single materialization step</span></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> da.compute(<span class="op">*</span>gathers)</span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- assemble output ---</span></span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>        <span class="st">"time"</span>: pd.to_datetime(time_vals[t_idx]),</span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a>        <span class="st">"lat"</span>:  lat_vals[lat_i].astype(<span class="bu">float</span>),</span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>        <span class="st">"lon"</span>:  lon_vals[lon_i].astype(<span class="bu">float</span>),</span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>        <span class="st">"y"</span>:  y_train[<span class="st">"y"</span>].astype(<span class="bu">float</span>),   </span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> v, arr <span class="kw">in</span> <span class="bu">zip</span>(names, values):</span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>        df[v] <span class="op">=</span> np.asarray(arr)</span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Create our training dataset. We will split into train and test.</p>
+<div id="cell-18" class="cell" data-execution_count="103">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>num_var <span class="op">=</span> [<span class="st">'sst'</span>,<span class="st">'so'</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cat_var <span class="op">=</span> [<span class="st">'ocean_mask'</span>,<span class="st">'sin_time'</span>,<span class="st">'cos_time'</span>,<span class="st">'x_geo'</span>, <span class="st">'y_geo'</span>, <span class="st">'z_geo'</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> create_training_dataset(dataset, y_train, num_var, cat_var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fit-a-brt" class="level2">
+<h2 class="anchored" data-anchor-id="fit-a-brt">Fit a BRT</h2>
+<div id="cell-20" class="cell" data-execution_count="104">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> HistGradientBoostingRegressor</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score, mean_squared_error</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># predictor variables</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>feat_cols <span class="op">=</span> num_var <span class="op">+</span> cat_var</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> train_dataset.copy()</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># keep ocean &amp; finite y. Only train on the ocean values.</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">"ocean_mask"</span> <span class="kw">in</span> df:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df[df[<span class="st">"ocean_mask"</span>] <span class="op">&gt;</span> <span class="fl">0.5</span>]</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[np.isfinite(df[<span class="st">"y"</span>])]</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># get numpy arrays</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[feat_cols].to_numpy()  <span class="co"># may include NaNs — OK for HGBR</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"y"</span>].to_numpy()</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># create train and test split</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train_vec, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="co"># train the model</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>brt_model <span class="op">=</span> HistGradientBoostingRegressor(</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>, learning_rate<span class="op">=</span><span class="fl">0.05</span>, max_iter<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    validation_fraction<span class="op">=</span><span class="fl">0.1</span>, early_stopping<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>).fit(X_train, y_train_vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="compare-to-the-test-data" class="level2">
+<h2 class="anchored" data-anchor-id="compare-to-the-test-data">Compare to the test data</h2>
+<div id="cell-22" class="cell" data-execution_count="105">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> brt_model.predict(X_test)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"R²:"</span>, r2_score(y_test, pred))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"RMSE:"</span>, mean_squared_error(y_test, pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R²: 0.7850330403327634
+RMSE: 0.15018093739608177</code></pre>
+</div>
+</div>
+</section>
+<section id="make-a-prediction-of-the-whole-region" class="level2">
+<h2 class="anchored" data-anchor-id="make-a-prediction-of-the-whole-region">Make a prediction of the whole region</h2>
+<p>To make a prediction, we use the <code>predict</code> attribute for the brt model object. It needs the predictor variables in rows rather than like a lat/lon map. Once we have the prediction, we can plot but we need to set the land to NaN otherwise our plot will show a prediction for land.</p>
+<div id="cell-24" class="cell" data-execution_count="122">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pick your day (exact or nearest)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>day <span class="op">=</span> dataset.sel(time<span class="op">=</span><span class="st">"2001-10-10"</span>)  <span class="co"># or: dataset.sel(time="2001-10-10", method="nearest")</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># choose a template to broadcast to for vars that do not have lat/lon</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>tmpl <span class="op">=</span> day[<span class="st">"sst"</span>]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># stack features into (H, W, C)</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>X_map <span class="op">=</span> np.stack([(day[v].broadcast_like(tmpl)).values <span class="cf">for</span> v <span class="kw">in</span> (num_var <span class="op">+</span> cat_var)], axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>H, W, C <span class="op">=</span> X_map.shape <span class="co"># height, width, predictor variables</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># make the prediction and then reshape back to a map</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> brt_model.predict(X_map.reshape(<span class="op">-</span><span class="dv">1</span>, C)) <span class="co"># reshape makes our map pixels into a vector (H*W rows)</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> y_pred.reshape(H, W)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-25" class="cell" data-execution_count="124">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a plot</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">5</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>land <span class="op">=</span> (dataset[<span class="st">"ocean_mask"</span>].values <span class="op">==</span> <span class="dv">0</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>y_plot <span class="op">=</span> np.where(land, np.nan, y_pred)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> plt.imshow(y_plot, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BRT_2D_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In our example, we know the true log CHL since we sampled our training data from that. Let’s show the true map against the predicted map. The <code>predict_and_plot_date</code> function is in our <code>ml_utils.py</code> file. It add bells and whistles and puts the true plot to the left.</p>
+<div id="cell-27" class="cell" data-execution_count="86">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> mu.predict_and_plot_date(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    data_xr<span class="op">=</span>dataset,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    date<span class="op">=</span><span class="st">"2001-10-10"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>brt,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    num_var<span class="op">=</span>num_var,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    cat_var<span class="op">=</span>cat_var,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    X_mean<span class="op">=</span><span class="va">None</span>, X_std<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    model_type<span class="op">=</span><span class="st">"tabular"</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    use_percentiles<span class="op">=</span><span class="va">True</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BRT_2D_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="plot-for-one-day-each-month" class="level3">
+<h3 class="anchored" data-anchor-id="plot-for-one-day-each-month">Plot for one day each month</h3>
+<div id="cell-29" class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mu.plot_true_vs_predicted_year_multi(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    dataset, <span class="st">"2001"</span>, [brt_model], <span class="va">None</span>, <span class="va">None</span>, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    num_var, cat_var, y_var<span class="op">=</span><span class="st">"y"</span>, day<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    model_types<span class="op">=</span>[<span class="st">"tabular"</span>],</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    model_names<span class="op">=</span>[<span class="st">"BRT"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BRT_2D_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary-1" class="level2">
+<h2 class="anchored" data-anchor-id="summary-1">Summary</h2>
+<p>You have fit a basic BRT with season and location information. It is a bit “stripy” which happens with location variables but it is not terrible.</p>
+<p>Things you might try * remove salinity and sst * keep salinity and sst and remove season or location variables * reduce the number of sample points from 10,000 to 1,000</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nmfs-opensci\.github\.io\/NMFSHackDays-2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../topics-2026/2026-02-13/matchups.html" class="pagination-link" aria-label="CHLA-Z">
+        <span class="nav-page-text">CHLA-Z</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="NMFS Open Science logo" style="width:150px"><br>NMFS Open Science</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-02-27/BRT_2D.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-02-27/BRT_2D.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
