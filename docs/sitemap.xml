@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics-2026/index.html</loc>
-    <lastmod>2026-01-13T01:57:45.437Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/index.html</loc>
+    <lastmod>2026-02-27T01:29:09.446Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics-2026/2026-02-06-intro-brt/index.html</loc>
-    <lastmod>2026-01-13T00:44:58.664Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/index.html</loc>
+    <lastmod>2026-02-27T01:29:09.436Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_2D.html</loc>
+    <lastmod>2026-02-27T01:46:09.662Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/setup.html</loc>
-    <lastmod>2026-01-12T23:29:52.003Z</lastmod>
+    <lastmod>2026-02-27T01:29:09.256Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/jhub.html</loc>
-    <lastmod>2026-01-12T23:29:52.002Z</lastmod>
+    <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/coc.html</loc>
-    <lastmod>2026-01-12T23:29:52.000Z</lastmod>
+    <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/hackhours.html</loc>
-    <lastmod>2026-01-12T23:29:52.002Z</lastmod>
+    <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/reuse.html</loc>
-    <lastmod>2026-01-12T23:29:52.003Z</lastmod>
+    <lastmod>2026-02-27T01:29:09.256Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/index.html</loc>
-    <lastmod>2026-01-13T01:58:33.818Z</lastmod>
+    <lastmod>2026-02-27T01:29:09.426Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics-2026/2026-02-13-chla-z/index.html</loc>
-    <lastmod>2026-01-13T01:59:29.009Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/index.html</loc>
+    <lastmod>2026-02-27T01:29:09.436Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/matchups.html</loc>
+    <lastmod>2026-02-27T01:45:22.162Z</lastmod>
   </url>
 </urlset>

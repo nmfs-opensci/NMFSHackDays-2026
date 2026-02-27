@@ -4,13 +4,8 @@
 
 ## How to Join
 
-### NOAA staff (any line office)
+[Register for Zoom Link](https://zoom.us/meeting/register/r-Zx5bztTdyylSEHe4Snug) (Open to all)
 
-[Click Here for Video Link](https://docs.google.com/document/d/15Wu28DGDKNsdQmW5yuFd3JJuUSn91HFxCEb3dqPxYcs/edit?tab=t.0#bookmark=id.cpvn2xh3wqf) (NOAA only)
-
-### Non-NOAA
-
-All content is open source in the [NMFSHackDays](https://github.com/nmfs-opensci/nmfshackdays) repo.
 
 ## Overview
 

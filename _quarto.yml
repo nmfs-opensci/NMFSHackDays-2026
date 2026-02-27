@@ -3,12 +3,11 @@ project:
   output-dir: docs
   render:
     - "*.*"
-    - "!topics-2025/2025-cefi/*"
 
 default-image-extension: ""
     
 resources:
-  - topics-2026/images
+  - topics/images
   - widgets/jupyterhub_link_widget.html
   - widgets/widget-popout.html
   
@@ -57,12 +56,12 @@ website:
         - section: JupyterHub Skills
           href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
         - text: "2026 Topics"
-          href: topics-2026/index.html
+          href: index.html
         - text: "---"
         - section: "Intro to BRTs"
-          href: topics-2026/2026-02-06-intro-brt/index.html
+          href: topics/2026-02-27/BRT_2D.html
         - section: "CHLA-Z"
-          href: topics-2026/2026-02-13-chla-z/index.html
+          href: topics-2026/2026-02-13/matchups.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
