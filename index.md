@@ -6,7 +6,7 @@ During these stand-alone informal sessions we will get introduced to a variety o
 
 **When:** Fridays 12pm Pacific/3pm Eastern. **Register (open to all)** [Zoom registration](https://zoom.us/meeting/register/r-Zx5bztTdyylSEHe4Snug)
 
-**JupyterHub** https://noaa.nmfs-openscapes.2i2c.cloud/ (or use https://nmfs-openscapes.2i2c.cloud/ for persistent home directory but you need to be signed up)
+**How to run tutorials** Colab (anyone), [NOAA Hub](https://noaa.nmfs-openscapes.2i2c.cloud/) (anyone with NOAA email) or use [NMFS persistent hub](https://nmfs-openscapes.2i2c.cloud/) with a persistent home directory. For NOAA staff, [request to be added](https://forms.gle/xRQzm7KxW4Bn2JXo9) to the NMFS Hub.
 
 ## Schedule
 

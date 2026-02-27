@@ -54,9 +54,9 @@ website:
         - section: JupyterHub Skills
           href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
         - text: "---"
-        - text: "Intro to BRTs"
+        - text: "1 Intro to BRTs"
           href: topics/BRT_Argo_CHLA.html
-        - text: "CHLA-Z"
+        - text: "2 Intro to BRTs"
           href: topics/2026-03-06/matchups.html
         - text: "---"
         - href: content/reuse.md
