@@ -14,7 +14,7 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 
 * Feb 27 - [Intro to Boosted Regression Trees](topics/BRT_Argo_CHLA.html): creating global chlorophyll density at depth profiles (Eli Holmes) {{< fa brands python >}}
 * Mar 6 - BRT application: creating a fish abundance prediction using PACE remote-sensing reflectance and SEAMAP surveys (2024–present) {{< fa brands python >}}
-* Mar 13 - BRT application: Predicting silver hake fishing hotspots in the Northwest Atlantic
+* Mar 13 - BRT application TBD
 * Mar 20 - Intro to convolutional neural networks: comparison of BRT and CNNs (Eli Holmes) {{< fa brands python >}}
 * Mar 27 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)
 * Apr 3 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)

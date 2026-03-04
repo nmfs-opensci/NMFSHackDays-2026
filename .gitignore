@@ -5,3 +5,6 @@
 .Ruserdata
 
 /.quarto/
+
+*-checkpoint*
+__pycache__
