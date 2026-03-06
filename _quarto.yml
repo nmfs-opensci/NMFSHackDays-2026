@@ -57,7 +57,7 @@ website:
         - text: "1 Intro to BRTs"
           href: topics/BRT_Argo_CHLA.html
         - text: "2 Intro to BRTs"
-          href: topics/2026-03-06/matchups.html
+          href: topics/matchups.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
