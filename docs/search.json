@@ -4,7 +4,7 @@
     "href": "topics/silver_hake.html#an-example-with-silver-hake-survey-data",
     "title": "Boosted Regression Trees Part 3",
     "section": "An example with Silver Hake survey data",
-    "text": "An example with Silver Hake survey data\nPresenter: Haley Synan (NEFSC)\nWe will be going through a notebook that Haley’s team developed during the Fish-PACE HackWeek.",
+    "text": "An example with Silver Hake survey data\nPresenter: Haley Synan (NEFSC)\nWe will be going through a notebook that Haley’s team developed during the Fish-PACE HackWeek.\n   \nIf you are running in Colab, add a code cell and run this\n!pip install cartopy shap --quiet",
     "crumbs": [
       "3 Intro to BRTs"
     ]
