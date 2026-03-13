@@ -1,5 +1,386 @@
 [
   {
+    "objectID": "topics/silver_hake.html#an-example-with-silver-hack-survey-data",
+    "href": "topics/silver_hake.html#an-example-with-silver-hack-survey-data",
+    "title": "Boosted Regression Trees Part 3",
+    "section": "An example with Silver Hack survey data",
+    "text": "An example with Silver Hack survey data\nPresenter: Haley Synan (NEFSC)\nWe will be going through a notebook that Haley’s team developed during the Fish-PACE HackWeek.",
+    "crumbs": [
+      "3 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/index.html",
+    "href": "topics/index.html",
+    "title": "HackHours 2026",
+    "section": "",
+    "text": "How to run the tutorials? In the tutorial, you will see a button to open in the JupyterHub. You can also download notebooks. Or you can open in Colab using the link in table."
+  },
+  {
+    "objectID": "topics/index.html#additional-tuturials",
+    "href": "topics/index.html#additional-tuturials",
+    "title": "HackHours 2026",
+    "section": "Additional Tuturials",
+    "text": "Additional Tuturials\nSee prior year HackHours. Fish-PACE tutorials"
+  },
+  {
+    "objectID": "topics/2026-02-27/index.html",
+    "href": "topics/2026-02-27/index.html",
+    "title": "Intro to BRT - Python",
+    "section": "",
+    "text": "In this session, you will get an introduction using Boosted Regression Trees to make predictions."
+  },
+  {
+    "objectID": "topics/2026-02-27/index.html#tutorials-1",
+    "href": "topics/2026-02-27/index.html#tutorials-1",
+    "title": "Intro to BRT - Python",
+    "section": "Tutorials",
+    "text": "Tutorials"
+  },
+  {
+    "objectID": "topics/2026-02-27/index.html#how-to-download-and-open-the-tutorials",
+    "href": "topics/2026-02-27/index.html#how-to-download-and-open-the-tutorials",
+    "title": "Intro to BRT - Python",
+    "section": "How to download and open the tutorials",
+    "text": "How to download and open the tutorials\n\nJupyter Hub\n\nStart the Jupyter Hub server &lt;nmfs-openscapes.2i2c.cloud&gt;\nClick the orange Open in Jupyter Hub button\n\n\n\nColab\n\nClick the Open in Colab button\n\n\n\nDownload\n\nDownload to your local computer\nYou will need to have Python and Jupyter Lab installed\nInstall any needed packages\n\n\n\nHow to clone the git repository\nAfter cloning, you will need to navigate to the tutorials in the topics-2025 directory.\nNever cloned the NMFSHackDays-2026 repo?\ncd ~\ngit clone https://github.com/nmfs-opensci/NMFSHackDays-2026\nHave cloned it but need to update? This is going to destroy any changes that you made to the repo to make it match the current state of the repo on GitHub.\ncd ~/NMFSHackDays-2026\ngit fetch origin\ngit reset --hard origin/main"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "HackHours 2026",
+    "section": "",
+    "text": "During these stand-alone informal sessions we will get introduced to a variety of tools for ocean data access and analysis in Python (and some R).\nWhen: Fridays 12pm Pacific/3pm Eastern. Register (open to all) Zoom registration\nHow to run tutorials Colab (anyone), NOAA Hub (anyone with NOAA email) or use NMFS persistent hub with a persistent home directory. For NOAA staff, request to be added to the NMFS Hub."
+  },
+  {
+    "objectID": "index.html#schedule",
+    "href": "index.html#schedule",
+    "title": "HackHours 2026",
+    "section": "Schedule",
+    "text": "Schedule\nSchedule will be tweaked as guest speakers confirm, but this shows the planned topics\n\nFeb 27 - Intro to Boosted Regression Trees: creating global chlorophyll density at depth profiles (Eli Holmes, NOAAF) \nMar 6 - BRT application: creating a fish abundance prediction using PACE remote-sensing reflectance and SEAMAP surveys (Ryan Vandermeulen, NOAAF) \nMar 13 - BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic (Haley Synan, NOAAF)\nMar 20 - Intro to convolutional neural networks: comparison of BRT and CNNs (Eli Holmes, NOAAF) \nMar 27 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)\nApr 3 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)\nApr 10 - Accessing and Vizualizing Argo Buoy Data\nApr 17 - Accessing and Vizualizing Glider Data\nApr 24 - Intro to Modeled Ocean Data\nMay 1 - Intro to Modeled Ocean Data\nMay 8 - Intro to Modeled Ocean Data\nMay 15 - VizualiZarr for Legacy Data Formats\nMay 22 - skipping for Memorial Day long weekend\nMay 29 - Advances in Data Vizualization"
+  },
+  {
+    "objectID": "content/reuse.html",
+    "href": "content/reuse.html",
+    "title": "Reuse Statement",
+    "section": "",
+    "text": "This content is released under CC0 Creative Commons.\nPermissive Re-Mix and No Attribution Needed: You may reuse the NMFS Open Science content in this repository—excluding the NMFS Open Science logo and any NOAA logos—in any way you like. You do not need permission. You do not need to give attribution, but if you use large parts of tutorials or content it is polite to give acknowledgement of the source. Please check each repository for its reuse statement. Some of the content is from outside of NMFS Open Science. This will be noted and you should check the original content for its reuse statement.",
+    "crumbs": [
+      "Reuse Statement"
+    ]
+  },
+  {
+    "objectID": "content/hackhours.html",
+    "href": "content/hackhours.html",
+    "title": "Hackhours",
+    "section": "",
+    "text": "These sessions are for NOAA staff to gain more familiarity with Jupyter Hubs and working with spatial data, esp big data hosted in the cloud in databases, via code and via geospatial packages in R and Python.\nFor more data science trainings and resource, see: * https://sites.google.com/noaa.gov/nmfs-hq-st-open-science/trainings * https://coastwatch.noaa.gov/cwn/training-courses.html * https://ioos.github.io/ioos_code_lab/content/intro.html",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "content/hackhours.html#about-nmfs-open-science",
+    "href": "content/hackhours.html#about-nmfs-open-science",
+    "title": "Hackhours",
+    "section": "About NMFS Open Science",
+    "text": "About NMFS Open Science\nWe provide technical and infrastructure support for any groups within NOAA Fisheries who would like computing support for their workshops or trainings; See our training page (NOAA internal). In September 2024, we launched a JupyterHub with a variety of specialized computing environments tailored to needs in fisheries and ocean modeling. We also support the development of a Docker stack tailored to R and Python workflows. We run regular workshops and trainings in reproducible science. See NMFS Openscapes and NMFS Open Science. If at NOAA see our internal site and the tabs for News and Training.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "coc.html",
+    "href": "coc.html",
+    "title": "Code of Conduct",
+    "section": "",
+    "text": "We are dedicated to providing a harassment-free learning experience for everyone. We do not tolerate harassment of participants in any form. Sexual language and imagery is not appropriate either in-person or virtual form, including the Discussion boards and Chats. Participants (including event volunteers and organizers) violating these rules may be sanctioned or expelled from the event at the discretion of the organizers.",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "coc.html#definition-of-harassment",
+    "href": "coc.html#definition-of-harassment",
+    "title": "Code of Conduct",
+    "section": "Definition of Harassment",
+    "text": "Definition of Harassment\nHarassment includes, but is not limited to:\n\nVerbal comments that harass based on sexual orientation, disability, physical appearance, body size, race, age, religion.\nSexual images in public spaces\nDeliberate intimidation, stalking, or following\nHarassing photography or recording\nSustained disruption of talks or other events\nInappropriate physical contact\nUnwelcome sexual attention\nAdvocating for, or encouraging, any of the above behavior",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "coc.html#expectations",
+    "href": "coc.html#expectations",
+    "title": "Code of Conduct",
+    "section": "Expectations",
+    "text": "Expectations\nParticipants asked to stop any harassing behavior are expected to comply immediately. If a participant engages in harassing behavior, the organizers retain the right to take any actions to keep the event a welcoming environment for all participants. This includes warning the offender or expulsion from the event.\nThe organizers may take action to redress anything designed to, or with the clear impact of, disrupting the event or making the environment hostile for any participants. We expect participants to follow these rules at all the event venues and event-related social activities.",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "coc.html#reporting-a-violation",
+    "href": "coc.html#reporting-a-violation",
+    "title": "Code of Conduct",
+    "section": "Reporting a violation",
+    "text": "Reporting a violation\nHarassment and other code of conduct violations reduce the value of the event for everyone. If someone makes you or anyone else feel unsafe or unwelcome, please report it as soon as possible.\nIf you feel comfortable contacting someone associated with our event, you may speak with one of the event organizers in person or contact an organizer on a private channel.",
+    "crumbs": [
+      "JupyterHub",
+      "Code of Conduct"
+    ]
+  },
+  {
+    "objectID": "content/jhub.html",
+    "href": "content/jhub.html",
+    "title": "NMFS HackHours 2026",
+    "section": "",
+    "text": "The NMFS Openscapes JupyterHub is managed by Openscapes and developed in partnership with the International Interactive Computing Collaboration 2i2c. Launched in September 2024, the NMFS Openscapes JupyterHub joins the NASA Openscapes JupyterHub in providing a curated interactive computing platform to support training in earth and life science visualization, computing and analysis. The NMFS Openscapes JupyterHub supports workshops and trainings run by NOAA Fisheries."
+  },
+  {
+    "objectID": "content/setup.html",
+    "href": "content/setup.html",
+    "title": "Quick Start",
+    "section": "",
+    "text": "For those already familiar with JupyterLab and unix.\n\nGitHub Account\nA GitHub account is required to gain access to the JupyterHub and to clone the tutorials used in the Hackhours.\nHow do I get the tutorials into the JupyterHub?\n\nYou can upload files.\nEasiest is probably cloning a repo into the hub. See the JupyterHub Skills section if you do not know how to do this.\n\n\n\nAuthenticating to GitHub\nThis is a little different on the JupyterHub. See git authentication.\nFor content that uses the NASA Earthdata repository, you will need an Earthdata Login account. Please visit https://urs.earthdata.nasa.gov to register and manage your Earthdata Login account. This account is free to create. Please jot down your username and password, as you need to enter it in the tutorials.\n\n\nWhen done, please stop the JupyterHub\nIf you are in JupyterLab in the browser:\n\nFile &gt; Hub Control Panel &gt; Stop my server\n\nIf you are in RStudio and you still have the JupyterLab tab open in your browser:\n\nGo to the JupyterLab tab\nFile &gt; Hub Control Panel &gt; Stop my server\n\nIf you are in RStudio and you do not have the JupyterLab tab open in your browser because you closed that tab:\n\nGo to the url https://&lt;jupyterhub url&gt;/user/&lt;your username in the hub&gt;/lab/ That will open the JupyterLab tab\nFile &gt; Hub Control Panel &gt; Stop my server"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html",
+    "href": "topics/2026-02-27/BRT_2D.html",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "",
+    "text": "Author: Eli Holmes (NOAA) Last updated: November 19, 2025"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#summary",
+    "href": "topics/2026-02-27/BRT_2D.html#summary",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Summary",
+    "text": "Summary\nIn this tutorial we will predict a numerical variable (chl) using predictor variables, in this case SST, salinity, and season.\n\\[\n\\hat{y} \\sim f(sst, so, season, location)\n\\]\nWe will use a classic non-linear prediction model: boosted regression trees (BRTs). Trees learn a big collection of if-else rules that split the response variable space. BRTs are non-linear: they can learn complicated non-linear relationships like “very high CHL only occurs when SST is low and it’s winter and we are above a certain latitude threshold.” They can handle complex interactions between variables (SST × salinity × season × location).\nThe goal is to create a predicted map of CHL given our predictor variables on a given day.\n\n\n\nBRT pred map"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#overview-of-the-modeling-steps",
+    "href": "topics/2026-02-27/BRT_2D.html#overview-of-the-modeling-steps",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Overview of the modeling steps",
+    "text": "Overview of the modeling steps\n\nCreate your sampling dataframe: spatial samples with response (what you are trying to predict), latitude, longitude, date.\nCreate your predictor dataframe. In this example we have an 3D cube (time, lat, lon) with all the variables and we sample from that.\nFit model\nMake predictions\n\nThe hard part is the data prep. We need a dataframe that looks like this. Just showing the first 5 samples. y is what we are predicting and it is the true values we have (from some type of observation) and the variables to the right are what we train on. The ocean mask just tells up what to ignore (it’s land).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntime\nlat\nlon\ny\nsst\nso\nsin_time\ncos_time\nx_geo\ny_geo\nz_geo\nocean_mask\n\n\n\n\n2020-07-03\n12.25\n63.50\n-1.273\n27.84\n34.82\n0.017\n1.000\n0.431\n0.904\n0.212\n1\n\n\n2020-01-15\n28.75\n74.25\n-0.522\n24.11\n35.21\n-0.142\n-0.990\n0.257\n0.932\n0.482\n1\n\n\n2020-03-28\n-2.00\n88.75\n-2.004\n29.47\n34.55\n0.651\n0.759\n0.030\n0.999\n-0.035\n1\n\n\n2020-10-09\n5.75\n59.25\n-1.618\n26.33\n34.90\n-0.843\n0.538\n0.504\n0.863\n0.100\n1\n\n\n2020-12-22\n17.50\n46.50\n-0.931\n22.88\n35.40\n-0.149\n-0.989\n0.675\n0.737\n0.300\n1"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#variables-in-the-model",
+    "href": "topics/2026-02-27/BRT_2D.html#variables-in-the-model",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Variables in the model",
+    "text": "Variables in the model\nA nice thing about BRTs is that we do not need to normalize (standardize) our predictor variables. BRTs work by splitting our predictors and normalizing has no effect. This is different than many other types of models that will perform much better with normalization.\n\n\n\n\n\n\n\n\n\nFeature\nSpatial Variation\nTemporal Variation\nNotes\n\n\n\n\nsst, so\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\nsin_time, cos_time\n❌ Same across lat/lon\n✅ Varies by time\nCyclical\n\n\nx_geo,y_geo, z_geo\n✅ Varies by lat/lon\n❌ Static\n-1 to 1\n\n\nocean_mask\n✅ Varies by lat/lon\n❌ Static\nBinary (0=land, 1=ocean)\n\n\ny (log CHL)\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\n\n\nsst and so: These are our core predictor variables.\nsin_time and cos_time: These introduce seasonality into our model. The models can learn seasonally dependent patterns, e.g., chlorophyll blooms in spring. The sin_time and cos_time features use cyclical encoding (sine/cosine).\nx_geo, y_geo, and z_geo: This is a dimensionless geometric encoding of location on the globe that is -1 to 1. This works better than lat/lon for machine-learning tasks. Including these location variables allows the model to learn location specific relationships.\nocean_mask: This tells the model which pixels are land (0) vs ocean (1).\ny (response): The model trains on this. For our model it is logged CHL and it is roughly centered near 0.\n\nNote, neither bathymetry nor distance from coast improved the model by any appreciable amount over the model we use here. SST (upwelling signal) and salinity (river outflow signal) are highly correlated with chlorophyll in this region with strong seasonal patterns."
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#dealing-with-nans",
+    "href": "topics/2026-02-27/BRT_2D.html#dealing-with-nans",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Dealing with NaNs",
+    "text": "Dealing with NaNs\nIn our application, NaNs in y (in our case CHL) appear over land and when obscured by clouds. Our BRT fitting function needs us to remove any rows in our dataframe where y is NaN. NaNs in our predictor variables are less common, but can happen. BRTs functions typically filter out any training data that have NaNs in the predictor variables so we will ignore those NaNs. We just have to make sure that missing values, or areas to ignore like land or cloud are coded as NaN and not something like -99."
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#load-the-libraries",
+    "href": "topics/2026-02-27/BRT_2D.html#load-the-libraries",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Load the libraries",
+    "text": "Load the libraries\n\ncore data handling and plotting libraries\nour custom functions in ml_utils.py\n\n\n# Uncomment this line and run if you are in Colab; leave in the !. That is part of the cmd\n# !pip install zarr gcsfs --quiet\n\n\n# --- Core data handling and plotting libraries ---\nimport xarray as xr       # for working with labeled multi-dimensional arrays\nimport numpy as np        # for numerical operations on arrays\nimport matplotlib.pyplot as plt  # for creating plots\n\n\n# --- Custom python functions ---\n# this requires that tensorflow and keras are available\nimport os, importlib\n# Looks to see if you have the file already and if not, downloads from GitHub\nif not os.path.exists(\"ml_utils.py\"):\n    !wget -q https://raw.githubusercontent.com/fish-pace/2025-tutorials/main/ml_utils.py\n\nimport ml_utils as mu\nimportlib.reload(mu)\n\n&lt;module 'ml_utils' from '/home/jovyan/2025-tutorials/ml_utils.py'&gt;"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#create-random-sample-of-log-chl-from-the-indian-ocean-dataset",
+    "href": "topics/2026-02-27/BRT_2D.html#create-random-sample-of-log-chl-from-the-indian-ocean-dataset",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Create random sample of log CHL from the Indian Ocean dataset",
+    "text": "Create random sample of log CHL from the Indian Ocean dataset\nFor this tutorial, we will create our observations by sampling from our dataset but in practice you would have a separate observation dataset from some sampling scheme. Note when working with cloud native data (meaning optimized for reading by chunking), you do not want to do something like a for loop. You need to use more a move clever approach so that you minimize the calls to the cloud dataset (because reading is the slow part). For learning, you don’t really have to care about this as long as you use toy examples but once you are trying to get data for 1000s of points, you do.\nFor this example, we will train on sample data from 2020 and apply that to predictions in other years.\n\nimport numpy as np\nimport pandas as pd\nimport xarray as xr\n\ndef sample_points_fast(\n    ds: xr.Dataset,\n    year: int,\n    n: int,\n    y_name: str = \"y\",\n    mask_var: str = \"ocean_mask\",\n    seed: int = 42,\n):\n    \"\"\"\n    Vectorized random sampler for chunked xarray/dask datasets (no loops).\n\n    - Draws n random times from ds.sel(time=year)\n    - Draws n random *continuous* lat/lon within the coord ranges\n    - Snaps those lat/lon to the nearest grid cell (vectorized)\n    - Gathers y and mask using a single dask vindex, sets y=NaN where mask==False\n    - Returns only rows with finite y\n\n    Returns\n    -------\n    pd.DataFrame with columns: ['time','lat','lon','y']\n      - 'lat','lon' are the original random (continuous) coordinates\n        (y is taken from the nearest grid cell).\n    \"\"\"\n    import dask.array as da  # local import to keep dependencies scoped\n\n    dsy = ds.sel(time=str(year))\n    if dsy.sizes.get(\"time\", 0) == 0:\n        raise ValueError(f\"No timesteps found for year {year}.\")\n\n    rng = np.random.default_rng(seed)\n\n    # ----- random time indices -----\n    T = dsy.sizes[\"time\"]\n    t_idx = rng.integers(0, T, size=n)\n\n    # ----- random continuous lat/lon, then snap to nearest grid index -----\n    lat_vals = dsy[\"lat\"].values\n    lon_vals = dsy[\"lon\"].values\n\n    lat_rand = rng.uniform(lat_vals.min(), lat_vals.max(), size=n)\n    lon_rand = rng.uniform(lon_vals.min(), lon_vals.max(), size=n)\n\n    # searchsorted-based nearest-index that works for ascending or descending arrays\n    def nearest_index(coord_vals, q):\n        asc = coord_vals[0] &lt;= coord_vals[-1]\n        base = coord_vals if asc else -coord_vals\n        tgt  = q          if asc else -q\n        idx = np.searchsorted(base, tgt, side=\"left\")\n        idx0 = np.clip(idx - 1, 0, len(coord_vals) - 1)\n        idx1 = np.clip(idx,     0, len(coord_vals) - 1)\n        pick_right = np.abs(coord_vals[idx1] - q) &lt; np.abs(coord_vals[idx0] - q)\n        return np.where(pick_right, idx1, idx0)\n\n    lat_i = nearest_index(lat_vals, lat_rand)\n    lon_i = nearest_index(lon_vals, lon_rand)\n\n    # ----- vindex gather for y and mask (single compute) -----\n    y_da = dsy[y_name].data  # (time, lat, lon) dask array\n    y_s  = y_da.vindex[t_idx, lat_i, lon_i]  # (n,)\n\n    m_da = dsy[mask_var]\n    if \"time\" in m_da.dims:\n        m_s = m_da.data.vindex[t_idx, lat_i, lon_i]\n    else:\n        m_s = m_da.data.vindex[lat_i, lon_i]\n\n    y_np, m_np = da.compute(y_s, m_s)\n\n    # apply mask: keep only ocean\n    y_np = np.where(m_np.astype(bool), y_np, np.nan)\n\n    # ----- assemble output; keep the random (continuous) lat/lon -----\n    times = pd.to_datetime(dsy[\"time\"].values[t_idx])\n    df = pd.DataFrame(\n        {\"time\": times,\n         \"lat\":  lat_rand.astype(float),\n         \"lon\":  lon_rand.astype(float),\n         \"y\":    y_np.astype(float)}\n    )\n\n    return df.dropna(subset=[\"y\"]).reset_index(drop=True)\n\n\ny_train = sample_points_fast(dataset, 2020, 10000)\n\n\ny_train.head(5)\n\n\n\n\n\n\n\n\ntime\nlat\nlon\ny\n\n\n\n\n0\n2020-02-02\n3.071520\n60.639974\n-2.189335\n\n\n1\n2020-06-09\n1.165537\n81.301786\n-2.116684\n\n\n2\n2020-06-07\n-3.377244\n67.206579\n-2.658942\n\n\n3\n2020-11-10\n11.264733\n52.720775\n-1.707955\n\n\n4\n2020-02-01\n23.638891\n59.068457\n-0.833890\n\n\n\n\n\n\n\nHere are where the samples in July land.\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nax = plt.gca()\ndataset.ocean_mask.plot(ax=ax, cmap=\"gray\", add_colorbar=False)\njuly = y_train[pd.to_datetime(y_train[\"time\"]).dt.month == 7]\nax.scatter( july[\"lon\"], july[\"lat\"], s=10)\nax.set_xlabel(\"Longitude\"); ax.set_ylabel(\"Latitude\")\n#ax.set_aspect(\"equal\", adjustable=\"box\")\nax.set_title(\"July sample points\")\nplt.show()"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#create-the-train-test-dataset",
+    "href": "topics/2026-02-27/BRT_2D.html#create-the-train-test-dataset",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Create the train-test dataset",
+    "text": "Create the train-test dataset\nWe want all our variables plus the y. Here I create a function called create_training_dataset() that gets the predictor variables for our lat/lon/time samples and returns a dataframe.\n\n# create_training_dataset function\nimport numpy as np\nimport pandas as pd\nimport xarray as xr\n\ndef create_training_dataset(\n    ds: xr.Dataset,\n    y_train: pd.DataFrame,\n    num_var,\n    cat_var,\n):\n    \"\"\"\n    Vectorized feature extraction at sampled points.\n\n    Parameters\n    ----------\n    ds : xr.Dataset\n        Must contain coords 'time','lat','lon' and the variables in num_var+cat_var.\n    y_train : pd.DataFrame\n        Columns: ['time','lat','lon'] (continuous lat/lon; time-like)\n    num_var, cat_var : list[str]\n        Predictor variable names. Can be:\n          - (time,lat,lon)\n          - (lat,lon)\n          - (time,)\n        Scalars are also supported (broadcast).\n\n    Returns\n    -------\n    pd.DataFrame\n        Columns: ['time','lat','lon'] + num_var + cat_var\n        Values are gathered from the nearest grid cell/time stamp.\n    \"\"\"\n    import dask.array as da\n\n    # --- coordinate arrays from ds ---\n    lat_vals  = ds[\"lat\"].values\n    lon_vals  = ds[\"lon\"].values\n    time_vals = np.asarray(ds[\"time\"].values)  # datetime64\n\n    # --- sample coordinates from y_train ---\n    lat_rand  = np.asarray(y_train[\"lat\"].values, dtype=float)\n    lon_rand  = np.asarray(y_train[\"lon\"].values, dtype=float)\n    time_rand = pd.to_datetime(y_train[\"time\"]).to_numpy(dtype=\"datetime64[ns]\")\n\n    # --- nearest-index helpers (work for ascending or descending) ---\n    def nearest_index_1d(coord_vals, q_vals):\n        asc = coord_vals[0] &lt;= coord_vals[-1]\n        base = coord_vals if asc else -coord_vals\n        tgt  = q_vals     if asc else -q_vals\n        idx  = np.searchsorted(base, tgt, side=\"left\")\n        idx0 = np.clip(idx - 1, 0, len(coord_vals) - 1)\n        idx1 = np.clip(idx,     0, len(coord_vals) - 1)\n        pick_right = np.abs(coord_vals[idx1] - q_vals) &lt; np.abs(coord_vals[idx0] - q_vals)\n        return np.where(pick_right, idx1, idx0)\n\n    def nearest_time_index(times, qtimes):\n        t = times.astype(\"datetime64[ns]\").astype(\"int64\")\n        q = qtimes.astype(\"datetime64[ns]\").astype(\"int64\")\n        idx  = np.searchsorted(t, q, side=\"left\")\n        idx0 = np.clip(idx - 1, 0, len(t) - 1)\n        idx1 = np.clip(idx,     0, len(t) - 1)\n        pick_right = np.abs(t[idx1] - q) &lt; np.abs(t[idx0] - q)\n        return np.where(pick_right, idx1, idx0)\n\n    # --- build index vectors for each sample ---\n    lat_i = nearest_index_1d(lat_vals,  lat_rand)\n    lon_i = nearest_index_1d(lon_vals,  lon_rand)\n    t_idx = nearest_time_index(time_vals, time_rand)\n\n    # --- gather all predictors with dask vindex in one compute ---\n    names = list(num_var) + list(cat_var)\n    gathers = []\n    for v in names:\n        if v not in ds:\n            raise KeyError(f\"Variable '{v}' not found in dataset.\")\n        da_v = ds[v]\n        dims = da_v.dims\n\n        # reorder to a standard axis order before vindex\n        if {\"time\",\"lat\",\"lon\"} &lt;= set(dims):\n            x = da_v.transpose(\"time\",\"lat\",\"lon\")\n            g = x.data.vindex[t_idx, lat_i, lon_i]\n        elif {\"lat\",\"lon\"} &lt;= set(dims):\n            x = da_v.transpose(\"lat\",\"lon\")\n            g = x.data.vindex[lat_i, lon_i]\n        elif (\"time\" in dims) and (\"lat\" not in dims) and (\"lon\" not in dims):\n            x = da_v.transpose(\"time\", ...)\n            g = x.data.vindex[t_idx]\n        elif da_v.ndim == 0:  # scalar → broadcast to length n\n            g = da.asarray(np.full_like(t_idx, fill_value=float(da_v.values), dtype=float))\n        else:\n            raise ValueError(\n                f\"Unsupported dims for '{v}': {dims}. \"\n                \"Expected (time,lat,lon), (lat,lon), (time,), or scalar.\"\n            )\n        gathers.append(g)\n\n    # single materialization step\n    values = da.compute(*gathers)\n\n    # --- assemble output ---\n    df = pd.DataFrame({\n        \"time\": pd.to_datetime(time_vals[t_idx]),\n        \"lat\":  lat_vals[lat_i].astype(float),\n        \"lon\":  lon_vals[lon_i].astype(float),\n        \"y\":  y_train[\"y\"].astype(float),   \n    })\n    for v, arr in zip(names, values):\n        df[v] = np.asarray(arr)\n\n    return df\n\nCreate our training dataset. We will split into train and test.\n\nnum_var = ['sst','so']\ncat_var = ['ocean_mask','sin_time','cos_time','x_geo', 'y_geo', 'z_geo']\ntrain_dataset = create_training_dataset(dataset, y_train, num_var, cat_var)"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#fit-a-brt",
+    "href": "topics/2026-02-27/BRT_2D.html#fit-a-brt",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Fit a BRT",
+    "text": "Fit a BRT\n\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import HistGradientBoostingRegressor\nfrom sklearn.metrics import r2_score, mean_squared_error\nimport numpy as np\n\n# predictor variables\nfeat_cols = num_var + cat_var\ndf = train_dataset.copy()\n\n# keep ocean & finite y. Only train on the ocean values.\nif \"ocean_mask\" in df:\n    df = df[df[\"ocean_mask\"] &gt; 0.5]\ndf = df[np.isfinite(df[\"y\"])]\n\n# get numpy arrays\nX = df[feat_cols].to_numpy()  # may include NaNs — OK for HGBR\ny = df[\"y\"].to_numpy()\n\n# create train and test split\nX_train, X_test, y_train_vec, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\n# train the model\nbrt_model = HistGradientBoostingRegressor(\n    max_depth=6, learning_rate=0.05, max_iter=400,\n    validation_fraction=0.1, early_stopping=True, random_state=42\n).fit(X_train, y_train_vec)"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#compare-to-the-test-data",
+    "href": "topics/2026-02-27/BRT_2D.html#compare-to-the-test-data",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Compare to the test data",
+    "text": "Compare to the test data\n\npred = brt_model.predict(X_test)\nprint(\"R²:\", r2_score(y_test, pred))\nprint(\"RMSE:\", mean_squared_error(y_test, pred))\n\nR²: 0.7850330403327634\nRMSE: 0.15018093739608177"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#make-a-prediction-of-the-whole-region",
+    "href": "topics/2026-02-27/BRT_2D.html#make-a-prediction-of-the-whole-region",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Make a prediction of the whole region",
+    "text": "Make a prediction of the whole region\nTo make a prediction, we use the predict attribute for the brt model object. It needs the predictor variables in rows rather than like a lat/lon map. Once we have the prediction, we can plot but we need to set the land to NaN otherwise our plot will show a prediction for land.\n\n# pick your day (exact or nearest)\nday = dataset.sel(time=\"2001-10-10\")  # or: dataset.sel(time=\"2001-10-10\", method=\"nearest\")\n\n# choose a template to broadcast to for vars that do not have lat/lon\ntmpl = day[\"sst\"]\n\n# stack features into (H, W, C)\nX_map = np.stack([(day[v].broadcast_like(tmpl)).values for v in (num_var + cat_var)], axis=-1)\nH, W, C = X_map.shape # height, width, predictor variables\n\n# make the prediction and then reshape back to a map\ny_pred = brt_model.predict(X_map.reshape(-1, C)) # reshape makes our map pixels into a vector (H*W rows)\ny_pred = y_pred.reshape(H, W)\n\n\n# Make a plot\nplt.figure(figsize=(6,5))\nland = (dataset[\"ocean_mask\"].values == 0)\ny_plot = np.where(land, np.nan, y_pred)\nim = plt.imshow(y_plot, cmap=\"viridis\")\n\n\n\n\n\n\n\n\nIn our example, we know the true log CHL since we sampled our training data from that. Let’s show the true map against the predicted map. The predict_and_plot_date function is in our ml_utils.py file. It add bells and whistles and puts the true plot to the left.\n\n_ = mu.predict_and_plot_date(\n    data_xr=dataset,\n    date=\"2001-10-10\",\n    model=brt,\n    num_var=num_var,\n    cat_var=cat_var,\n    X_mean=None, X_std=None,\n    model_type=\"tabular\",\n    use_percentiles=True\n)\n\n\n\n\n\n\n\n\n\nPlot for one day each month\n\nmu.plot_true_vs_predicted_year_multi(\n    dataset, \"2001\", [brt_model], None, None, \n    num_var, cat_var, y_var=\"y\", day=10,\n    model_types=[\"tabular\"],\n    model_names=[\"BRT\"])"
+  },
+  {
+    "objectID": "topics/2026-02-27/BRT_2D.html#summary-1",
+    "href": "topics/2026-02-27/BRT_2D.html#summary-1",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Summary",
+    "text": "Summary\nYou have fit a basic BRT with season and location information. It is a bit “stripy” which happens with location variables but it is not terrible.\nThings you might try * remove salinity and sst * keep salinity and sst and remove season or location variables * reduce the number of sample points from 10,000 to 1,000"
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html",
+    "href": "topics/BRT_Argo_CHLA.html",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "",
+    "text": "Author: Eli Holmes (NOAA) Last updated: November 19, 2025",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#summary",
+    "href": "topics/BRT_Argo_CHLA.html#summary",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Summary",
+    "text": "Summary\nIn this tutorial we will predict a numerical variable (chl) using predictor variables, in this case hyperspectral Rrs and solar hour. Later we can add location and season. Our end goal is to create global maps of CHLA vertical profiles using Rrs hyperspectral data. CHLA vertical profiles are key to research on subsurface chlorophyll maxima, bloom structure, diel variability, and vertical migration. Science motivation\nOur training data are the in-situ measurements of surface CHLA from Bio-Argo buoys. You can see how I downloaded the Argo data and got the PACE Rrs matchups in the files argopy.ipynb and argopy-matchups.ipynb.\n\\[\n\\hat{y} \\sim f(Rrs, \\text{solar hour})\n\\]\nWe will use a classic non-linear prediction model: boosted regression trees (BRTs). Trees learn a big collection of if-else rules that split the response variable space. BRTs are non-linear: they can learn complicated non-linear relationships.\nThe goal is to create a predicted map of surface CHL given our Rrs predictor variables on a given day. We will compare to the PACE surface CHLA product, but keep in mind that these are not measuring the same thing exactly though they should be highly correlated.\n\n\n\nBRT pred map",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#overview-of-the-modeling-steps",
+    "href": "topics/BRT_Argo_CHLA.html#overview-of-the-modeling-steps",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Overview of the modeling steps",
+    "text": "Overview of the modeling steps\n\nCreate your sampling dataframe: spatial samples with response (what you are trying to predict), latitude, longitude, date.\nCreate your predictor dataframe. In this example we use hyperspectral Rrs as our predictor.\nFit model\nMake predictions\n\nThe hard part is the data prep. We need a dataframe that looks like this. Just showing the first 5 samples. y is what we are predicting and it is the true values we have (from some type of observation) and the variables to the right are what we train on. The ocean mask just tells up what to ignore (it’s land).\n\n\n\ntime\nlat\nlon\ny\nRrs_370\nRrs_400\nsolar_hour\n\n\n\n\n2020-07-03\n12.25\n63.50\n-1.273\n27.84\n34.82\n1\n\n\n2020-01-15\n28.75\n74.25\n-0.522\n24.11\n35.21\n1\n\n\n2020-03-28\n-2.00\n88.75\n-2.004\n29.47\n34.55\n8\n\n\n2020-10-09\n5.75\n59.25\n-1.618\n26.33\n34.90\n10\n\n\n2020-12-22\n17.50\n46.50\n-0.931\n22.88\n35.40\n23",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#variables-in-the-model",
+    "href": "topics/BRT_Argo_CHLA.html#variables-in-the-model",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Variables in the model",
+    "text": "Variables in the model\nA nice thing about BRTs is that we do not need to normalize (standardize) our predictor variables. BRTs work by splitting our predictors and normalizing has no effect. This is different than many other types of models that will perform much better with normalization.\n\n\n\n\n\n\n\n\n\nFeature\nSpatial Variation\nTemporal Variation\nNotes\n\n\n\n\nRrs_wav\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\nsolar_hour\n❌ Same across lat/lon\n✅ Varies by time\nHour\n\n\ny (log CHL)\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\n\n\nRrs: Hyperspectral Rrs is our core predictor variables.\nsolar_hour: Since bio-Argo CHLA is highly affected by time of day.\ny (response): The model trains on this. For our model it is logged CHL and it is roughly centered near 0.",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#dealing-with-nans",
+    "href": "topics/BRT_Argo_CHLA.html#dealing-with-nans",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Dealing with NaNs",
+    "text": "Dealing with NaNs\nIn our application, NaNs in y (in our case CHLA) appear when an Argo profile (a descend/ascend cycle) had no surface CHLA data. Our BRT fitting function needs us to remove any rows in our dataframe where y is NaN. We will only include profiles that have PACE Rrs data so we will not have any NaNs in our predictor variables. However BRTs functions typically filter out any training data that have NaNs in the predictor variables so we could ignore those NaNs.",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#load-the-libraries",
+    "href": "topics/BRT_Argo_CHLA.html#load-the-libraries",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Load the libraries",
+    "text": "Load the libraries\n\ncore data handling and plotting libraries\nour custom functions in ml_utils.py\n\n\n# Uncomment this line and run if you are in Colab; leave in the !. That is part of the cmd\n!pip install earthaccess cartopy --quiet\n\n\n# --- Core data handling and plotting libraries ---\nimport earthaccess\nimport xarray as xr       # for working with labeled multi-dimensional arrays\nimport numpy as np        # for numerical operations on arrays\nimport pandas as pd\nimport matplotlib.pyplot as plt  # for creating plots\nimport cartopy.crs as ccrs\nimport sklearn\n\n\n# --- Custom python functions ---\nimport os, importlib\n# Looks to see if you have the file already and if not, downloads from GitHub\nif not os.path.exists(\"ml_utils.py\"):\n    !wget -q https://raw.githubusercontent.com/fish-pace/2025-tutorials/main/ml_utils.py\n\nimport ml_utils as mu\nimportlib.reload(mu)\n\n&lt;module 'ml_utils' from '/home/jovyan/2025-tutorials/ml_utils.py'&gt;",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#create-the-train-test-dataset",
+    "href": "topics/BRT_Argo_CHLA.html#create-the-train-test-dataset",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Create the train-test dataset",
+    "text": "Create the train-test dataset\nWe will use sklearn’s split function.\n\nfrom sklearn.model_selection import train_test_split\n\n# rs columns: pace_Rrs_* ending in a digit\ny_col = \"CHLA_0_10\"\nrrs_cols = [\n    c for c in dataset.columns\n    if c.startswith(\"pace_Rrs_\") and c[-1].isdigit()\n]\n# if you want to try with more variables \n#extra = [\"solar_hour\", \"x_geo\", \"y_geo\", \"z_geo\"]\nextra = [\"solar_hour\"]\ntrain_data = dataset[[\"time\", \"lat\", \"lon\", y_col] + rrs_cols + extra]\ntrain_data = train_data.rename(columns={y_col: \"y\"})\n\n# IMPORTANT! log our response so it is symmetric (Normal-ish)\ntrain_data = train_data.where(train_data[\"y\"] &gt; 0)\ntrain_data[\"y\"] = np.log10(train_data[\"y\"])\ntrain_data = train_data.dropna(subset=[\"y\"]) # drop nan\n\ny = train_data[\"y\"]  # target\nX = train_data[rrs_cols + extra]  # predictors\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X,\n    y,\n    test_size=0.2,\n    random_state=42, # change for a new random train set\n)",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#fit-a-brt",
+    "href": "topics/BRT_Argo_CHLA.html#fit-a-brt",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Fit a BRT",
+    "text": "Fit a BRT\n\nfrom sklearn.ensemble import HistGradientBoostingRegressor\nfrom sklearn.metrics import r2_score, mean_squared_error\nimport numpy as np\n\nbrt_model = HistGradientBoostingRegressor(\n    max_depth=6, learning_rate=0.05, max_iter=400,\n    validation_fraction=0.1, early_stopping=True, random_state=42\n).fit(X_train, y_train)",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#make-a-prediction-and-plot-residuals",
+    "href": "topics/BRT_Argo_CHLA.html#make-a-prediction-and-plot-residuals",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Make a prediction and plot residuals",
+    "text": "Make a prediction and plot residuals\n\ny_pred = brt_model.predict(X_train)\nresiduals = y_train - y_pred\ndf_map = train_data.loc[y_train.index, [\"lat\", \"lon\", \"time\"]]\ndf_map[\"y\"] = y_train\ndf_map[\"y_pred\"] = y_pred\ndf_map[\"residual\"] = residuals\n\n\nimport matplotlib.pyplot as plt\nimport cartopy.crs as ccrs\nimport cartopy.feature as cfeature\n\ndef residual_plot(df_map):\n    fig, ax = plt.subplots(\n        figsize=(7,5),\n        subplot_kw={\"projection\": ccrs.PlateCarree()}\n    )\n    # symmetric limits around 0\n    res = df_map[\"residual\"].values\n    max_abs = np.nanmax(np.abs(res))\n    vmin, vmax = -max_abs, max_abs\n\n    ax.coastlines(resolution=\"110m\")\n    ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n\n    sc = ax.scatter(\n        df_map[\"lon\"],\n        df_map[\"lat\"],\n        c=df_map[\"residual\"],\n        cmap=\"coolwarm\",\n        s=6,\n        vmin=vmin, vmax=vmax,\n        transform=ccrs.PlateCarree()\n    )\n\n    plt.colorbar(sc, ax=ax, label=\"Residual (y - y_pred)\")\n    bias = df_map[\"residual\"].mean()\n    plt.title(f\"Residual Map (mean bias = {bias:.3f})\")\n    plt.show()\n\n\nresidual_plot(df_map)",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#compare-to-the-test-data",
+    "href": "topics/BRT_Argo_CHLA.html#compare-to-the-test-data",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Compare to the test data",
+    "text": "Compare to the test data\n\ny_pred = brt_model.predict(X_test)\nprint(\"R²:\", r2_score(y_test, y_pred))\nprint(\"RMSE:\", np.sqrt(mean_squared_error(y_test, y_pred)))\nprint(\"bias:\", np.mean(y_test - y_pred))\n\nR²: 0.7330792741945183\nRMSE: 0.3427451647611817\nbias: -0.056228825385024044\n\n\n\nMake a scatter plot\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.metrics import r2_score, mean_squared_error\n\ny_true = y_test\n\n# Compute some metrics\nr2 = r2_score(y_true, y_pred)\nrmse = np.sqrt(mean_squared_error(y_true, y_pred))\n\n# Scatter plot\nplt.figure(figsize=(5, 5))\nplt.scatter(y_true, y_pred, s=3, alpha=0.3)\n\n# 1:1 line\nlims = [\n    min(y_true.min(), y_pred.min()),\n    max(y_true.max(), y_pred.max())\n]\nplt.plot(lims, lims, \"k--\", linewidth=1)\nplt.xlim(lims)\nplt.ylim(lims)\n\nplt.xlabel(\"log10 Chl-a (true)\")\nplt.ylabel(\"log10 Chl-a (prediction)\")\nplt.title(f\"Prediction vs Truth\\nR² = {r2:.3f}, RMSE = {rmse:.3f}\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\nPlot residuals\n\ny_pred = brt_model.predict(X_test)\nresiduals = y_test - y_pred\ndf_map = train_data.loc[y_test.index, [\"lat\", \"lon\", \"time\"]]\ndf_map[\"y\"] = y_test\ndf_map[\"y_pred\"] = y_pred\ndf_map[\"residual\"] = residuals\nresidual_plot(df_map)",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#make-a-prediction-of-the-whole-region",
+    "href": "topics/BRT_Argo_CHLA.html#make-a-prediction-of-the-whole-region",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Make a prediction of the whole region",
+    "text": "Make a prediction of the whole region\nTo make a prediction, we use the predict attribute for the brt model object. It needs the predictor variables in rows rather than like a lat/lon map and we need to deal with all the NaNs in Rrs data. I create 2 functions: * make_prediction() takes a xarray DataArray of Rrs. So like ds[\"Rrs\"]. * make_plot() takes a xarray DataArray of predictions from make_prediction() and optionally a data array of chla to compare to our predictions. So like ds[\"chlora\"].\n\n# Function 1 takes a xarray dataset from PACE with Rrs\nimport xarray as xr\ndef make_prediction(R: xr.Dataset, brt_model, feature_cols, solar_const=0):\n    # --- 3. Stack lat/lon into a single \"pixel\" dimension ---\n    R2 = R.stack(pixel=(\"lat\", \"lon\"))  # (pixel, wavelength)\n    R2 = R2.transpose(\"pixel\", \"wavelength\")\n    # Load this subset into memory\n    R2_vals = R2.values  # shape: (n_pixel, n_wavelength)\n\n    # --- 4. Make predictions dataframe\n    # If the model expects solar_hour, add it as a constant column\n    if \"solar_hour\" in feature_cols:\n        wave_cols = [c for c in feature_cols if c != \"solar_hour\"]\n        df_pred = pd.DataFrame(R2_vals, columns=wave_cols)\n        df_pred[\"solar_hour\"] = solar_const\n        df_pred = df_pred[feature_cols]\n    else:\n        df_pred = pd.DataFrame(R2_vals, columns=feature_cols)\n\n    # --- 5. Handle NaNs: BRTs generally cannot handle NaNs in predictors ---\n    # Rrs dataset will have loads of NaNs\n    valid_mask = ~df_pred.isna().any(axis=1)  # pixels with all bands present\n    df_valid = df_pred[valid_mask]\n\n    # Prepare an array for predictions (fill NaNs where we cannot predict)\n    y_pred_flat = np.full(df_pred.shape[0], np.nan, dtype=float)\n\n    # --- 6. Predict on the valid pixels ---\n    if len(df_valid) &gt; 0:\n        y_pred_flat[valid_mask.values] = brt_model.predict(df_valid)\n\n    # --- 7. Reshape back to (lat, lon) ---\n    nlat = R.sizes[\"lat\"]\n    nlon = R.sizes[\"lon\"]\n    pred_map = y_pred_flat.reshape(nlat, nlon)\n\n    pred_da = xr.DataArray(\n        pred_map,\n        coords={\"lat\": R[\"lat\"], \"lon\": R[\"lon\"]},\n        dims=(\"lat\", \"lon\"),\n        name=\"y_pred\"\n    )\n\n    return pred_da\n\n\n# Function 2 takes an xarray dataarray of our predictions and makes a map\nimport numpy as np\nimport xarray as xr\nimport matplotlib.pyplot as plt\nimport cartopy.crs as ccrs\nimport cartopy.feature as cfeature\n\ndef make_plot(\n    brt_da: xr.DataArray,\n    pace_da: xr.DataArray | None = None,\n    diff: bool = True,\n    shared_colorbar: bool = True,\n    pace_label: str = \"PACE Chlorophyll\",\n    brt_label: str = \"BRT prediction\",\n    cmap_brt: str = \"viridis\",\n):\n    \"\"\"\n    Plot prediction, optionally with PACE and difference.\n\n    Parameters\n    ----------\n    brt_da : xr.DataArray\n        BRT Prediction on a lat/lon grid.\n    pace_da : xr.DataArray or None\n        PACE chlor_a on the same lat/lon grid. If None, only brt is plotted.\n    diff : bool, default True\n        If True and pace_da is provided, add a third panel with pace - brt.\n    shared_colorbar : bool, default True\n        If True, use one colorbar for truth+prediction panels.\n    \"\"\"\n    # -----------------------\n    # Case 1: only prediction\n    # -----------------------\n    if pace_da is None:\n        # robust-ish limits from prediction only\n        vals = brt_da.values.ravel()\n        vmin, vmax = np.nanpercentile(vals, (0, 100))\n\n        fig, ax = plt.subplots(\n            1, 1,\n            figsize=(6, 4),\n            subplot_kw={\"projection\": ccrs.PlateCarree()},\n            constrained_layout=True,\n        )\n\n        ax.coastlines()\n        ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n\n        im = ax.pcolormesh(\n            brt_da[\"lon\"],\n            brt_da[\"lat\"],\n            brt_da,\n            transform=ccrs.PlateCarree(),\n           vmin=vmin, vmax=vmax,\n            cmap=cmap_brt,\n        )\n\n        ax.set_title(brt_label)\n        cbar = fig.colorbar(im, ax=ax, orientation=\"horizontal\", fraction=0.06, pad=0.08)\n        cbar.set_label(brt_label)\n        plt.show()\n        return\n\n    # ------------------------------------------------\n    # Case 2: truth + prediction (+/- difference)\n    # ------------------------------------------------\n    if diff:\n        ncols = 3\n    else:\n        ncols = 2\n\n    fig, axs = plt.subplots(\n        1, ncols,\n        figsize=(5 * ncols, 5),\n        subplot_kw={\"projection\": ccrs.PlateCarree()},\n        constrained_layout=True,\n    )\n\n    if ncols == 1:\n        axs = [axs]  # just in case, but here ncols&gt;=2\n\n    # 1. Compute robust-ish limits for truth & prediction\n    all_vals = np.concatenate([\n        pace_da.values.ravel(),\n        brt_da.values.ravel()\n    ])\n    vmin, vmax = np.nanpercentile(all_vals, (0, 100))\n\n    # -------------------\n    # Panel 1: pace\n    # -------------------\n    ax = axs[0]\n    ax.coastlines()\n    ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n    im_pace = ax.pcolormesh(\n        pace_da[\"lon\"],\n        pace_da[\"lat\"],\n        pace_da,\n        transform=ccrs.PlateCarree(),\n        vmin=vmin, vmax=vmax,\n        cmap=cmap_brt,\n    )\n    ax.set_title(pace_label)\n\n    # -------------------\n    # Panel 2: brt\n    # -------------------\n    ax = axs[1]\n    ax.coastlines()\n    ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n    im_brt = ax.pcolormesh(\n        brt_da[\"lon\"],\n        brt_da[\"lat\"],\n        brt_da,\n        transform=ccrs.PlateCarree(),\n        vmin=vmin, vmax=vmax,\n        cmap=cmap_brt,\n    )\n    ax.set_title(brt_label)\n\n    # -------------------\n    # Panel 3: Difference (optional)\n    # -------------------\n    if diff:\n        diff_da = pace_da - brt_da\n\n        # Symmetric limits for diff\n        diff_vals = diff_da.values.ravel()\n        diff_max = np.nanpercentile(np.abs(diff_vals), 98)\n        diff_vmin, diff_vmax = -diff_max, diff_max\n\n        ax = axs[2]\n        ax.coastlines()\n        ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n        im_diff = ax.pcolormesh(\n            diff_da[\"lon\"],\n            diff_da[\"lat\"],\n            diff_da,\n            transform=ccrs.PlateCarree(),\n            vmin=diff_vmin,\n            vmax=diff_vmax,\n            cmap=\"coolwarm\",\n        )\n        ax.set_title(\"PACE - BRT\")\n\n    # -------------------\n    # Colorbars\n    # -------------------\n    if shared_colorbar:\n        # one shared colorbar for pace + brt\n        cbar1 = fig.colorbar(\n            im_brt,\n            ax=axs[:2],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar1.set_label(\"Value\")\n    else:\n        # separate colorbars for PACE and BRT\n        cbar_t = fig.colorbar(\n            im_pace,\n            ax=axs[0],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar_t.set_label(pace_label)\n\n        cbar_p = fig.colorbar(\n            im_brt,\n            ax=axs[1],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar_p.set_label(brt_label)\n\n    if diff:\n        cbar2 = fig.colorbar(\n            im_diff,\n            ax=axs[-1],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar2.set_label(\"PACE - BRT\")\n\n    plt.show()",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#load-pace-rrs-and-chla-data",
+    "href": "topics/BRT_Argo_CHLA.html#load-pace-rrs-and-chla-data",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Load PACE Rrs and Chla data",
+    "text": "Load PACE Rrs and Chla data\n\nAuthenticate\nSearch\nOpen dataset\n\n\nimport earthaccess\nimport xarray as xr\n\nday = \"2024-07-08\"\n\nauth = earthaccess.login()\n# are we authenticated?\nif not auth.authenticated:\n    # ask for credentials and persist them in a .netrc file\n    auth.login(strategy=\"interactive\", persist=True)\n\n# Get Rrs\nrrs_results = earthaccess.search_data(\n    short_name = \"PACE_OCI_L3M_RRS\",\n    temporal = (day, day),\n    granule_name=\"*.DAY.*.4km.nc\"\n)\nf = earthaccess.open(rrs_results[0:1], pqdm_kwargs={\"disable\": True})\nrrs_ds = xr.open_dataset(f[0])\n\n# Get chla\nchl_results = earthaccess.search_data(\n    short_name = \"PACE_OCI_L3M_CHL\",\n    temporal = (day, day),\n    granule_name=\"*.DAY.*.4km.nc\"\n)\nf = earthaccess.open(chl_results[0:1], pqdm_kwargs={\"disable\": True})\nchl_ds = xr.open_dataset(f[0])\nchl_ds[\"log10_chla\"] = np.log10(chl_ds[\"chlor_a\"])",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#make-a-prediction-for-north-atlantic",
+    "href": "topics/BRT_Argo_CHLA.html#make-a-prediction-for-north-atlantic",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Make a prediction for North Atlantic",
+    "text": "Make a prediction for North Atlantic\n\n# Northwest Atlantic\n# Set a box\nlat_min, lat_max = 30, 60\nlon_min, lon_max = -60, -40\n# Get Rrs for that box\nR = rrs_ds[\"Rrs\"].sel(\n    lat=slice(lat_max, lat_min),   # decreasing lat coord: max→min\n    lon=slice(lon_min, lon_max)\n)\nR = R.transpose(\"lat\", \"lon\", \"wavelength\")\n\n# Get CHLA for that box\nchla = chl_ds[\"log10_chla\"].sel(\n    lat=slice(lat_max, lat_min),   # decreasing lat coord: max→min\n    lon=slice(lon_min, lon_max)\n)\nchla = chla.transpose(\"lat\", \"lon\")\n\n\n%%time\n# Make prediction\nfeature_cols = list(X_train.columns)\npred_da = make_prediction(R, brt_model, feature_cols, solar_const=0)\n\nCPU times: user 5.19 s, sys: 549 ms, total: 5.74 s\nWall time: 5.25 s\n\n\n\n# Make a plot\nmake_plot(pred_da, chla)",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#scatter-plot-of-pace-versus-brt",
+    "href": "topics/BRT_Argo_CHLA.html#scatter-plot-of-pace-versus-brt",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Scatter plot of PACE versus BRT",
+    "text": "Scatter plot of PACE versus BRT\nNote, BRT average CHLA in the 0 to 10m and PACE are not measuring exactly the same thing. PACE chlor_a uses ratios of Rrs wavelengths and Rrs reflectance ‘sees’ deeper in the water column than 10m. So we would expect that PACE chlor_a is larger than CHLA_0_10 when chlorophyll is low. The bio-Argo floats tend to be in deeper water and do not see high chlorophyll levels that one sees in coastal and near-shore. There are few CHLA_0_10 values above 0 (log10 scale). Thus it is not surprising that the BRT and PACE data are very different above 0 — the BRT model had no opportunity to “learn” the Rrs pattern for high chlorophyll.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.metrics import r2_score, mean_squared_error\n\n# Flatten and drop NaNs\ny_pace = chla.values.ravel()\ny_pred = pred_da.values.ravel()\n\nmask = np.isfinite(y_pace) & np.isfinite(y_pred)\ny_pace = y_pace[mask]\ny_pred = y_pred[mask]\n\n# Metrics\nr2 = r2_score(y_pace, y_pred)\nrmse = np.sqrt(mean_squared_error(y_pace, y_pred))\nbias = np.mean(y_pace - y_pred)\n\n# Split by x &gt; 0\nmask_x_pos = y_pace &gt; 0\n\nx_pos = y_pace[mask_x_pos]\ny_pos = y_pred[mask_x_pos]\n\nx_nonpos = y_pace[~mask_x_pos]\ny_nonpos = y_pred[~mask_x_pos]\n\n# Plot\nplt.figure(figsize=(5, 5))\n\n# Training-range points\nplt.scatter(\n    x_nonpos, y_nonpos, \n    s=3, alpha=0.3, label=\"Training-range points\"\n)\n\n# Out-of-range (x &gt; 0)\nplt.scatter(\n    x_pos, y_pos, \n    s=3, alpha=0.3, color=\"grey\", label=\"Outside training range (x &gt; 0)\"\n)\n\n# 1:1 line\nlims = [\n    min(y_pace.min(), y_pred.min()),\n    max(y_pace.max(), y_pred.max())\n]\nplt.plot(lims, lims, \"k--\", linewidth=1)\n\nplt.xlim(lims)\nplt.ylim(lims)\n\nplt.xlabel(\"log10 Chl-a (PACE)\")\nplt.ylabel(\"log10 Chl-a (BRT prediction)\")\nplt.title(\n    f\"PACE vs BRT Prediction\\n\"\n    f\"R² = {r2:.3f}, RMSE = {rmse:.3f}, bias = {bias:.3f}\"\n)\n\nplt.legend(loc=\"upper left\", markerscale=4)\nplt.tight_layout()\nplt.show()",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
+    "objectID": "topics/BRT_Argo_CHLA.html#summary-1",
+    "href": "topics/BRT_Argo_CHLA.html#summary-1",
+    "title": "Simple Machine-Learning: Boosted Regression Predictions",
+    "section": "Summary",
+    "text": "Summary\nYou have fit a basic BRT to predict surface CHLA using bio-argo data. Things you might try\n\nadd location and season to your model\nremove solar_hour",
+    "crumbs": [
+      "1 Intro to BRTs"
+    ]
+  },
+  {
     "objectID": "topics/matchups.html",
     "href": "topics/matchups.html",
     "title": "Match-up basics - Points and PACE",
@@ -208,376 +589,5 @@
     "crumbs": [
       "2 Intro to BRTs"
     ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html",
-    "href": "topics/BRT_Argo_CHLA.html",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "",
-    "text": "Author: Eli Holmes (NOAA) Last updated: November 19, 2025",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#summary",
-    "href": "topics/BRT_Argo_CHLA.html#summary",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Summary",
-    "text": "Summary\nIn this tutorial we will predict a numerical variable (chl) using predictor variables, in this case hyperspectral Rrs and solar hour. Later we can add location and season. Our end goal is to create global maps of CHLA vertical profiles using Rrs hyperspectral data. CHLA vertical profiles are key to research on subsurface chlorophyll maxima, bloom structure, diel variability, and vertical migration. Science motivation\nOur training data are the in-situ measurements of surface CHLA from Bio-Argo buoys. You can see how I downloaded the Argo data and got the PACE Rrs matchups in the files argopy.ipynb and argopy-matchups.ipynb.\n\\[\n\\hat{y} \\sim f(Rrs, \\text{solar hour})\n\\]\nWe will use a classic non-linear prediction model: boosted regression trees (BRTs). Trees learn a big collection of if-else rules that split the response variable space. BRTs are non-linear: they can learn complicated non-linear relationships.\nThe goal is to create a predicted map of surface CHL given our Rrs predictor variables on a given day. We will compare to the PACE surface CHLA product, but keep in mind that these are not measuring the same thing exactly though they should be highly correlated.\n\n\n\nBRT pred map",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#overview-of-the-modeling-steps",
-    "href": "topics/BRT_Argo_CHLA.html#overview-of-the-modeling-steps",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Overview of the modeling steps",
-    "text": "Overview of the modeling steps\n\nCreate your sampling dataframe: spatial samples with response (what you are trying to predict), latitude, longitude, date.\nCreate your predictor dataframe. In this example we use hyperspectral Rrs as our predictor.\nFit model\nMake predictions\n\nThe hard part is the data prep. We need a dataframe that looks like this. Just showing the first 5 samples. y is what we are predicting and it is the true values we have (from some type of observation) and the variables to the right are what we train on. The ocean mask just tells up what to ignore (it’s land).\n\n\n\ntime\nlat\nlon\ny\nRrs_370\nRrs_400\nsolar_hour\n\n\n\n\n2020-07-03\n12.25\n63.50\n-1.273\n27.84\n34.82\n1\n\n\n2020-01-15\n28.75\n74.25\n-0.522\n24.11\n35.21\n1\n\n\n2020-03-28\n-2.00\n88.75\n-2.004\n29.47\n34.55\n8\n\n\n2020-10-09\n5.75\n59.25\n-1.618\n26.33\n34.90\n10\n\n\n2020-12-22\n17.50\n46.50\n-0.931\n22.88\n35.40\n23",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#variables-in-the-model",
-    "href": "topics/BRT_Argo_CHLA.html#variables-in-the-model",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Variables in the model",
-    "text": "Variables in the model\nA nice thing about BRTs is that we do not need to normalize (standardize) our predictor variables. BRTs work by splitting our predictors and normalizing has no effect. This is different than many other types of models that will perform much better with normalization.\n\n\n\n\n\n\n\n\n\nFeature\nSpatial Variation\nTemporal Variation\nNotes\n\n\n\n\nRrs_wav\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\nsolar_hour\n❌ Same across lat/lon\n✅ Varies by time\nHour\n\n\ny (log CHL)\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\n\n\nRrs: Hyperspectral Rrs is our core predictor variables.\nsolar_hour: Since bio-Argo CHLA is highly affected by time of day.\ny (response): The model trains on this. For our model it is logged CHL and it is roughly centered near 0.",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#dealing-with-nans",
-    "href": "topics/BRT_Argo_CHLA.html#dealing-with-nans",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Dealing with NaNs",
-    "text": "Dealing with NaNs\nIn our application, NaNs in y (in our case CHLA) appear when an Argo profile (a descend/ascend cycle) had no surface CHLA data. Our BRT fitting function needs us to remove any rows in our dataframe where y is NaN. We will only include profiles that have PACE Rrs data so we will not have any NaNs in our predictor variables. However BRTs functions typically filter out any training data that have NaNs in the predictor variables so we could ignore those NaNs.",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#load-the-libraries",
-    "href": "topics/BRT_Argo_CHLA.html#load-the-libraries",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Load the libraries",
-    "text": "Load the libraries\n\ncore data handling and plotting libraries\nour custom functions in ml_utils.py\n\n\n# Uncomment this line and run if you are in Colab; leave in the !. That is part of the cmd\n!pip install earthaccess cartopy --quiet\n\n\n# --- Core data handling and plotting libraries ---\nimport earthaccess\nimport xarray as xr       # for working with labeled multi-dimensional arrays\nimport numpy as np        # for numerical operations on arrays\nimport pandas as pd\nimport matplotlib.pyplot as plt  # for creating plots\nimport cartopy.crs as ccrs\nimport sklearn\n\n\n# --- Custom python functions ---\nimport os, importlib\n# Looks to see if you have the file already and if not, downloads from GitHub\nif not os.path.exists(\"ml_utils.py\"):\n    !wget -q https://raw.githubusercontent.com/fish-pace/2025-tutorials/main/ml_utils.py\n\nimport ml_utils as mu\nimportlib.reload(mu)\n\n&lt;module 'ml_utils' from '/home/jovyan/2025-tutorials/ml_utils.py'&gt;",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#create-the-train-test-dataset",
-    "href": "topics/BRT_Argo_CHLA.html#create-the-train-test-dataset",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Create the train-test dataset",
-    "text": "Create the train-test dataset\nWe will use sklearn’s split function.\n\nfrom sklearn.model_selection import train_test_split\n\n# rs columns: pace_Rrs_* ending in a digit\ny_col = \"CHLA_0_10\"\nrrs_cols = [\n    c for c in dataset.columns\n    if c.startswith(\"pace_Rrs_\") and c[-1].isdigit()\n]\n# if you want to try with more variables \n#extra = [\"solar_hour\", \"x_geo\", \"y_geo\", \"z_geo\"]\nextra = [\"solar_hour\"]\ntrain_data = dataset[[\"time\", \"lat\", \"lon\", y_col] + rrs_cols + extra]\ntrain_data = train_data.rename(columns={y_col: \"y\"})\n\n# IMPORTANT! log our response so it is symmetric (Normal-ish)\ntrain_data = train_data.where(train_data[\"y\"] &gt; 0)\ntrain_data[\"y\"] = np.log10(train_data[\"y\"])\ntrain_data = train_data.dropna(subset=[\"y\"]) # drop nan\n\ny = train_data[\"y\"]  # target\nX = train_data[rrs_cols + extra]  # predictors\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X,\n    y,\n    test_size=0.2,\n    random_state=42, # change for a new random train set\n)",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#fit-a-brt",
-    "href": "topics/BRT_Argo_CHLA.html#fit-a-brt",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Fit a BRT",
-    "text": "Fit a BRT\n\nfrom sklearn.ensemble import HistGradientBoostingRegressor\nfrom sklearn.metrics import r2_score, mean_squared_error\nimport numpy as np\n\nbrt_model = HistGradientBoostingRegressor(\n    max_depth=6, learning_rate=0.05, max_iter=400,\n    validation_fraction=0.1, early_stopping=True, random_state=42\n).fit(X_train, y_train)",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#make-a-prediction-and-plot-residuals",
-    "href": "topics/BRT_Argo_CHLA.html#make-a-prediction-and-plot-residuals",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Make a prediction and plot residuals",
-    "text": "Make a prediction and plot residuals\n\ny_pred = brt_model.predict(X_train)\nresiduals = y_train - y_pred\ndf_map = train_data.loc[y_train.index, [\"lat\", \"lon\", \"time\"]]\ndf_map[\"y\"] = y_train\ndf_map[\"y_pred\"] = y_pred\ndf_map[\"residual\"] = residuals\n\n\nimport matplotlib.pyplot as plt\nimport cartopy.crs as ccrs\nimport cartopy.feature as cfeature\n\ndef residual_plot(df_map):\n    fig, ax = plt.subplots(\n        figsize=(7,5),\n        subplot_kw={\"projection\": ccrs.PlateCarree()}\n    )\n    # symmetric limits around 0\n    res = df_map[\"residual\"].values\n    max_abs = np.nanmax(np.abs(res))\n    vmin, vmax = -max_abs, max_abs\n\n    ax.coastlines(resolution=\"110m\")\n    ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n\n    sc = ax.scatter(\n        df_map[\"lon\"],\n        df_map[\"lat\"],\n        c=df_map[\"residual\"],\n        cmap=\"coolwarm\",\n        s=6,\n        vmin=vmin, vmax=vmax,\n        transform=ccrs.PlateCarree()\n    )\n\n    plt.colorbar(sc, ax=ax, label=\"Residual (y - y_pred)\")\n    bias = df_map[\"residual\"].mean()\n    plt.title(f\"Residual Map (mean bias = {bias:.3f})\")\n    plt.show()\n\n\nresidual_plot(df_map)",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#compare-to-the-test-data",
-    "href": "topics/BRT_Argo_CHLA.html#compare-to-the-test-data",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Compare to the test data",
-    "text": "Compare to the test data\n\ny_pred = brt_model.predict(X_test)\nprint(\"R²:\", r2_score(y_test, y_pred))\nprint(\"RMSE:\", np.sqrt(mean_squared_error(y_test, y_pred)))\nprint(\"bias:\", np.mean(y_test - y_pred))\n\nR²: 0.7330792741945183\nRMSE: 0.3427451647611817\nbias: -0.056228825385024044\n\n\n\nMake a scatter plot\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.metrics import r2_score, mean_squared_error\n\ny_true = y_test\n\n# Compute some metrics\nr2 = r2_score(y_true, y_pred)\nrmse = np.sqrt(mean_squared_error(y_true, y_pred))\n\n# Scatter plot\nplt.figure(figsize=(5, 5))\nplt.scatter(y_true, y_pred, s=3, alpha=0.3)\n\n# 1:1 line\nlims = [\n    min(y_true.min(), y_pred.min()),\n    max(y_true.max(), y_pred.max())\n]\nplt.plot(lims, lims, \"k--\", linewidth=1)\nplt.xlim(lims)\nplt.ylim(lims)\n\nplt.xlabel(\"log10 Chl-a (true)\")\nplt.ylabel(\"log10 Chl-a (prediction)\")\nplt.title(f\"Prediction vs Truth\\nR² = {r2:.3f}, RMSE = {rmse:.3f}\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\nPlot residuals\n\ny_pred = brt_model.predict(X_test)\nresiduals = y_test - y_pred\ndf_map = train_data.loc[y_test.index, [\"lat\", \"lon\", \"time\"]]\ndf_map[\"y\"] = y_test\ndf_map[\"y_pred\"] = y_pred\ndf_map[\"residual\"] = residuals\nresidual_plot(df_map)",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#make-a-prediction-of-the-whole-region",
-    "href": "topics/BRT_Argo_CHLA.html#make-a-prediction-of-the-whole-region",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Make a prediction of the whole region",
-    "text": "Make a prediction of the whole region\nTo make a prediction, we use the predict attribute for the brt model object. It needs the predictor variables in rows rather than like a lat/lon map and we need to deal with all the NaNs in Rrs data. I create 2 functions: * make_prediction() takes a xarray DataArray of Rrs. So like ds[\"Rrs\"]. * make_plot() takes a xarray DataArray of predictions from make_prediction() and optionally a data array of chla to compare to our predictions. So like ds[\"chlora\"].\n\n# Function 1 takes a xarray dataset from PACE with Rrs\nimport xarray as xr\ndef make_prediction(R: xr.Dataset, brt_model, feature_cols, solar_const=0):\n    # --- 3. Stack lat/lon into a single \"pixel\" dimension ---\n    R2 = R.stack(pixel=(\"lat\", \"lon\"))  # (pixel, wavelength)\n    R2 = R2.transpose(\"pixel\", \"wavelength\")\n    # Load this subset into memory\n    R2_vals = R2.values  # shape: (n_pixel, n_wavelength)\n\n    # --- 4. Make predictions dataframe\n    # If the model expects solar_hour, add it as a constant column\n    if \"solar_hour\" in feature_cols:\n        wave_cols = [c for c in feature_cols if c != \"solar_hour\"]\n        df_pred = pd.DataFrame(R2_vals, columns=wave_cols)\n        df_pred[\"solar_hour\"] = solar_const\n        df_pred = df_pred[feature_cols]\n    else:\n        df_pred = pd.DataFrame(R2_vals, columns=feature_cols)\n\n    # --- 5. Handle NaNs: BRTs generally cannot handle NaNs in predictors ---\n    # Rrs dataset will have loads of NaNs\n    valid_mask = ~df_pred.isna().any(axis=1)  # pixels with all bands present\n    df_valid = df_pred[valid_mask]\n\n    # Prepare an array for predictions (fill NaNs where we cannot predict)\n    y_pred_flat = np.full(df_pred.shape[0], np.nan, dtype=float)\n\n    # --- 6. Predict on the valid pixels ---\n    if len(df_valid) &gt; 0:\n        y_pred_flat[valid_mask.values] = brt_model.predict(df_valid)\n\n    # --- 7. Reshape back to (lat, lon) ---\n    nlat = R.sizes[\"lat\"]\n    nlon = R.sizes[\"lon\"]\n    pred_map = y_pred_flat.reshape(nlat, nlon)\n\n    pred_da = xr.DataArray(\n        pred_map,\n        coords={\"lat\": R[\"lat\"], \"lon\": R[\"lon\"]},\n        dims=(\"lat\", \"lon\"),\n        name=\"y_pred\"\n    )\n\n    return pred_da\n\n\n# Function 2 takes an xarray dataarray of our predictions and makes a map\nimport numpy as np\nimport xarray as xr\nimport matplotlib.pyplot as plt\nimport cartopy.crs as ccrs\nimport cartopy.feature as cfeature\n\ndef make_plot(\n    brt_da: xr.DataArray,\n    pace_da: xr.DataArray | None = None,\n    diff: bool = True,\n    shared_colorbar: bool = True,\n    pace_label: str = \"PACE Chlorophyll\",\n    brt_label: str = \"BRT prediction\",\n    cmap_brt: str = \"viridis\",\n):\n    \"\"\"\n    Plot prediction, optionally with PACE and difference.\n\n    Parameters\n    ----------\n    brt_da : xr.DataArray\n        BRT Prediction on a lat/lon grid.\n    pace_da : xr.DataArray or None\n        PACE chlor_a on the same lat/lon grid. If None, only brt is plotted.\n    diff : bool, default True\n        If True and pace_da is provided, add a third panel with pace - brt.\n    shared_colorbar : bool, default True\n        If True, use one colorbar for truth+prediction panels.\n    \"\"\"\n    # -----------------------\n    # Case 1: only prediction\n    # -----------------------\n    if pace_da is None:\n        # robust-ish limits from prediction only\n        vals = brt_da.values.ravel()\n        vmin, vmax = np.nanpercentile(vals, (0, 100))\n\n        fig, ax = plt.subplots(\n            1, 1,\n            figsize=(6, 4),\n            subplot_kw={\"projection\": ccrs.PlateCarree()},\n            constrained_layout=True,\n        )\n\n        ax.coastlines()\n        ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n\n        im = ax.pcolormesh(\n            brt_da[\"lon\"],\n            brt_da[\"lat\"],\n            brt_da,\n            transform=ccrs.PlateCarree(),\n           vmin=vmin, vmax=vmax,\n            cmap=cmap_brt,\n        )\n\n        ax.set_title(brt_label)\n        cbar = fig.colorbar(im, ax=ax, orientation=\"horizontal\", fraction=0.06, pad=0.08)\n        cbar.set_label(brt_label)\n        plt.show()\n        return\n\n    # ------------------------------------------------\n    # Case 2: truth + prediction (+/- difference)\n    # ------------------------------------------------\n    if diff:\n        ncols = 3\n    else:\n        ncols = 2\n\n    fig, axs = plt.subplots(\n        1, ncols,\n        figsize=(5 * ncols, 5),\n        subplot_kw={\"projection\": ccrs.PlateCarree()},\n        constrained_layout=True,\n    )\n\n    if ncols == 1:\n        axs = [axs]  # just in case, but here ncols&gt;=2\n\n    # 1. Compute robust-ish limits for truth & prediction\n    all_vals = np.concatenate([\n        pace_da.values.ravel(),\n        brt_da.values.ravel()\n    ])\n    vmin, vmax = np.nanpercentile(all_vals, (0, 100))\n\n    # -------------------\n    # Panel 1: pace\n    # -------------------\n    ax = axs[0]\n    ax.coastlines()\n    ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n    im_pace = ax.pcolormesh(\n        pace_da[\"lon\"],\n        pace_da[\"lat\"],\n        pace_da,\n        transform=ccrs.PlateCarree(),\n        vmin=vmin, vmax=vmax,\n        cmap=cmap_brt,\n    )\n    ax.set_title(pace_label)\n\n    # -------------------\n    # Panel 2: brt\n    # -------------------\n    ax = axs[1]\n    ax.coastlines()\n    ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n    im_brt = ax.pcolormesh(\n        brt_da[\"lon\"],\n        brt_da[\"lat\"],\n        brt_da,\n        transform=ccrs.PlateCarree(),\n        vmin=vmin, vmax=vmax,\n        cmap=cmap_brt,\n    )\n    ax.set_title(brt_label)\n\n    # -------------------\n    # Panel 3: Difference (optional)\n    # -------------------\n    if diff:\n        diff_da = pace_da - brt_da\n\n        # Symmetric limits for diff\n        diff_vals = diff_da.values.ravel()\n        diff_max = np.nanpercentile(np.abs(diff_vals), 98)\n        diff_vmin, diff_vmax = -diff_max, diff_max\n\n        ax = axs[2]\n        ax.coastlines()\n        ax.add_feature(cfeature.LAND, facecolor=\"0.9\")\n        im_diff = ax.pcolormesh(\n            diff_da[\"lon\"],\n            diff_da[\"lat\"],\n            diff_da,\n            transform=ccrs.PlateCarree(),\n            vmin=diff_vmin,\n            vmax=diff_vmax,\n            cmap=\"coolwarm\",\n        )\n        ax.set_title(\"PACE - BRT\")\n\n    # -------------------\n    # Colorbars\n    # -------------------\n    if shared_colorbar:\n        # one shared colorbar for pace + brt\n        cbar1 = fig.colorbar(\n            im_brt,\n            ax=axs[:2],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar1.set_label(\"Value\")\n    else:\n        # separate colorbars for PACE and BRT\n        cbar_t = fig.colorbar(\n            im_pace,\n            ax=axs[0],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar_t.set_label(pace_label)\n\n        cbar_p = fig.colorbar(\n            im_brt,\n            ax=axs[1],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar_p.set_label(brt_label)\n\n    if diff:\n        cbar2 = fig.colorbar(\n            im_diff,\n            ax=axs[-1],\n            orientation=\"horizontal\",\n            fraction=0.05,\n            pad=0.08,\n        )\n        cbar2.set_label(\"PACE - BRT\")\n\n    plt.show()",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#load-pace-rrs-and-chla-data",
-    "href": "topics/BRT_Argo_CHLA.html#load-pace-rrs-and-chla-data",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Load PACE Rrs and Chla data",
-    "text": "Load PACE Rrs and Chla data\n\nAuthenticate\nSearch\nOpen dataset\n\n\nimport earthaccess\nimport xarray as xr\n\nday = \"2024-07-08\"\n\nauth = earthaccess.login()\n# are we authenticated?\nif not auth.authenticated:\n    # ask for credentials and persist them in a .netrc file\n    auth.login(strategy=\"interactive\", persist=True)\n\n# Get Rrs\nrrs_results = earthaccess.search_data(\n    short_name = \"PACE_OCI_L3M_RRS\",\n    temporal = (day, day),\n    granule_name=\"*.DAY.*.4km.nc\"\n)\nf = earthaccess.open(rrs_results[0:1], pqdm_kwargs={\"disable\": True})\nrrs_ds = xr.open_dataset(f[0])\n\n# Get chla\nchl_results = earthaccess.search_data(\n    short_name = \"PACE_OCI_L3M_CHL\",\n    temporal = (day, day),\n    granule_name=\"*.DAY.*.4km.nc\"\n)\nf = earthaccess.open(chl_results[0:1], pqdm_kwargs={\"disable\": True})\nchl_ds = xr.open_dataset(f[0])\nchl_ds[\"log10_chla\"] = np.log10(chl_ds[\"chlor_a\"])",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#make-a-prediction-for-north-atlantic",
-    "href": "topics/BRT_Argo_CHLA.html#make-a-prediction-for-north-atlantic",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Make a prediction for North Atlantic",
-    "text": "Make a prediction for North Atlantic\n\n# Northwest Atlantic\n# Set a box\nlat_min, lat_max = 30, 60\nlon_min, lon_max = -60, -40\n# Get Rrs for that box\nR = rrs_ds[\"Rrs\"].sel(\n    lat=slice(lat_max, lat_min),   # decreasing lat coord: max→min\n    lon=slice(lon_min, lon_max)\n)\nR = R.transpose(\"lat\", \"lon\", \"wavelength\")\n\n# Get CHLA for that box\nchla = chl_ds[\"log10_chla\"].sel(\n    lat=slice(lat_max, lat_min),   # decreasing lat coord: max→min\n    lon=slice(lon_min, lon_max)\n)\nchla = chla.transpose(\"lat\", \"lon\")\n\n\n%%time\n# Make prediction\nfeature_cols = list(X_train.columns)\npred_da = make_prediction(R, brt_model, feature_cols, solar_const=0)\n\nCPU times: user 5.19 s, sys: 549 ms, total: 5.74 s\nWall time: 5.25 s\n\n\n\n# Make a plot\nmake_plot(pred_da, chla)",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#scatter-plot-of-pace-versus-brt",
-    "href": "topics/BRT_Argo_CHLA.html#scatter-plot-of-pace-versus-brt",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Scatter plot of PACE versus BRT",
-    "text": "Scatter plot of PACE versus BRT\nNote, BRT average CHLA in the 0 to 10m and PACE are not measuring exactly the same thing. PACE chlor_a uses ratios of Rrs wavelengths and Rrs reflectance ‘sees’ deeper in the water column than 10m. So we would expect that PACE chlor_a is larger than CHLA_0_10 when chlorophyll is low. The bio-Argo floats tend to be in deeper water and do not see high chlorophyll levels that one sees in coastal and near-shore. There are few CHLA_0_10 values above 0 (log10 scale). Thus it is not surprising that the BRT and PACE data are very different above 0 — the BRT model had no opportunity to “learn” the Rrs pattern for high chlorophyll.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.metrics import r2_score, mean_squared_error\n\n# Flatten and drop NaNs\ny_pace = chla.values.ravel()\ny_pred = pred_da.values.ravel()\n\nmask = np.isfinite(y_pace) & np.isfinite(y_pred)\ny_pace = y_pace[mask]\ny_pred = y_pred[mask]\n\n# Metrics\nr2 = r2_score(y_pace, y_pred)\nrmse = np.sqrt(mean_squared_error(y_pace, y_pred))\nbias = np.mean(y_pace - y_pred)\n\n# Split by x &gt; 0\nmask_x_pos = y_pace &gt; 0\n\nx_pos = y_pace[mask_x_pos]\ny_pos = y_pred[mask_x_pos]\n\nx_nonpos = y_pace[~mask_x_pos]\ny_nonpos = y_pred[~mask_x_pos]\n\n# Plot\nplt.figure(figsize=(5, 5))\n\n# Training-range points\nplt.scatter(\n    x_nonpos, y_nonpos, \n    s=3, alpha=0.3, label=\"Training-range points\"\n)\n\n# Out-of-range (x &gt; 0)\nplt.scatter(\n    x_pos, y_pos, \n    s=3, alpha=0.3, color=\"grey\", label=\"Outside training range (x &gt; 0)\"\n)\n\n# 1:1 line\nlims = [\n    min(y_pace.min(), y_pred.min()),\n    max(y_pace.max(), y_pred.max())\n]\nplt.plot(lims, lims, \"k--\", linewidth=1)\n\nplt.xlim(lims)\nplt.ylim(lims)\n\nplt.xlabel(\"log10 Chl-a (PACE)\")\nplt.ylabel(\"log10 Chl-a (BRT prediction)\")\nplt.title(\n    f\"PACE vs BRT Prediction\\n\"\n    f\"R² = {r2:.3f}, RMSE = {rmse:.3f}, bias = {bias:.3f}\"\n)\n\nplt.legend(loc=\"upper left\", markerscale=4)\nplt.tight_layout()\nplt.show()",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/BRT_Argo_CHLA.html#summary-1",
-    "href": "topics/BRT_Argo_CHLA.html#summary-1",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Summary",
-    "text": "Summary\nYou have fit a basic BRT to predict surface CHLA using bio-argo data. Things you might try\n\nadd location and season to your model\nremove solar_hour",
-    "crumbs": [
-      "1 Intro to BRTs"
-    ]
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html",
-    "href": "topics/2026-02-27/BRT_2D.html",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "",
-    "text": "Author: Eli Holmes (NOAA) Last updated: November 19, 2025"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#summary",
-    "href": "topics/2026-02-27/BRT_2D.html#summary",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Summary",
-    "text": "Summary\nIn this tutorial we will predict a numerical variable (chl) using predictor variables, in this case SST, salinity, and season.\n\\[\n\\hat{y} \\sim f(sst, so, season, location)\n\\]\nWe will use a classic non-linear prediction model: boosted regression trees (BRTs). Trees learn a big collection of if-else rules that split the response variable space. BRTs are non-linear: they can learn complicated non-linear relationships like “very high CHL only occurs when SST is low and it’s winter and we are above a certain latitude threshold.” They can handle complex interactions between variables (SST × salinity × season × location).\nThe goal is to create a predicted map of CHL given our predictor variables on a given day.\n\n\n\nBRT pred map"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#overview-of-the-modeling-steps",
-    "href": "topics/2026-02-27/BRT_2D.html#overview-of-the-modeling-steps",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Overview of the modeling steps",
-    "text": "Overview of the modeling steps\n\nCreate your sampling dataframe: spatial samples with response (what you are trying to predict), latitude, longitude, date.\nCreate your predictor dataframe. In this example we have an 3D cube (time, lat, lon) with all the variables and we sample from that.\nFit model\nMake predictions\n\nThe hard part is the data prep. We need a dataframe that looks like this. Just showing the first 5 samples. y is what we are predicting and it is the true values we have (from some type of observation) and the variables to the right are what we train on. The ocean mask just tells up what to ignore (it’s land).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntime\nlat\nlon\ny\nsst\nso\nsin_time\ncos_time\nx_geo\ny_geo\nz_geo\nocean_mask\n\n\n\n\n2020-07-03\n12.25\n63.50\n-1.273\n27.84\n34.82\n0.017\n1.000\n0.431\n0.904\n0.212\n1\n\n\n2020-01-15\n28.75\n74.25\n-0.522\n24.11\n35.21\n-0.142\n-0.990\n0.257\n0.932\n0.482\n1\n\n\n2020-03-28\n-2.00\n88.75\n-2.004\n29.47\n34.55\n0.651\n0.759\n0.030\n0.999\n-0.035\n1\n\n\n2020-10-09\n5.75\n59.25\n-1.618\n26.33\n34.90\n-0.843\n0.538\n0.504\n0.863\n0.100\n1\n\n\n2020-12-22\n17.50\n46.50\n-0.931\n22.88\n35.40\n-0.149\n-0.989\n0.675\n0.737\n0.300\n1"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#variables-in-the-model",
-    "href": "topics/2026-02-27/BRT_2D.html#variables-in-the-model",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Variables in the model",
-    "text": "Variables in the model\nA nice thing about BRTs is that we do not need to normalize (standardize) our predictor variables. BRTs work by splitting our predictors and normalizing has no effect. This is different than many other types of models that will perform much better with normalization.\n\n\n\n\n\n\n\n\n\nFeature\nSpatial Variation\nTemporal Variation\nNotes\n\n\n\n\nsst, so\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\nsin_time, cos_time\n❌ Same across lat/lon\n✅ Varies by time\nCyclical\n\n\nx_geo,y_geo, z_geo\n✅ Varies by lat/lon\n❌ Static\n-1 to 1\n\n\nocean_mask\n✅ Varies by lat/lon\n❌ Static\nBinary (0=land, 1=ocean)\n\n\ny (log CHL)\n✅ Varies by lat/lon\n✅ Varies by time\nNumeric\n\n\n\n\nsst and so: These are our core predictor variables.\nsin_time and cos_time: These introduce seasonality into our model. The models can learn seasonally dependent patterns, e.g., chlorophyll blooms in spring. The sin_time and cos_time features use cyclical encoding (sine/cosine).\nx_geo, y_geo, and z_geo: This is a dimensionless geometric encoding of location on the globe that is -1 to 1. This works better than lat/lon for machine-learning tasks. Including these location variables allows the model to learn location specific relationships.\nocean_mask: This tells the model which pixels are land (0) vs ocean (1).\ny (response): The model trains on this. For our model it is logged CHL and it is roughly centered near 0.\n\nNote, neither bathymetry nor distance from coast improved the model by any appreciable amount over the model we use here. SST (upwelling signal) and salinity (river outflow signal) are highly correlated with chlorophyll in this region with strong seasonal patterns."
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#dealing-with-nans",
-    "href": "topics/2026-02-27/BRT_2D.html#dealing-with-nans",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Dealing with NaNs",
-    "text": "Dealing with NaNs\nIn our application, NaNs in y (in our case CHL) appear over land and when obscured by clouds. Our BRT fitting function needs us to remove any rows in our dataframe where y is NaN. NaNs in our predictor variables are less common, but can happen. BRTs functions typically filter out any training data that have NaNs in the predictor variables so we will ignore those NaNs. We just have to make sure that missing values, or areas to ignore like land or cloud are coded as NaN and not something like -99."
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#load-the-libraries",
-    "href": "topics/2026-02-27/BRT_2D.html#load-the-libraries",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Load the libraries",
-    "text": "Load the libraries\n\ncore data handling and plotting libraries\nour custom functions in ml_utils.py\n\n\n# Uncomment this line and run if you are in Colab; leave in the !. That is part of the cmd\n# !pip install zarr gcsfs --quiet\n\n\n# --- Core data handling and plotting libraries ---\nimport xarray as xr       # for working with labeled multi-dimensional arrays\nimport numpy as np        # for numerical operations on arrays\nimport matplotlib.pyplot as plt  # for creating plots\n\n\n# --- Custom python functions ---\n# this requires that tensorflow and keras are available\nimport os, importlib\n# Looks to see if you have the file already and if not, downloads from GitHub\nif not os.path.exists(\"ml_utils.py\"):\n    !wget -q https://raw.githubusercontent.com/fish-pace/2025-tutorials/main/ml_utils.py\n\nimport ml_utils as mu\nimportlib.reload(mu)\n\n&lt;module 'ml_utils' from '/home/jovyan/2025-tutorials/ml_utils.py'&gt;"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#create-random-sample-of-log-chl-from-the-indian-ocean-dataset",
-    "href": "topics/2026-02-27/BRT_2D.html#create-random-sample-of-log-chl-from-the-indian-ocean-dataset",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Create random sample of log CHL from the Indian Ocean dataset",
-    "text": "Create random sample of log CHL from the Indian Ocean dataset\nFor this tutorial, we will create our observations by sampling from our dataset but in practice you would have a separate observation dataset from some sampling scheme. Note when working with cloud native data (meaning optimized for reading by chunking), you do not want to do something like a for loop. You need to use more a move clever approach so that you minimize the calls to the cloud dataset (because reading is the slow part). For learning, you don’t really have to care about this as long as you use toy examples but once you are trying to get data for 1000s of points, you do.\nFor this example, we will train on sample data from 2020 and apply that to predictions in other years.\n\nimport numpy as np\nimport pandas as pd\nimport xarray as xr\n\ndef sample_points_fast(\n    ds: xr.Dataset,\n    year: int,\n    n: int,\n    y_name: str = \"y\",\n    mask_var: str = \"ocean_mask\",\n    seed: int = 42,\n):\n    \"\"\"\n    Vectorized random sampler for chunked xarray/dask datasets (no loops).\n\n    - Draws n random times from ds.sel(time=year)\n    - Draws n random *continuous* lat/lon within the coord ranges\n    - Snaps those lat/lon to the nearest grid cell (vectorized)\n    - Gathers y and mask using a single dask vindex, sets y=NaN where mask==False\n    - Returns only rows with finite y\n\n    Returns\n    -------\n    pd.DataFrame with columns: ['time','lat','lon','y']\n      - 'lat','lon' are the original random (continuous) coordinates\n        (y is taken from the nearest grid cell).\n    \"\"\"\n    import dask.array as da  # local import to keep dependencies scoped\n\n    dsy = ds.sel(time=str(year))\n    if dsy.sizes.get(\"time\", 0) == 0:\n        raise ValueError(f\"No timesteps found for year {year}.\")\n\n    rng = np.random.default_rng(seed)\n\n    # ----- random time indices -----\n    T = dsy.sizes[\"time\"]\n    t_idx = rng.integers(0, T, size=n)\n\n    # ----- random continuous lat/lon, then snap to nearest grid index -----\n    lat_vals = dsy[\"lat\"].values\n    lon_vals = dsy[\"lon\"].values\n\n    lat_rand = rng.uniform(lat_vals.min(), lat_vals.max(), size=n)\n    lon_rand = rng.uniform(lon_vals.min(), lon_vals.max(), size=n)\n\n    # searchsorted-based nearest-index that works for ascending or descending arrays\n    def nearest_index(coord_vals, q):\n        asc = coord_vals[0] &lt;= coord_vals[-1]\n        base = coord_vals if asc else -coord_vals\n        tgt  = q          if asc else -q\n        idx = np.searchsorted(base, tgt, side=\"left\")\n        idx0 = np.clip(idx - 1, 0, len(coord_vals) - 1)\n        idx1 = np.clip(idx,     0, len(coord_vals) - 1)\n        pick_right = np.abs(coord_vals[idx1] - q) &lt; np.abs(coord_vals[idx0] - q)\n        return np.where(pick_right, idx1, idx0)\n\n    lat_i = nearest_index(lat_vals, lat_rand)\n    lon_i = nearest_index(lon_vals, lon_rand)\n\n    # ----- vindex gather for y and mask (single compute) -----\n    y_da = dsy[y_name].data  # (time, lat, lon) dask array\n    y_s  = y_da.vindex[t_idx, lat_i, lon_i]  # (n,)\n\n    m_da = dsy[mask_var]\n    if \"time\" in m_da.dims:\n        m_s = m_da.data.vindex[t_idx, lat_i, lon_i]\n    else:\n        m_s = m_da.data.vindex[lat_i, lon_i]\n\n    y_np, m_np = da.compute(y_s, m_s)\n\n    # apply mask: keep only ocean\n    y_np = np.where(m_np.astype(bool), y_np, np.nan)\n\n    # ----- assemble output; keep the random (continuous) lat/lon -----\n    times = pd.to_datetime(dsy[\"time\"].values[t_idx])\n    df = pd.DataFrame(\n        {\"time\": times,\n         \"lat\":  lat_rand.astype(float),\n         \"lon\":  lon_rand.astype(float),\n         \"y\":    y_np.astype(float)}\n    )\n\n    return df.dropna(subset=[\"y\"]).reset_index(drop=True)\n\n\ny_train = sample_points_fast(dataset, 2020, 10000)\n\n\ny_train.head(5)\n\n\n\n\n\n\n\n\ntime\nlat\nlon\ny\n\n\n\n\n0\n2020-02-02\n3.071520\n60.639974\n-2.189335\n\n\n1\n2020-06-09\n1.165537\n81.301786\n-2.116684\n\n\n2\n2020-06-07\n-3.377244\n67.206579\n-2.658942\n\n\n3\n2020-11-10\n11.264733\n52.720775\n-1.707955\n\n\n4\n2020-02-01\n23.638891\n59.068457\n-0.833890\n\n\n\n\n\n\n\nHere are where the samples in July land.\n\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nax = plt.gca()\ndataset.ocean_mask.plot(ax=ax, cmap=\"gray\", add_colorbar=False)\njuly = y_train[pd.to_datetime(y_train[\"time\"]).dt.month == 7]\nax.scatter( july[\"lon\"], july[\"lat\"], s=10)\nax.set_xlabel(\"Longitude\"); ax.set_ylabel(\"Latitude\")\n#ax.set_aspect(\"equal\", adjustable=\"box\")\nax.set_title(\"July sample points\")\nplt.show()"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#create-the-train-test-dataset",
-    "href": "topics/2026-02-27/BRT_2D.html#create-the-train-test-dataset",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Create the train-test dataset",
-    "text": "Create the train-test dataset\nWe want all our variables plus the y. Here I create a function called create_training_dataset() that gets the predictor variables for our lat/lon/time samples and returns a dataframe.\n\n# create_training_dataset function\nimport numpy as np\nimport pandas as pd\nimport xarray as xr\n\ndef create_training_dataset(\n    ds: xr.Dataset,\n    y_train: pd.DataFrame,\n    num_var,\n    cat_var,\n):\n    \"\"\"\n    Vectorized feature extraction at sampled points.\n\n    Parameters\n    ----------\n    ds : xr.Dataset\n        Must contain coords 'time','lat','lon' and the variables in num_var+cat_var.\n    y_train : pd.DataFrame\n        Columns: ['time','lat','lon'] (continuous lat/lon; time-like)\n    num_var, cat_var : list[str]\n        Predictor variable names. Can be:\n          - (time,lat,lon)\n          - (lat,lon)\n          - (time,)\n        Scalars are also supported (broadcast).\n\n    Returns\n    -------\n    pd.DataFrame\n        Columns: ['time','lat','lon'] + num_var + cat_var\n        Values are gathered from the nearest grid cell/time stamp.\n    \"\"\"\n    import dask.array as da\n\n    # --- coordinate arrays from ds ---\n    lat_vals  = ds[\"lat\"].values\n    lon_vals  = ds[\"lon\"].values\n    time_vals = np.asarray(ds[\"time\"].values)  # datetime64\n\n    # --- sample coordinates from y_train ---\n    lat_rand  = np.asarray(y_train[\"lat\"].values, dtype=float)\n    lon_rand  = np.asarray(y_train[\"lon\"].values, dtype=float)\n    time_rand = pd.to_datetime(y_train[\"time\"]).to_numpy(dtype=\"datetime64[ns]\")\n\n    # --- nearest-index helpers (work for ascending or descending) ---\n    def nearest_index_1d(coord_vals, q_vals):\n        asc = coord_vals[0] &lt;= coord_vals[-1]\n        base = coord_vals if asc else -coord_vals\n        tgt  = q_vals     if asc else -q_vals\n        idx  = np.searchsorted(base, tgt, side=\"left\")\n        idx0 = np.clip(idx - 1, 0, len(coord_vals) - 1)\n        idx1 = np.clip(idx,     0, len(coord_vals) - 1)\n        pick_right = np.abs(coord_vals[idx1] - q_vals) &lt; np.abs(coord_vals[idx0] - q_vals)\n        return np.where(pick_right, idx1, idx0)\n\n    def nearest_time_index(times, qtimes):\n        t = times.astype(\"datetime64[ns]\").astype(\"int64\")\n        q = qtimes.astype(\"datetime64[ns]\").astype(\"int64\")\n        idx  = np.searchsorted(t, q, side=\"left\")\n        idx0 = np.clip(idx - 1, 0, len(t) - 1)\n        idx1 = np.clip(idx,     0, len(t) - 1)\n        pick_right = np.abs(t[idx1] - q) &lt; np.abs(t[idx0] - q)\n        return np.where(pick_right, idx1, idx0)\n\n    # --- build index vectors for each sample ---\n    lat_i = nearest_index_1d(lat_vals,  lat_rand)\n    lon_i = nearest_index_1d(lon_vals,  lon_rand)\n    t_idx = nearest_time_index(time_vals, time_rand)\n\n    # --- gather all predictors with dask vindex in one compute ---\n    names = list(num_var) + list(cat_var)\n    gathers = []\n    for v in names:\n        if v not in ds:\n            raise KeyError(f\"Variable '{v}' not found in dataset.\")\n        da_v = ds[v]\n        dims = da_v.dims\n\n        # reorder to a standard axis order before vindex\n        if {\"time\",\"lat\",\"lon\"} &lt;= set(dims):\n            x = da_v.transpose(\"time\",\"lat\",\"lon\")\n            g = x.data.vindex[t_idx, lat_i, lon_i]\n        elif {\"lat\",\"lon\"} &lt;= set(dims):\n            x = da_v.transpose(\"lat\",\"lon\")\n            g = x.data.vindex[lat_i, lon_i]\n        elif (\"time\" in dims) and (\"lat\" not in dims) and (\"lon\" not in dims):\n            x = da_v.transpose(\"time\", ...)\n            g = x.data.vindex[t_idx]\n        elif da_v.ndim == 0:  # scalar → broadcast to length n\n            g = da.asarray(np.full_like(t_idx, fill_value=float(da_v.values), dtype=float))\n        else:\n            raise ValueError(\n                f\"Unsupported dims for '{v}': {dims}. \"\n                \"Expected (time,lat,lon), (lat,lon), (time,), or scalar.\"\n            )\n        gathers.append(g)\n\n    # single materialization step\n    values = da.compute(*gathers)\n\n    # --- assemble output ---\n    df = pd.DataFrame({\n        \"time\": pd.to_datetime(time_vals[t_idx]),\n        \"lat\":  lat_vals[lat_i].astype(float),\n        \"lon\":  lon_vals[lon_i].astype(float),\n        \"y\":  y_train[\"y\"].astype(float),   \n    })\n    for v, arr in zip(names, values):\n        df[v] = np.asarray(arr)\n\n    return df\n\nCreate our training dataset. We will split into train and test.\n\nnum_var = ['sst','so']\ncat_var = ['ocean_mask','sin_time','cos_time','x_geo', 'y_geo', 'z_geo']\ntrain_dataset = create_training_dataset(dataset, y_train, num_var, cat_var)"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#fit-a-brt",
-    "href": "topics/2026-02-27/BRT_2D.html#fit-a-brt",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Fit a BRT",
-    "text": "Fit a BRT\n\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import HistGradientBoostingRegressor\nfrom sklearn.metrics import r2_score, mean_squared_error\nimport numpy as np\n\n# predictor variables\nfeat_cols = num_var + cat_var\ndf = train_dataset.copy()\n\n# keep ocean & finite y. Only train on the ocean values.\nif \"ocean_mask\" in df:\n    df = df[df[\"ocean_mask\"] &gt; 0.5]\ndf = df[np.isfinite(df[\"y\"])]\n\n# get numpy arrays\nX = df[feat_cols].to_numpy()  # may include NaNs — OK for HGBR\ny = df[\"y\"].to_numpy()\n\n# create train and test split\nX_train, X_test, y_train_vec, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\n# train the model\nbrt_model = HistGradientBoostingRegressor(\n    max_depth=6, learning_rate=0.05, max_iter=400,\n    validation_fraction=0.1, early_stopping=True, random_state=42\n).fit(X_train, y_train_vec)"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#compare-to-the-test-data",
-    "href": "topics/2026-02-27/BRT_2D.html#compare-to-the-test-data",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Compare to the test data",
-    "text": "Compare to the test data\n\npred = brt_model.predict(X_test)\nprint(\"R²:\", r2_score(y_test, pred))\nprint(\"RMSE:\", mean_squared_error(y_test, pred))\n\nR²: 0.7850330403327634\nRMSE: 0.15018093739608177"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#make-a-prediction-of-the-whole-region",
-    "href": "topics/2026-02-27/BRT_2D.html#make-a-prediction-of-the-whole-region",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Make a prediction of the whole region",
-    "text": "Make a prediction of the whole region\nTo make a prediction, we use the predict attribute for the brt model object. It needs the predictor variables in rows rather than like a lat/lon map. Once we have the prediction, we can plot but we need to set the land to NaN otherwise our plot will show a prediction for land.\n\n# pick your day (exact or nearest)\nday = dataset.sel(time=\"2001-10-10\")  # or: dataset.sel(time=\"2001-10-10\", method=\"nearest\")\n\n# choose a template to broadcast to for vars that do not have lat/lon\ntmpl = day[\"sst\"]\n\n# stack features into (H, W, C)\nX_map = np.stack([(day[v].broadcast_like(tmpl)).values for v in (num_var + cat_var)], axis=-1)\nH, W, C = X_map.shape # height, width, predictor variables\n\n# make the prediction and then reshape back to a map\ny_pred = brt_model.predict(X_map.reshape(-1, C)) # reshape makes our map pixels into a vector (H*W rows)\ny_pred = y_pred.reshape(H, W)\n\n\n# Make a plot\nplt.figure(figsize=(6,5))\nland = (dataset[\"ocean_mask\"].values == 0)\ny_plot = np.where(land, np.nan, y_pred)\nim = plt.imshow(y_plot, cmap=\"viridis\")\n\n\n\n\n\n\n\n\nIn our example, we know the true log CHL since we sampled our training data from that. Let’s show the true map against the predicted map. The predict_and_plot_date function is in our ml_utils.py file. It add bells and whistles and puts the true plot to the left.\n\n_ = mu.predict_and_plot_date(\n    data_xr=dataset,\n    date=\"2001-10-10\",\n    model=brt,\n    num_var=num_var,\n    cat_var=cat_var,\n    X_mean=None, X_std=None,\n    model_type=\"tabular\",\n    use_percentiles=True\n)\n\n\n\n\n\n\n\n\n\nPlot for one day each month\n\nmu.plot_true_vs_predicted_year_multi(\n    dataset, \"2001\", [brt_model], None, None, \n    num_var, cat_var, y_var=\"y\", day=10,\n    model_types=[\"tabular\"],\n    model_names=[\"BRT\"])"
-  },
-  {
-    "objectID": "topics/2026-02-27/BRT_2D.html#summary-1",
-    "href": "topics/2026-02-27/BRT_2D.html#summary-1",
-    "title": "Simple Machine-Learning: Boosted Regression Predictions",
-    "section": "Summary",
-    "text": "Summary\nYou have fit a basic BRT with season and location information. It is a bit “stripy” which happens with location variables but it is not terrible.\nThings you might try * remove salinity and sst * keep salinity and sst and remove season or location variables * reduce the number of sample points from 10,000 to 1,000"
-  },
-  {
-    "objectID": "content/setup.html",
-    "href": "content/setup.html",
-    "title": "Quick Start",
-    "section": "",
-    "text": "For those already familiar with JupyterLab and unix.\n\nGitHub Account\nA GitHub account is required to gain access to the JupyterHub and to clone the tutorials used in the Hackhours.\nHow do I get the tutorials into the JupyterHub?\n\nYou can upload files.\nEasiest is probably cloning a repo into the hub. See the JupyterHub Skills section if you do not know how to do this.\n\n\n\nAuthenticating to GitHub\nThis is a little different on the JupyterHub. See git authentication.\nFor content that uses the NASA Earthdata repository, you will need an Earthdata Login account. Please visit https://urs.earthdata.nasa.gov to register and manage your Earthdata Login account. This account is free to create. Please jot down your username and password, as you need to enter it in the tutorials.\n\n\nWhen done, please stop the JupyterHub\nIf you are in JupyterLab in the browser:\n\nFile &gt; Hub Control Panel &gt; Stop my server\n\nIf you are in RStudio and you still have the JupyterLab tab open in your browser:\n\nGo to the JupyterLab tab\nFile &gt; Hub Control Panel &gt; Stop my server\n\nIf you are in RStudio and you do not have the JupyterLab tab open in your browser because you closed that tab:\n\nGo to the url https://&lt;jupyterhub url&gt;/user/&lt;your username in the hub&gt;/lab/ That will open the JupyterLab tab\nFile &gt; Hub Control Panel &gt; Stop my server"
-  },
-  {
-    "objectID": "content/jhub.html",
-    "href": "content/jhub.html",
-    "title": "NMFS HackHours 2026",
-    "section": "",
-    "text": "The NMFS Openscapes JupyterHub is managed by Openscapes and developed in partnership with the International Interactive Computing Collaboration 2i2c. Launched in September 2024, the NMFS Openscapes JupyterHub joins the NASA Openscapes JupyterHub in providing a curated interactive computing platform to support training in earth and life science visualization, computing and analysis. The NMFS Openscapes JupyterHub supports workshops and trainings run by NOAA Fisheries."
-  },
-  {
-    "objectID": "coc.html",
-    "href": "coc.html",
-    "title": "Code of Conduct",
-    "section": "",
-    "text": "We are dedicated to providing a harassment-free learning experience for everyone. We do not tolerate harassment of participants in any form. Sexual language and imagery is not appropriate either in-person or virtual form, including the Discussion boards and Chats. Participants (including event volunteers and organizers) violating these rules may be sanctioned or expelled from the event at the discretion of the organizers.",
-    "crumbs": [
-      "JupyterHub",
-      "Code of Conduct"
-    ]
-  },
-  {
-    "objectID": "coc.html#definition-of-harassment",
-    "href": "coc.html#definition-of-harassment",
-    "title": "Code of Conduct",
-    "section": "Definition of Harassment",
-    "text": "Definition of Harassment\nHarassment includes, but is not limited to:\n\nVerbal comments that harass based on sexual orientation, disability, physical appearance, body size, race, age, religion.\nSexual images in public spaces\nDeliberate intimidation, stalking, or following\nHarassing photography or recording\nSustained disruption of talks or other events\nInappropriate physical contact\nUnwelcome sexual attention\nAdvocating for, or encouraging, any of the above behavior",
-    "crumbs": [
-      "JupyterHub",
-      "Code of Conduct"
-    ]
-  },
-  {
-    "objectID": "coc.html#expectations",
-    "href": "coc.html#expectations",
-    "title": "Code of Conduct",
-    "section": "Expectations",
-    "text": "Expectations\nParticipants asked to stop any harassing behavior are expected to comply immediately. If a participant engages in harassing behavior, the organizers retain the right to take any actions to keep the event a welcoming environment for all participants. This includes warning the offender or expulsion from the event.\nThe organizers may take action to redress anything designed to, or with the clear impact of, disrupting the event or making the environment hostile for any participants. We expect participants to follow these rules at all the event venues and event-related social activities.",
-    "crumbs": [
-      "JupyterHub",
-      "Code of Conduct"
-    ]
-  },
-  {
-    "objectID": "coc.html#reporting-a-violation",
-    "href": "coc.html#reporting-a-violation",
-    "title": "Code of Conduct",
-    "section": "Reporting a violation",
-    "text": "Reporting a violation\nHarassment and other code of conduct violations reduce the value of the event for everyone. If someone makes you or anyone else feel unsafe or unwelcome, please report it as soon as possible.\nIf you feel comfortable contacting someone associated with our event, you may speak with one of the event organizers in person or contact an organizer on a private channel.",
-    "crumbs": [
-      "JupyterHub",
-      "Code of Conduct"
-    ]
-  },
-  {
-    "objectID": "content/hackhours.html",
-    "href": "content/hackhours.html",
-    "title": "Hackhours",
-    "section": "",
-    "text": "These sessions are for NOAA staff to gain more familiarity with Jupyter Hubs and working with spatial data, esp big data hosted in the cloud in databases, via code and via geospatial packages in R and Python.\nFor more data science trainings and resource, see: * https://sites.google.com/noaa.gov/nmfs-hq-st-open-science/trainings * https://coastwatch.noaa.gov/cwn/training-courses.html * https://ioos.github.io/ioos_code_lab/content/intro.html",
-    "crumbs": [
-      "About"
-    ]
-  },
-  {
-    "objectID": "content/hackhours.html#about-nmfs-open-science",
-    "href": "content/hackhours.html#about-nmfs-open-science",
-    "title": "Hackhours",
-    "section": "About NMFS Open Science",
-    "text": "About NMFS Open Science\nWe provide technical and infrastructure support for any groups within NOAA Fisheries who would like computing support for their workshops or trainings; See our training page (NOAA internal). In September 2024, we launched a JupyterHub with a variety of specialized computing environments tailored to needs in fisheries and ocean modeling. We also support the development of a Docker stack tailored to R and Python workflows. We run regular workshops and trainings in reproducible science. See NMFS Openscapes and NMFS Open Science. If at NOAA see our internal site and the tabs for News and Training.",
-    "crumbs": [
-      "About"
-    ]
-  },
-  {
-    "objectID": "content/reuse.html",
-    "href": "content/reuse.html",
-    "title": "Reuse Statement",
-    "section": "",
-    "text": "This content is released under CC0 Creative Commons.\nPermissive Re-Mix and No Attribution Needed: You may reuse the NMFS Open Science content in this repository—excluding the NMFS Open Science logo and any NOAA logos—in any way you like. You do not need permission. You do not need to give attribution, but if you use large parts of tutorials or content it is polite to give acknowledgement of the source. Please check each repository for its reuse statement. Some of the content is from outside of NMFS Open Science. This will be noted and you should check the original content for its reuse statement.",
-    "crumbs": [
-      "Reuse Statement"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "HackHours 2026",
-    "section": "",
-    "text": "During these stand-alone informal sessions we will get introduced to a variety of tools for ocean data access and analysis in Python (and some R).\nWhen: Fridays 12pm Pacific/3pm Eastern. Register (open to all) Zoom registration\nHow to run tutorials Colab (anyone), NOAA Hub (anyone with NOAA email) or use NMFS persistent hub with a persistent home directory. For NOAA staff, request to be added to the NMFS Hub."
-  },
-  {
-    "objectID": "index.html#schedule",
-    "href": "index.html#schedule",
-    "title": "HackHours 2026",
-    "section": "Schedule",
-    "text": "Schedule\nSchedule will be tweaked as guest speakers confirm, but this shows the planned topics\n\nFeb 27 - Intro to Boosted Regression Trees: creating global chlorophyll density at depth profiles (Eli Holmes, NOAAF) \nMar 6 - BRT application: creating a fish abundance prediction using PACE remote-sensing reflectance and SEAMAP surveys (Ryan Vandermeulen, NOAAF) \nMar 13 - BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic (Haley Synan, NOAAF)\nMar 20 - Intro to convolutional neural networks: comparison of BRT and CNNs (Eli Holmes, NOAAF) \nMar 27 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)\nApr 3 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)\nApr 10 - Accessing and Vizualizing Argo Buoy Data\nApr 17 - Accessing and Vizualizing Glider Data\nApr 24 - Intro to Modeled Ocean Data\nMay 1 - Intro to Modeled Ocean Data\nMay 8 - Intro to Modeled Ocean Data\nMay 15 - VizualiZarr for Legacy Data Formats\nMay 22 - skipping for Memorial Day long weekend\nMay 29 - Advances in Data Vizualization"
-  },
-  {
-    "objectID": "topics/2026-02-27/index.html",
-    "href": "topics/2026-02-27/index.html",
-    "title": "Intro to BRT - Python",
-    "section": "",
-    "text": "In this session, you will get an introduction using Boosted Regression Trees to make predictions."
-  },
-  {
-    "objectID": "topics/2026-02-27/index.html#tutorials-1",
-    "href": "topics/2026-02-27/index.html#tutorials-1",
-    "title": "Intro to BRT - Python",
-    "section": "Tutorials",
-    "text": "Tutorials"
-  },
-  {
-    "objectID": "topics/2026-02-27/index.html#how-to-download-and-open-the-tutorials",
-    "href": "topics/2026-02-27/index.html#how-to-download-and-open-the-tutorials",
-    "title": "Intro to BRT - Python",
-    "section": "How to download and open the tutorials",
-    "text": "How to download and open the tutorials\n\nJupyter Hub\n\nStart the Jupyter Hub server &lt;nmfs-openscapes.2i2c.cloud&gt;\nClick the orange Open in Jupyter Hub button\n\n\n\nColab\n\nClick the Open in Colab button\n\n\n\nDownload\n\nDownload to your local computer\nYou will need to have Python and Jupyter Lab installed\nInstall any needed packages\n\n\n\nHow to clone the git repository\nAfter cloning, you will need to navigate to the tutorials in the topics-2025 directory.\nNever cloned the NMFSHackDays-2026 repo?\ncd ~\ngit clone https://github.com/nmfs-opensci/NMFSHackDays-2026\nHave cloned it but need to update? This is going to destroy any changes that you made to the repo to make it match the current state of the repo on GitHub.\ncd ~/NMFSHackDays-2026\ngit fetch origin\ngit reset --hard origin/main"
-  },
-  {
-    "objectID": "topics/index.html",
-    "href": "topics/index.html",
-    "title": "HackHours 2026",
-    "section": "",
-    "text": "How to run the tutorials? In the tutorial, you will see a button to open in the JupyterHub. You can also download notebooks. Or you can open in Colab using the link in table."
-  },
-  {
-    "objectID": "topics/index.html#additional-tuturials",
-    "href": "topics/index.html#additional-tuturials",
-    "title": "HackHours 2026",
-    "section": "Additional Tuturials",
-    "text": "Additional Tuturials\nSee prior year HackHours. Fish-PACE tutorials"
   }
 ]

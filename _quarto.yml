@@ -58,6 +58,8 @@ website:
           href: topics/BRT_Argo_CHLA.html
         - text: "2 Intro to BRTs"
           href: topics/matchups.html
+        - text: "3 Intro to BRTs"
+          href: topics/silver_hake.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
