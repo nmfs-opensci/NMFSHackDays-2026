@@ -1,10 +1,10 @@
 [
   {
-    "objectID": "topics/silver_hake.html#an-example-with-silver-hack-survey-data",
-    "href": "topics/silver_hake.html#an-example-with-silver-hack-survey-data",
+    "objectID": "topics/silver_hake.html#an-example-with-silver-hake-survey-data",
+    "href": "topics/silver_hake.html#an-example-with-silver-hake-survey-data",
     "title": "Boosted Regression Trees Part 3",
-    "section": "An example with Silver Hack survey data",
-    "text": "An example with Silver Hack survey data\nPresenter: Haley Synan (NEFSC)\nWe will be going through a notebook that Haley’s team developed during the Fish-PACE HackWeek.",
+    "section": "An example with Silver Hake survey data",
+    "text": "An example with Silver Hake survey data\nPresenter: Haley Synan (NEFSC)\nWe will be going through a notebook that Haley’s team developed during the Fish-PACE HackWeek.",
     "crumbs": [
       "3 Intro to BRTs"
     ]

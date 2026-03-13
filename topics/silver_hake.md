@@ -1,6 +1,6 @@
 # Boosted Regression Trees Part 3
 
-## An example with Silver Hack survey data
+## An example with Silver Hake survey data
 **Presenter: Haley Synan (NEFSC)**
 
 We will be going through a [notebook](https://github.com/fish-pace/2026-proj-Trawling4PACE/blob/main/contributor_folders/hsynan/Trawling4PACE_FINAL_Hackhour.ipynb) that Haley's team developed during the Fish-PACE HackWeek.
