@@ -60,6 +60,8 @@ website:
           href: topics/matchups.html
         - text: "3 Intro to BRTs"
           href: topics/silver_hake.html
+        - text: "4 Intro to CNNs"
+          href: https://fish-pace.github.io/hackweek-2025/presentations/notebooks/CNN_2D.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
