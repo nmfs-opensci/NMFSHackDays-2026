@@ -8,6 +8,7 @@ default-image-extension: ""
     
 resources:
   - topics/images
+  - topics/2026-03-20/Intro_to_CNNs.pdf
   - widgets/jupyterhub_link_widget.html
   - widgets/widget-popout.html
   
