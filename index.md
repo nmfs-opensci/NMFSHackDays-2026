@@ -12,8 +12,8 @@ During these stand-alone informal sessions we will get introduced to a variety o
 
 Schedule will be tweaked as guest speakers confirm, but this shows the planned topics
 
-* Feb 27 - [Intro to Boosted Regression Trees](topics/BRT_Argo_CHLA.html): creating global chlorophyll density at depth profiles (Eli Holmes, NOAAF) {{< fa brands python >}}
-* Mar 6 - [BRT application: creating a fish abundance prediction using PACE remote-sensing reflectance](topics/matchups.html) and SEAMAP surveys (Ryan Vandermeulen, NOAAF) {{< fa brands python >}}
+* Feb 27 - [Intro to Boosted Regression Trees](topics/2026-02-27/BRT_Argo_CHLA.html): creating global chlorophyll density at depth profiles (Eli Holmes, NOAAF) {{< fa brands python >}}
+* Mar 6 - [BRT application: creating a fish abundance prediction using PACE remote-sensing reflectance](topics/2026-03-06/matchups.html) and SEAMAP surveys (Ryan Vandermeulen, NOAAF) {{< fa brands python >}}
 * Mar 13 - [BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic](topics/silver_hake.html) (Haley Synan, NOAAF)
 * Mar 20 - [Intro to convolutional neural networks: comparison of BRT and CNNs (Eli Holmes, NOAAF)](topics/2026-03-20/CNN_2D.html) {{< fa brands python >}}
 * Mar 27 - Intro to Gridded Ocean Data with xarray (Cloud, OPeNDAP, ERRDAP, Copernicus)

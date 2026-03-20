@@ -56,13 +56,13 @@ website:
           href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
         - text: "---"
         - text: "1 Intro to BRTs"
-          href: topics/BRT_Argo_CHLA.html
+          href: topics/2026-02-27/BRT_Argo_CHLA.html
         - text: "2 Intro to BRTs"
-          href: topics/matchups.html
+          href: topics/2026-03-06/matchups.html
         - text: "3 Intro to BRTs"
           href: topics/silver_hake.html
         - text: "4 Intro to CNNs"
-          href: https://github.com/eeholmes/2025-tutorials/blob/main/CNN_2D.ipynb
+          href: topics/2026-03-20/CNN_2D.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
