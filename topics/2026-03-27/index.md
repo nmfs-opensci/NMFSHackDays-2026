@@ -4,16 +4,20 @@ title: Intro to xarray - Python
 
 In this session, you will get an introduction using xarry: the foundational package for working with gridded data in Python.
 
-<img width="831" height="483" alt="image" src="https://github.com/user-attachments/assets/97519f88-18e7-4cd0-8c8c-7320fb493cb1" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/97519f88-18e7-4cd0-8c8c-7320fb493cb1" />
 
-<img width="850" height="474" alt="image" src="https://github.com/user-attachments/assets/94c715bb-ffad-4f03-b4de-bd572e8a1211" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/94c715bb-ffad-4f03-b4de-bd572e8a1211" />
 
 
 ## Tutorials
 
+* [Subset and Plot](1-subset-and-plot.html)
+* [Data Cubes](2-data-cubes.html)
+* [xarray and OPeNDAP](https://nmfs-opensci.github.io/NMFSHackDays-2025/topics-2025/2025-opendap/)
+
 ## How to download and open the tutorials
 
-### Jupyter Hub
+### JupyterHub
 
 1. Start the Jupyter Hub server <nmfs-openscapes.2i2c.cloud>
 2. Click the orange Open in Jupyter Hub button
@@ -30,7 +34,7 @@ In this session, you will get an introduction using xarry: the foundational pack
 
 ### How to clone the git repository
 
-After cloning, you will need to navigate to the tutorials in the `topics-2025` directory.
+After cloning, you will need to navigate to the tutorials in the `topics` directory.
 
 Never cloned the NMFSHackDays-2026 repo?
 

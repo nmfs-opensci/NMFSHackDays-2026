@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Reuse Statement – NMFS HackHours 2026</title>
+<title>Intro to xarray - Python – NMFS HackHours 2026</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,28 +23,28 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../">
-<link href="../coc.html" rel="next">
-<link href="../images/favicon-16x16.png" rel="icon" type="image/png">
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-69259211bff4de149c509f6620516e6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../topics/2026-03-20/CNN_2D.html" rel="prev">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-69259211bff4de149c509f6620516e6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -246,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">NMFS HackHours 2026</span>
     </a>
   </div>
@@ -288,7 +288,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../content/reuse.html">Reuse Statement</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../topics/2026-03-27/index.html">1 Intro to xarray</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -299,7 +299,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../index.html" class="sidebar-logo-link">
+      <a href="../../index.html" class="sidebar-logo-link">
       <img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
       </div>
@@ -307,7 +307,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../content/hackhours.html" class="sidebar-item-text sidebar-link">
+  <a href="../../content/hackhours.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">About</span></a>
   </div>
 </li>
@@ -318,44 +318,44 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../topics/2026-02-27/BRT_Argo_CHLA.html" class="sidebar-item-text sidebar-link">
+  <a href="../../topics/2026-02-27/BRT_Argo_CHLA.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">1 Intro to BRTs</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../topics/2026-03-06/matchups.html" class="sidebar-item-text sidebar-link">
+  <a href="../../topics/2026-03-06/matchups.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">2 Intro to BRTs</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../topics/silver_hake.html" class="sidebar-item-text sidebar-link">
+  <a href="../../topics/silver_hake.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">3 Intro to BRTs</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../topics/2026-03-20/CNN_2D.html" class="sidebar-item-text sidebar-link">
+  <a href="../../topics/2026-03-20/CNN_2D.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">4 Intro to CNNs</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../topics/2026-03-27/index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../topics/2026-03-27/index.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">1 Intro to xarray</span></a>
   </div>
 </li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../content/reuse.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../content/reuse.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Reuse Statement</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../coc.html" class="sidebar-item-text sidebar-link">
+  <a href="../../coc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Code of Conduct</span></a>
   </div>
 </li>
@@ -364,8 +364,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#tutorials" id="toc-tutorials" class="nav-link active" data-scroll-target="#tutorials">Tutorials</a></li>
+  <li><a href="#how-to-download-and-open-the-tutorials" id="toc-how-to-download-and-open-the-tutorials" class="nav-link" data-scroll-target="#how-to-download-and-open-the-tutorials">How to download and open the tutorials</a></li>
+  </ul>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/edit/main/topics/2026-03-27/index.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-03-27/index.md" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -392,7 +399,7 @@ function googleTranslateElementInit() {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Reuse Statement</h1>
+<h1 class="title">Intro to xarray - Python</h1>
 </div>
 
 
@@ -409,10 +416,54 @@ function googleTranslateElementInit() {
 </header>
 
 
-<p>This content is released under CC0 Creative Commons.</p>
-<p><strong>Permissive Re-Mix and No Attribution Needed</strong>: You may reuse the NMFS Open Science content in this repository—excluding the NMFS Open Science logo and any NOAA logos—in any way you like. You do not need permission. You do not need to give attribution, but if you use large parts of tutorials or content it is polite to give acknowledgement of the source. Please check each repository for its reuse statement. Some of the content is from outside of NMFS Open Science. This will be noted and you should check the original content for its reuse statement.</p>
+<p>In this session, you will get an introduction using xarry: the foundational package for working with gridded data in Python.</p>
+<p><img width="500" alt="image" src="https://github.com/user-attachments/assets/97519f88-18e7-4cd0-8c8c-7320fb493cb1"></p>
+<p><img width="500" alt="image" src="https://github.com/user-attachments/assets/94c715bb-ffad-4f03-b4de-bd572e8a1211"></p>
+<section id="tutorials" class="level2">
+<h2 class="anchored" data-anchor-id="tutorials">Tutorials</h2>
+<ul>
+<li><a href="1-subset-and-plot.html">Subset and Plot</a></li>
+<li><a href="2-data-cubes.html">Data Cubes</a></li>
+<li><a href="https://nmfs-opensci.github.io/NMFSHackDays-2025/topics-2025/2025-opendap/">xarray and OPeNDAP</a></li>
+</ul>
+</section>
+<section id="how-to-download-and-open-the-tutorials" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-download-and-open-the-tutorials">How to download and open the tutorials</h2>
+<section id="jupyterhub" class="level3">
+<h3 class="anchored" data-anchor-id="jupyterhub">JupyterHub</h3>
+<ol type="1">
+<li>Start the Jupyter Hub server &lt;nmfs-openscapes.2i2c.cloud&gt;</li>
+<li>Click the orange Open in Jupyter Hub button</li>
+</ol>
+</section>
+<section id="colab" class="level3">
+<h3 class="anchored" data-anchor-id="colab">Colab</h3>
+<ol type="1">
+<li>Click the Open in Colab button</li>
+</ol>
+</section>
+<section id="download" class="level3">
+<h3 class="anchored" data-anchor-id="download">Download</h3>
+<ol type="1">
+<li>Download to your local computer</li>
+<li>You will need to have Python and Jupyter Lab installed</li>
+<li>Install any needed packages</li>
+</ol>
+</section>
+<section id="how-to-clone-the-git-repository" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-clone-the-git-repository">How to clone the git repository</h3>
+<p>After cloning, you will need to navigate to the tutorials in the <code>topics</code> directory.</p>
+<p>Never cloned the NMFSHackDays-2026 repo?</p>
+<pre><code>cd ~
+git clone https://github.com/nmfs-opensci/NMFSHackDays-2026</code></pre>
+<p>Have cloned it but need to update? This is going to destroy any changes that you made to the repo to make it match the current state of the repo on GitHub.</p>
+<pre><code>cd ~/NMFSHackDays-2026
+git fetch origin
+git reset --hard origin/main</code></pre>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -829,11 +880,11 @@ function googleTranslateElementInit() {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../../topics/2026-03-20/CNN_2D.html" class="pagination-link" aria-label="4 Intro to CNNs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">4 Intro to CNNs</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../coc.html" class="pagination-link" aria-label="Code of Conduct">
-        <span class="nav-page-text">Code of Conduct</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -844,7 +895,7 @@ function googleTranslateElementInit() {
     </div>   
     <div class="nav-footer-center">
 <p><img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="NMFS Open Science logo" style="width:150px"><br>NMFS Open Science</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/edit/main/content/reuse.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/content/reuse.md" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/edit/main/topics/2026-03-27/index.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-03-27/index.md" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

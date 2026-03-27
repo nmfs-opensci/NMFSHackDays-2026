@@ -63,6 +63,8 @@ website:
           href: topics/silver_hake.html
         - text: "4 Intro to CNNs"
           href: topics/2026-03-20/CNN_2D.html
+        - text: "1 Intro to xarray"
+          href: topics/2026-03-27/index.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement

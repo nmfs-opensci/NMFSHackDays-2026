@@ -5,27 +5,35 @@
     <lastmod>2026-03-13T18:51:04.330Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-20/index.html</loc>
-    <lastmod>2026-03-20T21:10:16.698Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-27/index.html</loc>
+    <lastmod>2026-03-27T18:09:02.715Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/matchups.html</loc>
-    <lastmod>2026-03-20T21:38:37.219Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-27/1-subset-and-plot.html</loc>
+    <lastmod>2026-03-27T17:43:37.646Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/index.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-20/CNN_2D.html</loc>
+    <lastmod>2026-03-20T21:40:37.950Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/index.html</loc>
     <lastmod>2026-02-27T01:29:09.436Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_2D.html</loc>
-    <lastmod>2026-02-27T01:46:09.662Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_Argo_CHLA.html</loc>
+    <lastmod>2026-03-20T21:39:51.660Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/setup.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/index.html</loc>
+    <lastmod>2026-03-20T21:36:55.919Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/reuse.html</loc>
     <lastmod>2026-02-27T01:29:09.256Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/jhub.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/hackhours.html</loc>
     <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
@@ -33,28 +41,32 @@
     <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/hackhours.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/jhub.html</loc>
     <lastmod>2026-02-27T01:29:09.246Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/reuse.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/content/setup.html</loc>
     <lastmod>2026-02-27T01:29:09.256Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/index.html</loc>
-    <lastmod>2026-03-20T21:36:55.919Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_2D.html</loc>
+    <lastmod>2026-02-27T01:46:09.662Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_Argo_CHLA.html</loc>
-    <lastmod>2026-03-20T21:39:51.660Z</lastmod>
-  </url>
-  <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/index.html</loc>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/index.html</loc>
     <lastmod>2026-02-27T01:29:09.436Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-20/CNN_2D.html</loc>
-    <lastmod>2026-03-20T21:40:37.950Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-06/matchups.html</loc>
+    <lastmod>2026-03-20T21:38:37.219Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-20/index.html</loc>
+    <lastmod>2026-03-20T21:10:16.698Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-03-27/2-data-cubes.html</loc>
+    <lastmod>2026-03-27T17:55:56.441Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/index.html</loc>
