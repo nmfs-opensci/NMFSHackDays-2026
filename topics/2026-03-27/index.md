@@ -4,6 +4,11 @@ title: Intro to xarray - Python
 
 In this session, you will get an introduction using xarry: the foundational package for working with gridded data in Python.
 
+<img width="831" height="483" alt="image" src="https://github.com/user-attachments/assets/97519f88-18e7-4cd0-8c8c-7320fb493cb1" />
+
+<img width="850" height="474" alt="image" src="https://github.com/user-attachments/assets/94c715bb-ffad-4f03-b4de-bd572e8a1211" />
+
+
 ## Tutorials
 
 ## How to download and open the tutorials
