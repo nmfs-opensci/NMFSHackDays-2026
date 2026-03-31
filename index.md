@@ -14,10 +14,10 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 
 * Feb 27 - [Intro to Boosted Regression Trees](topics/2026-02-27/BRT_Argo_CHLA.html): creating global chlorophyll density at depth profiles (Eli Holmes, NOAAF) {{< fa brands python >}}
 * Mar 6 - [BRT application: creating a fish abundance prediction using PACE remote-sensing reflectance](topics/2026-03-06/matchups.html) and SEAMAP surveys (Ryan Vandermeulen, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/_wfZnzSHSig)
-* Mar 13 - [BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic](topics/silver_hake.html) (Haley Synan, NOAAF) [Video](https://youtu.be/WpxvZXMMYfQ)
+* Mar 13 - [BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic](topics/silver_hake.html) (Haley Synan, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/WpxvZXMMYfQ)
 * Mar 20 - [Intro to convolutional neural networks: comparison of BRT and CNNs](topics/2026-03-20/CNN_2D.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/_KTio48Dxi0)
-* Mar 27 - [Intro to xarray](topics/2026-03-27/index.html) (Eli Holmes, NOAAF) [Video](https://youtu.be/DqiNYOGGHxE)
-* Apr 3 - Intro to xarray with OPeNDAP and ERRDAP (Eli Holmes, NOAAF) 
+* Mar 27 - [Intro to xarray](topics/2026-03-27/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/DqiNYOGGHxE)
+* Apr 3 - Intro to xarray with OPeNDAP and ERRDAP (Eli Holmes, NOAAF) {{< fa brands python >}}
 * Apr 10 - Accessing and Vizualizing Argo Buoy Data
 * Apr 17 - Accessing and Vizualizing Glider Data
 * Apr 24 - Intro to Modeled Ocean Data
