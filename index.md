@@ -19,10 +19,10 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Mar 27 - [Intro to xarray](topics/2026-03-27/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/DqiNYOGGHxE)
 * Apr 3 - [Intro to xarray with OPeNDAP and ERRDAP](https://nmfs-openscapes.2i2c.cloud/user/eeholmes/rstudio/files/nmfshackdays-2025/docs/topics-2025/2025-opendap/) (Eli Holmes, NOAAF) {{< fa brands python >}}
 * Apr 10 - Accessing and Vizualizing Argo Buoy Data
-* Apr 17 - Accessing and Vizualizing Glider Data
+* Apr 17 - Intro to Modeled Ocean Data
 * Apr 24 - Intro to Modeled Ocean Data
 * May 1 - Intro to Modeled Ocean Data
 * May 8 - Intro to xbatcher for fitting models to larger than memory data. (Keenan Ganz, UW) {{< fa brands python >}}
-* May 15 - VizualiZarr for Legacy Data Formats
+* May 15 - VizualiZarr and IceChunk (Rich Signell, Open Science Computing, LLC) {{< fa brands python >}}
 * May 22 - skipping for Memorial Day long weekend
 * May 29 - Advances in Data Vizualization
