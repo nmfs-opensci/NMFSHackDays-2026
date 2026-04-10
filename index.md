@@ -17,11 +17,11 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Mar 13 - [BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic](topics/silver_hake.html) (Haley Synan, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/WpxvZXMMYfQ)
 * Mar 20 - [Intro to convolutional neural networks: comparison of BRT and CNNs](topics/2026-03-20/CNN_2D.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/_KTio48Dxi0)
 * Mar 27 - [Intro to xarray](topics/2026-03-27/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/DqiNYOGGHxE)
-* Apr 3 - [Intro to xarray with OPeNDAP](https://nmfs-openscapes.2i2c.cloud/user/eeholmes/rstudio/files/nmfshackdays-2025/docs/topics-2025/2025-opendap/) (Eli Holmes, NOAAF) {{< fa brands python >}}
-* Apr 10 - Accessing and Vizualizing Argo Buoy Data
-* Apr 17 - Intro to Modeled Ocean Data
-* Apr 24 - Intro to Modeled Ocean Data
-* May 1 - Intro to Modeled Ocean Data
+* Apr 3 - [Intro to xarray with OPeNDAP](topics/2026-04-03/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}}
+* Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html)
+* Apr 17 - Intro to accessing data on ERDDAP servers with xarray
+* Apr 24 - Accessing Modeled Ocean Data (ERDDAP+xarray): PacIOOS’ ROMS
+* May 1 - Accessing Modeled Ocean Data (OPenDAP+xarray): NE Atlantic ROMS (CEFI)
 * May 8 - Intro to xbatcher for fitting models to larger than memory data. (Keenan Ganz, UW) {{< fa brands python >}}
 * May 15 - VizualiZarr and IceChunk (Rich Signell, Open Science Computing, LLC) {{< fa brands python >}}
 * May 22 - skipping for Memorial Day long weekend

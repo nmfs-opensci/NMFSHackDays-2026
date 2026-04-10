@@ -2,7 +2,7 @@
 title: Intro to xarray - Python
 ---
 
-In this session, you will get an introduction using xarry: the foundational package for working with gridded data in Python.
+In this session, you will get an introduction using xarray: the foundational package for working with gridded data in Python.
 
 <img width="500" alt="image" src="https://github.com/user-attachments/assets/97519f88-18e7-4cd0-8c8c-7320fb493cb1" />
 
@@ -13,7 +13,6 @@ In this session, you will get an introduction using xarry: the foundational pack
 
 * [Subset and Plot](1-subset-and-plot.html)
 * [Data Cubes](2-data-cubes.html)
-* [xarray and OPeNDAP](https://nmfs-opensci.github.io/NMFSHackDays-2025/topics-2025/2025-opendap/)
 
 ## How to download and open the tutorials
 

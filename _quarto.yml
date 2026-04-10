@@ -65,6 +65,10 @@ website:
           href: topics/2026-03-20/CNN_2D.html
         - text: "1 Intro to xarray"
           href: topics/2026-03-27/index.html
+        - text: "2 xarray + ERDDAP"
+          href: topics/2026-04-03/index.html
+        - text: "3 xarray + argopy"
+          href: topics/2026-04-10/index.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
