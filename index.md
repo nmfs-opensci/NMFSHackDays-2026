@@ -25,4 +25,4 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * May 8 - Intro to xbatcher for fitting models to larger than memory data. (Keenan Ganz, UW) {{< fa brands python >}}
 * May 15 - VizualiZarr and IceChunk (Rich Signell, Open Science Computing, LLC) {{< fa brands python >}}
 * May 22 - skipping for Memorial Day long weekend
-* May 29 - Advances in Data Vizualization
+* May 29 - QGIS + JupyterLab (Matt Fisher, UC Berkeley Center for Data Science and Environment)
