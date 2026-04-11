@@ -6,11 +6,15 @@
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-10/index.html</loc>
-    <lastmod>2026-04-10T18:04:10.020Z</lastmod>
+    <lastmod>2026-04-11T02:40:37.031Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-10/argo-matchups.html</loc>
-    <lastmod>2026-04-10T18:03:36.380Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-10/argopy.html</loc>
+    <lastmod>2026-04-11T02:47:13.453Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-03/testing.html</loc>
+    <lastmod>2026-04-11T02:35:54.569Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-03/ea.html</loc>
@@ -74,7 +78,7 @@
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/index.html</loc>
-    <lastmod>2026-04-10T18:58:32.810Z</lastmod>
+    <lastmod>2026-04-11T02:38:59.600Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-02-27/BRT_Argo_CHLA.html</loc>
@@ -117,8 +121,12 @@
     <lastmod>2026-04-10T18:02:07.629Z</lastmod>
   </url>
   <url>
-    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-10/argopy.html</loc>
-    <lastmod>2026-04-10T18:50:31.147Z</lastmod>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-10/argo-matchups.html</loc>
+    <lastmod>2026-04-10T18:03:36.380Z</lastmod>
+  </url>
+  <url>
+    <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/2026-04-10/bgc-argo-r.html</loc>
+    <lastmod>2026-04-11T02:39:17.190Z</lastmod>
   </url>
   <url>
     <loc>https://nmfs-opensci.github.io/NMFSHackDays-2026/topics/index.html</loc>

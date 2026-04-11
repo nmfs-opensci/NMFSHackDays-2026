@@ -1,0 +1,278 @@
+---
+title: "Bio-Argo Data using R"
+subtitle: "Replicating argopy user=standard"
+---
+
+We will use the rerddap package to query the BGC-synthetic dataset on ERDDAP. When we query, we are getting the raw synthesized data. argopy does a lot of QC for us when we use the default user mode = standard. We are going to recreate that here. There is the [argoFloats](https://cran.r-project.org/web/packages/argoFloats/index.html) R package, but I am not going to use that as I want to replicate how argopy behaves and return a data frame with all the platform and cycle data. There is a big QC step that argopy does. This notebook shows how to do the QC that argopy does.
+
+First let's get the synthetic BGC data.
+```{r}
+library(rerddap)
+info <- info("ArgoFloats-synthetic-BGC",
+             url="https://erddap.ifremer.fr/erddap")
+```
+
+
+Now we can query this data set. It helps to skim the dataset to see what variables there are and how they are labelled: https://erddap.ifremer.fr/erddap/tabledap/ArgoFloats-synthetic-BGC.html
+
+```{r}
+df <- tabledap(
+  info,
+  fields = c(
+    "chla",
+    "chla_adjusted",
+    "chla_adjusted_error",
+    "chla_adjusted_qc",
+    "chla_qc",
+    "config_mission_number",
+    "cycle_number",
+    "direction",
+    "latitude",
+    "longitude",
+    "platform_number",
+    "position_qc",
+    "pres",
+    "pres_adjusted",
+    "pres_adjusted_error",
+    "pres_adjusted_qc",
+    "pres_qc",
+    "psal",
+    "psal_adjusted",
+    "psal_adjusted_error",
+    "psal_adjusted_qc",
+    "psal_qc",
+    "temp",
+    "temp_adjusted",
+    "temp_adjusted_error",
+    "temp_adjusted_qc",
+    "temp_qc",
+    "time",
+    "time_qc"
+  ),
+  "latitude>20",
+  "latitude<60",
+  "longitude>-70",
+  "longitude<-40",
+  "pres>0",
+  "pres<1000",
+  "time>=2024-03-01",
+  "time<=2024-04-01"
+)
+```
+
+Get the index file. This file has information on whether the unadjusted or adjusted parameters are best. Horribly, that information is not in the ERDDAP synthetic dataset for some reason. Maybe they update the index file more often than the synthetic dataset. It is a massive table.
+
+```{r}
+library(data.table)
+
+url <- "https://data-argo.ifremer.fr/argo_synthetic-profile_index.txt.gz"
+
+idx <- fread(
+  cmd = sprintf("curl -L -s %s | gunzip -c", shQuote(url)),
+  skip = "#",    # skip comment/header lines
+  sep = ",",
+  header = TRUE
+)
+
+names(idx)
+```
+
+Now do some filtering. The platform number and cycle number is encoded in the file name in the index. We need to parse that and then merge to our ERDDAP data frame.
+
+```{r}
+library(dplyr)
+library(stringr)
+
+# idx: data.frame from argo_synthetic-profile_index.txt.gz
+# erd: data.frame from ERDDAP tabledap query
+erd <- df %>% as.data.frame()
+
+idx2 <- idx %>%
+  mutate(
+    # wmo = platform_number is the 2nd path segment: "dac/<wmo>/..."
+    wmo = as.integer(str_split_fixed(file, "/", 3)[, 2]),
+
+    # filename like "SD5903248_012.nc" or "SA5903248_012.nc"
+    fname = basename(file),
+
+    # cycle is the number after "_" (strip ".nc" first)
+    cyc = as.integer(str_match(str_remove(fname, "\\.nc$"), "_(\\d+)$")[, 2])
+  ) %>%
+  select(wmo, cyc, parameters, parameter_data_mode, date, date_update, file)
+
+erd2 <- erd %>%
+  mutate(
+    wmo = as.integer(platform_number),
+    cyc = as.integer(cycle_number),
+  )
+
+# Join ERDDAP points to the per-profile index info:
+joined <- erd2 %>%
+  left_join(idx2, by = c("wmo", "cyc"))
+```
+
+From the index, we have parameters in the file and parameter data mode. Each letter in the data mode corresponds to a parameter in the list. We need to expand these to make `PRES_DATA_MODE`, etc. We only need to expand for PRES, TEMP, PSAL (core), and CHLA (our parameter of interest).
+
+```{r}
+joined$parameters[1]
+joined$parameter_data_mode[1]
+```
+
+```{r}
+library(dplyr)
+library(stringr)
+
+expand_params <- c("PRES", "TEMP", "PSAL", "CHLA")
+
+get_mode <- function(params_str, modes_str, param) {
+  if (is.na(params_str) || is.na(modes_str)) return(NA_character_)
+  params <- strsplit(params_str, "\\s+")[[1]]
+  i <- match(param, params)
+  if (is.na(i)) return(NA_character_)
+  substr(modes_str, i, i)
+}
+
+joined <- joined %>%
+  mutate(
+    PRES_DATA_MODE = mapply(get_mode, parameters, parameter_data_mode, MoreArgs = list(param = "PRES")),
+    TEMP_DATA_MODE = mapply(get_mode, parameters, parameter_data_mode, MoreArgs = list(param = "TEMP")),
+    PSAL_DATA_MODE = mapply(get_mode, parameters, parameter_data_mode, MoreArgs = list(param = "PSAL")),
+    CHLA_DATA_MODE = mapply(get_mode, parameters, parameter_data_mode, MoreArgs = list(param = "CHLA"))
+  )
+```
+
+Now we do the filtering that argopy does for user="standard".
+
+* If data mode is A or D, use adjusted parameter. If it is R, use the unadjusted parameter.
+* For core parameters + time and position, QC must be 1 or 2
+* For non-core, QC must be in 1,2,5,8
+
+```{r}
+library(dplyr)
+library(stringr)
+
+# Helpers to normalize QC fields to integer (ERDDAP sometimes gives them as chars)
+qc_int <- function(x) suppressWarnings(as.integer(as.character(x)))
+
+# 1) Merge adjusted values into base variable according to *_DATA_MODE
+# Rule (same as argopy): if DATA_MODE in c("A","D") use adjusted, else keep raw
+merged <- joined %>%
+  mutate(
+    PRES = if_else(PRES_DATA_MODE %in% c("A","D") & !is.na(pres_adjusted),
+                   pres_adjusted, pres),
+    TEMP = if_else(TEMP_DATA_MODE %in% c("A","D") & !is.na(temp_adjusted),
+                   temp_adjusted, temp),
+    PSAL = if_else(PSAL_DATA_MODE %in% c("A","D") & !is.na(psal_adjusted),
+                   psal_adjusted, psal),
+    CHLA = if_else(CHLA_DATA_MODE %in% c("A","D") & !is.na(chla_adjusted),
+                   chla_adjusted, chla),
+
+    # Also merge QC fields the same way (optional but closer to argopy behavior)
+    PRES_QC = if_else(PRES_DATA_MODE %in% c("A","D") & !is.na(pres_adjusted_qc),
+                      pres_adjusted_qc, pres_qc),
+    TEMP_QC = if_else(TEMP_DATA_MODE %in% c("A","D") & !is.na(temp_adjusted_qc),
+                      temp_adjusted_qc, temp_qc),
+    PSAL_QC = if_else(PSAL_DATA_MODE %in% c("A","D") & !is.na(psal_adjusted_qc),
+                      psal_adjusted_qc, psal_qc),
+    CHLA_QC = if_else(CHLA_DATA_MODE %in% c("A","D") & !is.na(chla_adjusted_qc),
+                      chla_adjusted_qc, chla_qc)
+  )
+
+# 2) QC filtering (standard mode)
+filtered <- merged %>%
+  # Normalize QC types:
+  mutate(
+    POSITION_QC = qc_int(position_qc),
+    TIME_QC     = qc_int(time_qc),
+    PRES_QC     = qc_int(PRES_QC),
+    TEMP_QC     = qc_int(TEMP_QC),
+    PSAL_QC     = qc_int(PSAL_QC),
+    CHLA_QC     = qc_int(CHLA_QC)
+  ) %>%
+  # a) position & time qc in [1,2]
+  filter(POSITION_QC %in% c(1,2),
+         TIME_QC %in% c(1,2)) %>%
+  # b) core param qc in [1,2]
+  filter(PRES_QC %in% c(1,2),
+         TEMP_QC %in% c(1,2),
+         PSAL_QC %in% c(1,2)) %>%
+  # c) CHLA (BGC param) qc in [1,2,5,8]
+  filter(CHLA_QC %in% c(1,2,5,8))
+
+# 3) data-mode filtering analogous to argopy
+# - core: allow R/A/D (does nothing if your DATA_MODE always in those)
+# - CHLA: allow A/D (argopy standard for "other BGC")
+filtered <- filtered %>%
+  filter(PRES_DATA_MODE %in% c("R","A","D"),
+         TEMP_DATA_MODE %in% c("R","A","D"),
+         PSAL_DATA_MODE %in% c("R","A","D"),
+         CHLA_DATA_MODE %in% c("A","D"))
+
+# Keep only the “standard-like” output columns you want:
+out <- filtered %>%
+  select(
+    platform_number, cycle_number, direction, time,
+    latitude, longitude,
+    PRES, TEMP, PSAL, CHLA,
+    PRES_QC, TEMP_QC, PSAL_QC, CHLA_QC, file
+  )
+```
+
+The number of rows from argopy was 9267 and from our attempt to back-engineer what it is doing in R, we are close. The reason for the difference is that there is one buoy (platform_number) that has a bad entry in the index and argopy erroneously filters it out.
+```{r}
+dim(out)
+```
+
+```{r}
+head(out)
+```
+
+```{r}
+library(readr)
+
+py_out <- read_csv("argo_profiles.csv")
+glimpse(py_out)
+```
+
+
+```{r}
+library(dplyr)
+
+py_out <- as.data.frame(py_out)
+py_out2 <- py_out %>%
+  mutate(
+    platform_number = as.integer(platform_number),
+    cycle_number    = as.integer(cycle_number),
+    PRES_QC         = as.integer(PRES_QC),
+    TEMP_QC         = as.integer(TEMP_QC),
+    PSAL_QC         = as.integer(PSAL_QC),
+    CHLA_QC         = as.integer(CHLA_QC)
+  )
+
+out_sorted <- out %>%
+  arrange(platform_number, cycle_number, time, PRES) %>%
+  mutate(time_num = round(as.numeric(time)))
+
+py_sorted <- py_out %>%
+  arrange(platform_number, cycle_number, time, PRES) %>%
+  mutate(time_num = round(as.numeric(time)))
+
+```
+
+```{r}
+only_keys_in_r <- anti_join(
+  out_sorted,
+  py_sorted,
+  by = c("platform_number", "cycle_number", "direction", "time_num", "PRES")
+)
+
+only_keys_in_py <- anti_join(
+  py_sorted,
+  out_sorted,
+  by = c("platform_number", "cycle_number", "direction", "time_num", "PRES")
+)
+
+nrow(only_keys_in_r)
+nrow(only_keys_in_py)
+```
+

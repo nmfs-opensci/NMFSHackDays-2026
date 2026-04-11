@@ -8,7 +8,8 @@ In this session, you will get an introduction accessing Argo data with the [argo
 ## Tutorials
 
 * [argopy](argopy.html)
-* [argopy-matchups](argo-matchups.html)
+* [BGC Argo in R](bgc-argo-r.html) Replicating what argopy does in R.
+* [argopy-matchups](argo-matchups.html) Matching up the Argo points to PACE remote-sensing data.
 
 ## How to download and open the tutorials
 

@@ -18,7 +18,7 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Mar 20 - [Intro to convolutional neural networks: comparison of BRT and CNNs](topics/2026-03-20/CNN_2D.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/_KTio48Dxi0)
 * Mar 27 - [Intro to xarray](topics/2026-03-27/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/DqiNYOGGHxE)
 * Apr 3 - [Intro to xarray with OPeNDAP](topics/2026-04-03/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}}
-* Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html)
+* Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html) {{< fa brands python >}} and R
 * Apr 17 - Intro to accessing data on ERDDAP servers with xarray
 * Apr 24 - Accessing Modeled Ocean Data (ERDDAP+xarray): PacIOOS’ ROMS
 * May 1 - Accessing Modeled Ocean Data (OPenDAP+xarray): NE Atlantic ROMS (CEFI)
