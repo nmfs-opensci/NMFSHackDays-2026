@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eli Holmes and adapted from Filipe Fernandes notebook">
+
+<title>Loading ERDDAP tabledap files with xarray – NMFS HackHours 2026</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-69259211bff4de149c509f6620516e6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">NMFS HackHours 2026</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://nmfs-openscapes.2i2c.cloud/"> <i class="bi bi-server" role="img">
+</i> 
+<span class="menu-text">JupyterHub</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/orgs/nmfs-openscapes/discussions/categories/hackhours"> <i class="bi bi-wechat" role="img">
+</i> 
+<span class="menu-text">Discussions</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nmfs-opensci/NMFSHackDays-2026"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">repo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nmfs-opensci"> <i class="bi bi-globe" role="img">
+</i> 
+<span class="menu-text">GH org</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  </ul>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.dev/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-04-17/erddap_tabledap.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-04-17/erddap_tabledap.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<div id="google_translate_element"></div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+    function openJupyterWidget(notebookUrl) {
+        let encodedNotebookUrl = encodeURIComponent(notebookUrl);
+        let popupUrl = `https://nmfs-opensci.github.io/NMFSHackDays-2025/widgets/jupyterhub_link_widget.html?notebook=${encodedNotebookUrl}`;
+        let popupWindow = window.open(popupUrl, "JupyterWidget", "width=600,height=400");
+        if (!popupWindow) {
+            alert("Popup blocked! Please allow popups for this site.");
+        }
+    }
+</script>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Loading ERDDAP tabledap files with xarray</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eli Holmes and adapted from Filipe Fernandes notebook </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="https://colab.research.google.com/github/nmfs-opensci/nmfshackdays-2026/blob/main/topics/2026-04-17/erddap_tabledap.ipynb"><img src="https://img.shields.io/badge/Open_in_Colab-blue?style=for-the-badge" class="img-fluid" alt="Colab Badge"></a> <a href="https://github.com/nmfs-opensci/nmfshackdays-2026/blob/main/topics/2026-04-17/erddap_tabledap.ipynb"><img src="https://img.shields.io/badge/Download-grey?style=for-the-badge" class="img-fluid" alt="Download Badge"></a> <a href="https://nmfs-openscapes.2i2c.cloud/hub/user-redirect/lab?fromURL=https://raw.githubusercontent.com/nmfs-opensci/nmfshackdays-2026/main/topics/2026-04-17/erddap_tabledap.ipynb"><img src="https://img.shields.io/badge/Jupyter_Hub-orange?style=for-the-badge" class="img-fluid" alt="JupyterHub"></a></p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>ERDDAP provides two data access modes: griddap for multidimensional gridded datasets that can be sliced by dimensions (e.g., time, latitude, longitude), and tabledap for tabular datasets that are queried by filtering rows (e.g., observations or profiles).</p>
+<p>The new erddapy release provides a <code>erdappy</code> engine which helps us open tabledap urls in a nicer way.</p>
+<div id="52fb4b7e-d5b9-498c-b940-ef2ad78f9914" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure we have at least 3.1.1</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># On JupyterHub run pip install --upgrade erddapy</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and restart kernel</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> erddapy</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>erddapy.__version__</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>'3.1.1'</code></pre>
+</div>
+</div>
+<div id="25e49eb2-9c4e-4f75-9ba0-0d28a645dab6" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>xr.backends.list_engines()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>{'netcdf4': &lt;NetCDF4BackendEntrypoint&gt;
+   Open netCDF (.nc, .nc4 and .cdf) and most HDF5 files using netCDF4 in Xarray
+   Learn more at https://docs.xarray.dev/en/stable/generated/xarray.backends.NetCDF4BackendEntrypoint.html,
+ 'h5netcdf': &lt;H5netcdfBackendEntrypoint&gt;
+   Open netCDF (.nc, .nc4 and .cdf) and most HDF5 files using h5netcdf in Xarray
+   Learn more at https://docs.xarray.dev/en/stable/generated/xarray.backends.H5netcdfBackendEntrypoint.html,
+ 'scipy': &lt;ScipyBackendEntrypoint&gt;
+   Open netCDF files (.nc, .cdf and .nc.gz) using scipy in Xarray
+   Learn more at https://docs.xarray.dev/en/stable/generated/xarray.backends.ScipyBackendEntrypoint.html,
+ 'erddapy': &lt;ERDDAPyBackendEntrypoint&gt;
+   Load ERDDAP URLs in xarray.,
+ 'gmt': &lt;GMTBackendEntrypoint&gt;
+   Open raster (.grd, .nc or .tif) files in Xarray via GMT.
+   Learn more at https://pygmt.org/dev/api/generated/pygmt.GMTBackendEntrypoint.html,
+ 'h5coro': &lt;H5CoroBackendEntrypoint&gt;
+   Support for reading HDF5 files in S3 from H5Coro in xarray,
+ 'kerchunk': &lt;KerchunkBackend&gt;
+   Open Kerchunk References with Xarray
+   Learn more at https://fsspec.github.io/kerchunk/,
+ 'pydap': &lt;PydapBackendEntrypoint&gt;
+   Open remote datasets via OPeNDAP using pydap in Xarray
+   Learn more at https://docs.xarray.dev/en/stable/generated/xarray.backends.PydapBackendEntrypoint.html,
+ 'rasterio': &lt;RasterioBackend&gt;,
+ 'store': &lt;StoreBackendEntrypoint&gt;
+   Open AbstractDataStore instances in Xarray
+   Learn more at https://docs.xarray.dev/en/stable/generated/xarray.backends.StoreBackendEntrypoint.html,
+ 'zarr': &lt;ZarrBackendEntrypoint&gt;
+   Open zarr files (.zarr) using zarr in Xarray
+   Learn more at https://docs.xarray.dev/en/stable/generated/xarray.backends.ZarrBackendEntrypoint.html}</code></pre>
+</div>
+</div>
+<div id="93cd8933-06bb-497f-9474-9c27bf533b6f" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> erddapy <span class="im">import</span> ERDDAP</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://gliders.ioos.us/erddap/tabledap/amelia-20180501T0000"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://coastwatch.pfeg.noaa.gov/erddap/tabledap/erdCalCOFIeggcnt"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>xr.open_dataset(url, engine<span class="op">=</span><span class="st">"erddapy"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>xr.open_dataset(url)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in notebooks */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-obj-name,
+.xr-group-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-group-name::before {
+  content: "📁";
+  padding-right: 0.3em;
+}
+
+.xr-group-name,
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-group-box {
+  display: inline-grid;
+  grid-template-columns: 0px 20px auto;
+  width: 100%;
+}
+
+.xr-group-box-vline {
+  grid-column-start: 1;
+  border-right: 0.2em solid;
+  border-color: var(--xr-border-color);
+  width: 0px;
+}
+
+.xr-group-box-hline {
+  grid-column-start: 2;
+  grid-row-start: 1;
+  height: 1em;
+  width: 20px;
+  border-bottom: 0.2em solid;
+  border-color: var(--xr-border-color);
+}
+
+.xr-group-box-contents {
+  grid-column-start: 3;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 48MB
+Dimensions:                 (s: 93502)
+Dimensions without coordinates: s
+Data variables: (12/22)
+    s.cruise                (s) |S64 6MB ...
+    s.ship                  (s) |S64 6MB ...
+    s.ship_code             (s) |S64 6MB ...
+    s.order_occupied        (s) int32 374kB ...
+    s.tow_type              (s) |S64 6MB ...
+    s.tow_number            (s) int32 374kB ...
+    ...                      ...
+    s.common_name           (s) |S64 6MB ...
+    s.itis_tsn              (s) int32 374kB ...
+    s.calcofi_species_code  (s) int32 374kB ...
+    s.egg_count             (s) int32 374kB ...
+    s.eggs_10m2             (s) float32 374kB ...
+    s.eggs_100m3            (s) float32 374kB ...
+Attributes: (12/26)
+    cdm_data_type:             Other
+    Conventions:               COARDS, CF-1.6, ACDD-1.3, NCCSV-1.2
+    defaultGraphQuery:         longitude,latitude,egg_count&amp;cruise="202301"&amp;....
+    Easternmost_Easting:       -77.22833
+    geospatial_lat_max:        53.27666
+    geospatial_lat_min:        0.001666
+    ...                        ...
+    subsetVariables:           cruise, station, line, tow_type, tow_number,ne...
+    summary:                   Fish egg counts and standardized counts for eg...
+    time_coverage_end:         2023-01-25T18:45:00Z
+    time_coverage_start:       1951-01-09T18:16:00Z
+    title:                     CalCOFI NOAA Fish Egg Counts
+    Westernmost_Easting:       -179.8217</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-c8e9bb9f-c909-465e-a7ab-95ffd2a1f543" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-c8e9bb9f-c909-465e-a7ab-95ffd2a1f543" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span>s</span>: 93502</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-ae24579e-8a9e-4fb0-abac-5c2640bf533e" class="xr-section-summary-in" type="checkbox"><label for="section-ae24579e-8a9e-4fb0-abac-5c2640bf533e" class="xr-section-summary">Data variables: <span>(22)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>s.cruise</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-14fc6b30-7c8b-44a9-ba86-c70b53ad57cf" class="xr-var-attrs-in" type="checkbox"><label for="attrs-14fc6b30-7c8b-44a9-ba86-c70b53ad57cf" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-615d8fb1-e42c-4366-a832-ad09a0a701b0" class="xr-var-data-in" type="checkbox"><label for="data-615d8fb1-e42c-4366-a832-ad09a0a701b0" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Six-digit cruise code (YYYYMM)</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Cruise</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.ship</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-76da8475-c4fc-417e-b434-8b0fc6467ff2" class="xr-var-attrs-in" type="checkbox"><label for="attrs-76da8475-c4fc-417e-b434-8b0fc6467ff2" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-9688a5fe-6cbb-4c4c-b609-fb45b0fbb69b" class="xr-var-data-in" type="checkbox"><label for="data-9688a5fe-6cbb-4c4c-b609-fb45b0fbb69b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Ship name</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Ship Name</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.ship_code</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-0d6d05d8-0273-46a1-a2ac-895795250580" class="xr-var-attrs-in" type="checkbox"><label for="attrs-0d6d05d8-0273-46a1-a2ac-895795250580" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-8a3337b8-f49a-4391-af84-602b165ed9cf" class="xr-var-data-in" type="checkbox"><label for="data-8a3337b8-f49a-4391-af84-602b165ed9cf" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Two-digit CalCOFI ship code</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Ship Code</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.order_occupied</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-05cccc89-5c16-44c9-82be-1e02cc97bb6b" class="xr-var-attrs-in" type="checkbox"><label for="attrs-05cccc89-5c16-44c9-82be-1e02cc97bb6b" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-97dc8fe1-ff91-416c-8f7c-8ab64c9f468b" class="xr-var-data-in" type="checkbox"><label for="data-97dc8fe1-ff91-416c-8f7c-8ab64c9f468b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[   1 1000]</dd><dt><span>description :</span></dt><dd>Ordinal number in which the station was sampled for the cruise and ship</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Order Occupied</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.tow_type</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-b62a1c45-44da-472f-bc78-94cf0622f3e7" class="xr-var-attrs-in" type="checkbox"><label for="attrs-b62a1c45-44da-472f-bc78-94cf0622f3e7" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-6223a25c-920b-4cd7-b0c1-a1463de781b9" class="xr-var-data-in" type="checkbox"><label for="data-6223a25c-920b-4cd7-b0c1-a1463de781b9" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Net gear type. See the CalCOFI Tow Types table.</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Tow Type</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.tow_number</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-805226d8-4cbc-4edd-aba9-be976d65e184" class="xr-var-attrs-in" type="checkbox"><label for="attrs-805226d8-4cbc-4edd-aba9-be976d65e184" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-901fcdab-a87c-4878-8104-6b68ad152823" class="xr-var-data-in" type="checkbox"><label for="data-901fcdab-a87c-4878-8104-6b68ad152823" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[ 1 30]</dd><dt><span>description :</span></dt><dd>Replicate tow number for the station, net type, and location</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Tow Number</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.net_location</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-61cff28c-aa63-491e-9f49-16aa4b2ff603" class="xr-var-attrs-in" type="checkbox"><label for="attrs-61cff28c-aa63-491e-9f49-16aa4b2ff603" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-72cfbcf1-509d-4be5-9f20-b648fadd4a52" class="xr-var-data-in" type="checkbox"><label for="data-72cfbcf1-509d-4be5-9f20-b648fadd4a52" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Port or Starboard location of net for paired tow types (e.g., bongo or pairovet)</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Net Location (side)</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.time</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-30e8c1ba-5049-452c-8aea-89bcc76aa0df" class="xr-var-attrs-in" type="checkbox"><label for="attrs-30e8c1ba-5049-452c-8aea-89bcc76aa0df" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-bd6ff2b6-66d0-41c0-92f6-66432f1bd642" class="xr-var-data-in" type="checkbox"><label for="data-bd6ff2b6-66d0-41c0-92f6-66432f1bd642" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_CoordinateAxisType :</span></dt><dd>Time</dd><dt><span>actual_range :</span></dt><dd>[-5.9885904e+08  1.6746723e+09]</dd><dt><span>axis :</span></dt><dd>T</dd><dt><span>description :</span></dt><dd>Tow start time (yyyy-MM-dd'T'HH:mm:ss'Z')</dd><dt><span>ioos_category :</span></dt><dd>Time</dd><dt><span>long_name :</span></dt><dd>Time</dd><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>time_origin :</span></dt><dd>01-JAN-1970 00:00:00</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=datetime64[ns]]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.latitude</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-ac599fa7-425c-4923-ad6a-560a5f630279" class="xr-var-attrs-in" type="checkbox"><label for="attrs-ac599fa7-425c-4923-ad6a-560a5f630279" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-dacc38e9-dedd-4be2-8587-183cad719ccf" class="xr-var-data-in" type="checkbox"><label for="data-dacc38e9-dedd-4be2-8587-183cad719ccf" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_CoordinateAxisType :</span></dt><dd>Lat</dd><dt><span>actual_range :</span></dt><dd>[1.666000e-03 5.327666e+01]</dd><dt><span>axis :</span></dt><dd>Y</dd><dt><span>description :</span></dt><dd>Latitude of Station</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>Latitude</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.longitude</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-2d34baf0-8f63-40fd-af82-5f57520d7c5a" class="xr-var-attrs-in" type="checkbox"><label for="attrs-2d34baf0-8f63-40fd-af82-5f57520d7c5a" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-c423a066-2ddc-4665-8f38-4eddc2386825" class="xr-var-data-in" type="checkbox"><label for="data-c423a066-2ddc-4665-8f38-4eddc2386825" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_CoordinateAxisType :</span></dt><dd>Lon</dd><dt><span>actual_range :</span></dt><dd>[-179.8217   -77.22833]</dd><dt><span>axis :</span></dt><dd>X</dd><dt><span>description :</span></dt><dd>Longitude of Station</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>Longitude</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.line</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-33d5e4c6-bda8-4242-a433-9dce90ceb05d" class="xr-var-attrs-in" type="checkbox"><label for="attrs-33d5e4c6-bda8-4242-a433-9dce90ceb05d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-e2b8b817-8cd2-4d4b-bc95-8b4a90d693fe" class="xr-var-data-in" type="checkbox"><label for="data-e2b8b817-8cd2-4d4b-bc95-8b4a90d693fe" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[-28.  394.9]</dd><dt><span>description :</span></dt><dd>Nominal CalCOFI Line</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>CalCOFI Line</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.station</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-bc6b74c7-012b-4406-9b3f-b0017bf4842a" class="xr-var-attrs-in" type="checkbox"><label for="attrs-bc6b74c7-012b-4406-9b3f-b0017bf4842a" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-baec96df-6db6-4643-849c-f99e72b844be" class="xr-var-data-in" type="checkbox"><label for="data-baec96df-6db6-4643-849c-f99e72b844be" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[-283.   718.8]</dd><dt><span>description :</span></dt><dd>Nominal CalCOFI Station</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>CalCOFI Station</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.standard_haul_factor</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-d06d2cff-d820-422d-a162-730aa715e85d" class="xr-var-attrs-in" type="checkbox"><label for="attrs-d06d2cff-d820-422d-a162-730aa715e85d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-bd9b92cf-59b7-4b49-82fd-01c6b3510e9c" class="xr-var-data-in" type="checkbox"><label for="data-bd9b92cf-59b7-4b49-82fd-01c6b3510e9c" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[1.0000e-02 8.3558e+02]</dd><dt><span>description :</span></dt><dd>Number used to standardize tows to catch per 10 meters squared of sea surface. See Kramer and Smith and Richardson references on the infosheet url for details.</dd><dt><span>ioos_category :</span></dt><dd>Other</dd><dt><span>long_name :</span></dt><dd>Standard Haul Factor</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.volume_sampled</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-4b3335cb-5561-4762-8987-9ac90f7a7b91" class="xr-var-attrs-in" type="checkbox"><label for="attrs-4b3335cb-5561-4762-8987-9ac90f7a7b91" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-88448858-bb60-44a6-8bc6-d08f6cdbfcb5" class="xr-var-data-in" type="checkbox"><label for="data-88448858-bb60-44a6-8bc6-d08f6cdbfcb5" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[3.0000e-01 5.1933e+04]</dd><dt><span>description :</span></dt><dd>Volume of water sampled by the net</dd><dt><span>ioos_category :</span></dt><dd>Other</dd><dt><span>long_name :</span></dt><dd>Volume Sampled</dd><dt><span>units :</span></dt><dd>meters^3</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.proportion_sorted</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-ee57fbd0-83c6-431b-855e-77150d8584fd" class="xr-var-attrs-in" type="checkbox"><label for="attrs-ee57fbd0-83c6-431b-855e-77150d8584fd" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d5be3632-d642-47b3-8251-e8f6441c0f2f" class="xr-var-data-in" type="checkbox"><label for="data-d5be3632-d642-47b3-8251-e8f6441c0f2f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[0.048 1.   ]</dd><dt><span>description :</span></dt><dd>Proportion of the net sample that was sorted in the laboratory</dd><dt><span>ioos_category :</span></dt><dd>Other</dd><dt><span>long_name :</span></dt><dd>Proportion Sorted</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.scientific_name</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-982f3374-be97-4642-94b3-74afee4f5143" class="xr-var-attrs-in" type="checkbox"><label for="attrs-982f3374-be97-4642-94b3-74afee4f5143" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-cf6abc9c-e045-4aca-a16e-6e29bc1fa212" class="xr-var-data-in" type="checkbox"><label for="data-cf6abc9c-e045-4aca-a16e-6e29bc1fa212" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Species scientific name</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>Scientific Name</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.common_name</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-2beac994-375d-4c5e-bb6b-0a465499e12a" class="xr-var-attrs-in" type="checkbox"><label for="attrs-2beac994-375d-4c5e-bb6b-0a465499e12a" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-803166a6-853c-48f9-a2d8-9e392e4dc4b0" class="xr-var-data-in" type="checkbox"><label for="data-803166a6-853c-48f9-a2d8-9e392e4dc4b0" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Species common name</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>Common Name</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.itis_tsn</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-fe675e84-07e1-4f51-8c01-93111049d15c" class="xr-var-attrs-in" type="checkbox"><label for="attrs-fe675e84-07e1-4f51-8c01-93111049d15c" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-955e432c-a965-4406-a938-57b373f705d0" class="xr-var-data-in" type="checkbox"><label for="data-955e432c-a965-4406-a938-57b373f705d0" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[161105 623625]</dd><dt><span>description :</span></dt><dd>Integrated taxonomic information system taxonomic serial number. http://www.itis.gov/</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>ITIS TSN</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.calcofi_species_code</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-6fabff04-b49e-4b6a-a411-f89dcab5ddf9" class="xr-var-attrs-in" type="checkbox"><label for="attrs-6fabff04-b49e-4b6a-a411-f89dcab5ddf9" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-8cce305d-83b9-427e-8622-957a5adf3824" class="xr-var-data-in" type="checkbox"><label for="data-8cce305d-83b9-427e-8622-957a5adf3824" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[  1 967]</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>Calcofi Species Code</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.egg_count</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-b4ed60de-208a-4a30-8924-358617f9c611" class="xr-var-attrs-in" type="checkbox"><label for="attrs-b4ed60de-208a-4a30-8924-358617f9c611" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-0b9d5ada-943d-482d-819e-d46c9c88d979" class="xr-var-data-in" type="checkbox"><label for="data-0b9d5ada-943d-482d-819e-d46c9c88d979" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[     1 187398]</dd><dt><span>description :</span></dt><dd>Raw count of eggs</dd><dt><span>ioos_category :</span></dt><dd>Fish Abundance</dd><dt><span>long_name :</span></dt><dd>Egg Count</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.eggs_10m2</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-5b68602b-1656-4bcd-8e58-352f11289d9b" class="xr-var-attrs-in" type="checkbox"><label for="attrs-5b68602b-1656-4bcd-8e58-352f11289d9b" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-93553de0-588e-4d52-b3b9-b5a82cd3cad3" class="xr-var-data-in" type="checkbox"><label for="data-93553de0-588e-4d52-b3b9-b5a82cd3cad3" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[1.4000e-01 5.0064e+05]</dd><dt><span>description :</span></dt><dd>eggs per 10 meters squared of water sampled (oblique and vertical tows)</dd><dt><span>ioos_category :</span></dt><dd>Fish Abundance</dd><dt><span>long_name :</span></dt><dd>Eggs 10/M^2</dd><dt><span>units :</span></dt><dd>Eggs 10/M^2</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.eggs_100m3</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-df7478d6-a850-4c07-8ebc-d774a404525c" class="xr-var-attrs-in" type="checkbox"><label for="attrs-df7478d6-a850-4c07-8ebc-d774a404525c" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-97688d58-559c-4398-a75b-90ccd2c39814" class="xr-var-data-in" type="checkbox"><label for="data-97688d58-559c-4398-a75b-90ccd2c39814" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[2.077533e-03 2.061584e+05]</dd><dt><span>description :</span></dt><dd>eggs per 100 cubic meters of water sampled (Manta and mocness tows)</dd><dt><span>ioos_category :</span></dt><dd>Fish Abundance</dd><dt><span>long_name :</span></dt><dd>Eggs 100/M^3</dd><dt><span>units :</span></dt><dd>Eggs 100/M^3</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-faf120d3-3e93-4907-a270-98dea460c6f1" class="xr-section-summary-in" type="checkbox"><label for="section-faf120d3-3e93-4907-a270-98dea460c6f1" class="xr-section-summary">Attributes: <span>(26)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>cdm_data_type :</span></dt><dd>Other</dd><dt><span>Conventions :</span></dt><dd>COARDS, CF-1.6, ACDD-1.3, NCCSV-1.2</dd><dt><span>defaultGraphQuery :</span></dt><dd>longitude,latitude,egg_count&amp;cruise="202301"&amp;.marker=5|5&amp;.colorBar=|||0|100|</dd><dt><span>Easternmost_Easting :</span></dt><dd>-77.22833</dd><dt><span>geospatial_lat_max :</span></dt><dd>53.27666</dd><dt><span>geospatial_lat_min :</span></dt><dd>0.001666</dd><dt><span>geospatial_lat_units :</span></dt><dd>degrees_north</dd><dt><span>geospatial_lon_max :</span></dt><dd>-77.22833</dd><dt><span>geospatial_lon_min :</span></dt><dd>-179.8217</dd><dt><span>geospatial_lon_units :</span></dt><dd>degrees_east</dd><dt><span>history :</span></dt><dd>2026-04-17T18:33:18Z (local files)
+2026-04-17T18:33:18Z https://coastwatch.pfeg.noaa.gov/erddap/tabledap/erdCalCOFIeggcnt.das</dd><dt><span>infoUrl :</span></dt><dd>https://oceanview.pfeg.noaa.gov/CalCOFI/calcofi_info.html</dd><dt><span>institution :</span></dt><dd>NOAA SWFSC</dd><dt><span>license :</span></dt><dd>The data may be used and redistributed for free but is not intended
+for legal use, since it may contain inaccuracies. Neither the data
+Contributor, ERD, NOAA, nor the United States Government, nor any
+of their employees or contractors, makes any warranty, express or
+implied, including warranties of merchantability and fitness for a
+particular purpose, or assumes any legal liability for the accuracy,
+completeness, or usefulness, of this information.</dd><dt><span>Northernmost_Northing :</span></dt><dd>53.27666</dd><dt><span>publisher_email :</span></dt><dd>ed.weber@noaa.gov</dd><dt><span>publisher_name :</span></dt><dd>Ed Weber</dd><dt><span>sourceUrl :</span></dt><dd>(local files)</dd><dt><span>Southernmost_Northing :</span></dt><dd>0.001666</dd><dt><span>standard_name_vocabulary :</span></dt><dd>CF-12</dd><dt><span>subsetVariables :</span></dt><dd>cruise, station, line, tow_type, tow_number,net_location, calcofi_species_code,common_name,scientific_name</dd><dt><span>summary :</span></dt><dd>Fish egg counts and standardized counts for eggs captured in CalCOFI icthyoplankton nets (primarily vertical [Calvet or Pairovet], oblique [bongo or ring nets], and surface tows [Manta nets]). Surface tows are normally standardized to count per 100 m^3 strained. Oblique tows are normally standardized to count per 10 m^2 of surface sampled.</dd><dt><span>time_coverage_end :</span></dt><dd>2023-01-25T18:45:00Z</dd><dt><span>time_coverage_start :</span></dt><dd>1951-01-09T18:16:00Z</dd><dt><span>title :</span></dt><dd>CalCOFI NOAA Fish Egg Counts</dd><dt><span>Westernmost_Easting :</span></dt><dd>-179.8217</dd></dl></div></li></ul></div></div>
+</div>
+</div>
+<div id="1fb52bde-b6de-4646-82b5-151c8a3908e3" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://coastwatch.pfeg.noaa.gov/erddap/tabledap/erdCalCOFIeggcnt"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>xr.open_dataset(url, engine<span class="op">=</span><span class="st">"erddapy"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in notebooks */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-obj-name,
+.xr-group-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-group-name::before {
+  content: "📁";
+  padding-right: 0.3em;
+}
+
+.xr-group-name,
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-group-box {
+  display: inline-grid;
+  grid-template-columns: 0px 20px auto;
+  width: 100%;
+}
+
+.xr-group-box-vline {
+  grid-column-start: 1;
+  border-right: 0.2em solid;
+  border-color: var(--xr-border-color);
+  width: 0px;
+}
+
+.xr-group-box-hline {
+  grid-column-start: 2;
+  grid-row-start: 1;
+  height: 1em;
+  width: 20px;
+  border-bottom: 0.2em solid;
+  border-color: var(--xr-border-color);
+}
+
+.xr-group-box-contents {
+  grid-column-start: 3;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 48MB
+Dimensions:                 (s: 93502)
+Dimensions without coordinates: s
+Data variables: (12/22)
+    s.cruise                (s) |S64 6MB ...
+    s.ship                  (s) |S64 6MB ...
+    s.ship_code             (s) |S64 6MB ...
+    s.order_occupied        (s) int32 374kB ...
+    s.tow_type              (s) |S64 6MB ...
+    s.tow_number            (s) int32 374kB ...
+    ...                      ...
+    s.common_name           (s) |S64 6MB ...
+    s.itis_tsn              (s) int32 374kB ...
+    s.calcofi_species_code  (s) int32 374kB ...
+    s.egg_count             (s) int32 374kB ...
+    s.eggs_10m2             (s) float32 374kB ...
+    s.eggs_100m3            (s) float32 374kB ...
+Attributes: (12/26)
+    cdm_data_type:             Other
+    Conventions:               COARDS, CF-1.6, ACDD-1.3, NCCSV-1.2
+    defaultGraphQuery:         longitude,latitude,egg_count&amp;cruise="202301"&amp;....
+    Easternmost_Easting:       -77.22833
+    geospatial_lat_max:        53.27666
+    geospatial_lat_min:        0.001666
+    ...                        ...
+    subsetVariables:           cruise, station, line, tow_type, tow_number,ne...
+    summary:                   Fish egg counts and standardized counts for eg...
+    time_coverage_end:         2023-01-25T18:45:00Z
+    time_coverage_start:       1951-01-09T18:16:00Z
+    title:                     CalCOFI NOAA Fish Egg Counts
+    Westernmost_Easting:       -179.8217</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-a0cb9906-31df-41cb-834e-4952613e126c" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-a0cb9906-31df-41cb-834e-4952613e126c" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span>s</span>: 93502</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-7026652a-a3ed-4cc4-9799-98632c05b7c0" class="xr-section-summary-in" type="checkbox"><label for="section-7026652a-a3ed-4cc4-9799-98632c05b7c0" class="xr-section-summary">Data variables: <span>(22)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>s.cruise</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-45d88ac3-1e3c-4f54-8ba4-92f72a65c314" class="xr-var-attrs-in" type="checkbox"><label for="attrs-45d88ac3-1e3c-4f54-8ba4-92f72a65c314" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-b89a68ab-95a8-4896-b5ea-ca010ce65c19" class="xr-var-data-in" type="checkbox"><label for="data-b89a68ab-95a8-4896-b5ea-ca010ce65c19" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Six-digit cruise code (YYYYMM)</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Cruise</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.ship</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-c70eb0ab-a693-4a7e-9bf6-3304f898d57d" class="xr-var-attrs-in" type="checkbox"><label for="attrs-c70eb0ab-a693-4a7e-9bf6-3304f898d57d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-18aea15f-9d16-488d-a8b7-8544070f49ac" class="xr-var-data-in" type="checkbox"><label for="data-18aea15f-9d16-488d-a8b7-8544070f49ac" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Ship name</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Ship Name</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.ship_code</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-9d59c088-4866-4729-b74a-31f2ee77e04c" class="xr-var-attrs-in" type="checkbox"><label for="attrs-9d59c088-4866-4729-b74a-31f2ee77e04c" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-28d8b1a2-07f1-49f6-a7d9-f59eda6c6688" class="xr-var-data-in" type="checkbox"><label for="data-28d8b1a2-07f1-49f6-a7d9-f59eda6c6688" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Two-digit CalCOFI ship code</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Ship Code</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.order_occupied</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-fdd16ef4-6037-4884-88c8-7976219367e1" class="xr-var-attrs-in" type="checkbox"><label for="attrs-fdd16ef4-6037-4884-88c8-7976219367e1" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-83719e60-8fee-4cc7-b19b-3bf10ed8a761" class="xr-var-data-in" type="checkbox"><label for="data-83719e60-8fee-4cc7-b19b-3bf10ed8a761" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[   1 1000]</dd><dt><span>description :</span></dt><dd>Ordinal number in which the station was sampled for the cruise and ship</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Order Occupied</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.tow_type</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-495d99ad-3e27-45ff-ad0a-e1a216449388" class="xr-var-attrs-in" type="checkbox"><label for="attrs-495d99ad-3e27-45ff-ad0a-e1a216449388" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-41edafaf-da5c-4e7d-b825-562c9d994e26" class="xr-var-data-in" type="checkbox"><label for="data-41edafaf-da5c-4e7d-b825-562c9d994e26" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Net gear type. See the CalCOFI Tow Types table.</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Tow Type</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.tow_number</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-9fde70d5-7ca1-414a-8d77-1dfe41de50a8" class="xr-var-attrs-in" type="checkbox"><label for="attrs-9fde70d5-7ca1-414a-8d77-1dfe41de50a8" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-ba92bd16-7745-47ea-a7be-27488a0cc80e" class="xr-var-data-in" type="checkbox"><label for="data-ba92bd16-7745-47ea-a7be-27488a0cc80e" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[ 1 30]</dd><dt><span>description :</span></dt><dd>Replicate tow number for the station, net type, and location</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Tow Number</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.net_location</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-cddeedf9-d825-4d70-8871-6b9dd92f5ea7" class="xr-var-attrs-in" type="checkbox"><label for="attrs-cddeedf9-d825-4d70-8871-6b9dd92f5ea7" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-3d558c06-67c1-4ec6-827c-c2213cd3c427" class="xr-var-data-in" type="checkbox"><label for="data-3d558c06-67c1-4ec6-827c-c2213cd3c427" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Port or Starboard location of net for paired tow types (e.g., bongo or pairovet)</dd><dt><span>ioos_category :</span></dt><dd>Identifier</dd><dt><span>long_name :</span></dt><dd>Net Location (side)</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.time</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-82f04510-58e8-4d4f-86cc-f1b31f541c2c" class="xr-var-attrs-in" type="checkbox"><label for="attrs-82f04510-58e8-4d4f-86cc-f1b31f541c2c" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-6cb78033-bad9-4c4f-a1f2-343e5c61121e" class="xr-var-data-in" type="checkbox"><label for="data-6cb78033-bad9-4c4f-a1f2-343e5c61121e" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_CoordinateAxisType :</span></dt><dd>Time</dd><dt><span>actual_range :</span></dt><dd>[-5.9885904e+08  1.6746723e+09]</dd><dt><span>axis :</span></dt><dd>T</dd><dt><span>description :</span></dt><dd>Tow start time (yyyy-MM-dd'T'HH:mm:ss'Z')</dd><dt><span>ioos_category :</span></dt><dd>Time</dd><dt><span>long_name :</span></dt><dd>Time</dd><dt><span>standard_name :</span></dt><dd>time</dd><dt><span>time_origin :</span></dt><dd>01-JAN-1970 00:00:00</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=datetime64[ns]]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.latitude</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-f4838b26-8b2e-4b8a-9229-dd62d59b3324" class="xr-var-attrs-in" type="checkbox"><label for="attrs-f4838b26-8b2e-4b8a-9229-dd62d59b3324" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-49ab0fe4-c533-4dd6-bc05-2152c3db8515" class="xr-var-data-in" type="checkbox"><label for="data-49ab0fe4-c533-4dd6-bc05-2152c3db8515" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_CoordinateAxisType :</span></dt><dd>Lat</dd><dt><span>actual_range :</span></dt><dd>[1.666000e-03 5.327666e+01]</dd><dt><span>axis :</span></dt><dd>Y</dd><dt><span>description :</span></dt><dd>Latitude of Station</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>Latitude</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.longitude</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-29ac2fe9-fe8b-43d2-99c0-3886fadc9012" class="xr-var-attrs-in" type="checkbox"><label for="attrs-29ac2fe9-fe8b-43d2-99c0-3886fadc9012" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-436150c6-8cf3-4625-bc40-ed2d73f914f0" class="xr-var-data-in" type="checkbox"><label for="data-436150c6-8cf3-4625-bc40-ed2d73f914f0" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>_CoordinateAxisType :</span></dt><dd>Lon</dd><dt><span>actual_range :</span></dt><dd>[-179.8217   -77.22833]</dd><dt><span>axis :</span></dt><dd>X</dd><dt><span>description :</span></dt><dd>Longitude of Station</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>Longitude</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.line</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-d3778c0e-3848-494a-a060-e81fdab2c51d" class="xr-var-attrs-in" type="checkbox"><label for="attrs-d3778c0e-3848-494a-a060-e81fdab2c51d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-66563085-50ed-4ec5-9722-356926c11aa7" class="xr-var-data-in" type="checkbox"><label for="data-66563085-50ed-4ec5-9722-356926c11aa7" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[-28.  394.9]</dd><dt><span>description :</span></dt><dd>Nominal CalCOFI Line</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>CalCOFI Line</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.station</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-4f39a697-0af0-4f65-9480-5284de2cb715" class="xr-var-attrs-in" type="checkbox"><label for="attrs-4f39a697-0af0-4f65-9480-5284de2cb715" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-85aa7ef6-ac91-4e3c-87ed-46a5e169eaa4" class="xr-var-data-in" type="checkbox"><label for="data-85aa7ef6-ac91-4e3c-87ed-46a5e169eaa4" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[-283.   718.8]</dd><dt><span>description :</span></dt><dd>Nominal CalCOFI Station</dd><dt><span>ioos_category :</span></dt><dd>Location</dd><dt><span>long_name :</span></dt><dd>CalCOFI Station</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.standard_haul_factor</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-720e77f7-22d0-4504-9f3b-640847fccdb9" class="xr-var-attrs-in" type="checkbox"><label for="attrs-720e77f7-22d0-4504-9f3b-640847fccdb9" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-306a9eb2-a831-4082-9cf1-077f33f47334" class="xr-var-data-in" type="checkbox"><label for="data-306a9eb2-a831-4082-9cf1-077f33f47334" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[1.0000e-02 8.3558e+02]</dd><dt><span>description :</span></dt><dd>Number used to standardize tows to catch per 10 meters squared of sea surface. See Kramer and Smith and Richardson references on the infosheet url for details.</dd><dt><span>ioos_category :</span></dt><dd>Other</dd><dt><span>long_name :</span></dt><dd>Standard Haul Factor</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.volume_sampled</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-3e5c0e1d-0930-4205-a742-bc8250b45751" class="xr-var-attrs-in" type="checkbox"><label for="attrs-3e5c0e1d-0930-4205-a742-bc8250b45751" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-36dc5b0a-ae54-4ba6-a6d9-2c35cf679039" class="xr-var-data-in" type="checkbox"><label for="data-36dc5b0a-ae54-4ba6-a6d9-2c35cf679039" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[3.0000e-01 5.1933e+04]</dd><dt><span>description :</span></dt><dd>Volume of water sampled by the net</dd><dt><span>ioos_category :</span></dt><dd>Other</dd><dt><span>long_name :</span></dt><dd>Volume Sampled</dd><dt><span>units :</span></dt><dd>meters^3</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.proportion_sorted</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-bbe424df-cf40-40d2-9905-b0cf00ef47aa" class="xr-var-attrs-in" type="checkbox"><label for="attrs-bbe424df-cf40-40d2-9905-b0cf00ef47aa" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-42c6246c-e143-4c2f-9719-d1b71eac152c" class="xr-var-data-in" type="checkbox"><label for="data-42c6246c-e143-4c2f-9719-d1b71eac152c" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[0.048 1.   ]</dd><dt><span>description :</span></dt><dd>Proportion of the net sample that was sorted in the laboratory</dd><dt><span>ioos_category :</span></dt><dd>Other</dd><dt><span>long_name :</span></dt><dd>Proportion Sorted</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.scientific_name</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-6de2befe-ce57-4d41-a23b-f80c96328973" class="xr-var-attrs-in" type="checkbox"><label for="attrs-6de2befe-ce57-4d41-a23b-f80c96328973" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-e9f7f1cb-135f-484c-a5ca-8662319e7d33" class="xr-var-data-in" type="checkbox"><label for="data-e9f7f1cb-135f-484c-a5ca-8662319e7d33" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Species scientific name</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>Scientific Name</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.common_name</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">|S64</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-137058fe-ca1b-4289-96b1-a427064bf9be" class="xr-var-attrs-in" type="checkbox"><label for="attrs-137058fe-ca1b-4289-96b1-a427064bf9be" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-f389ca99-3f81-41ed-9df0-bea138147127" class="xr-var-data-in" type="checkbox"><label for="data-f389ca99-3f81-41ed-9df0-bea138147127" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>description :</span></dt><dd>Species common name</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>Common Name</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=|S64]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.itis_tsn</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-f132bff4-2649-47ad-a8ee-603db6787f93" class="xr-var-attrs-in" type="checkbox"><label for="attrs-f132bff4-2649-47ad-a8ee-603db6787f93" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-66d6a3bb-6d05-4ce1-890d-0789457ce6a5" class="xr-var-data-in" type="checkbox"><label for="data-66d6a3bb-6d05-4ce1-890d-0789457ce6a5" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[161105 623625]</dd><dt><span>description :</span></dt><dd>Integrated taxonomic information system taxonomic serial number. http://www.itis.gov/</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>ITIS TSN</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.calcofi_species_code</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-37998608-be2b-478e-98fc-6e23cba30157" class="xr-var-attrs-in" type="checkbox"><label for="attrs-37998608-be2b-478e-98fc-6e23cba30157" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-4b1196b8-0516-415a-ba61-4645e87f7f38" class="xr-var-data-in" type="checkbox"><label for="data-4b1196b8-0516-415a-ba61-4645e87f7f38" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[  1 967]</dd><dt><span>ioos_category :</span></dt><dd>Fish Species</dd><dt><span>long_name :</span></dt><dd>Calcofi Species Code</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.egg_count</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">int32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-f12df1ca-2f27-483d-b2c2-5ec5c6c7a5a6" class="xr-var-attrs-in" type="checkbox"><label for="attrs-f12df1ca-2f27-483d-b2c2-5ec5c6c7a5a6" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-f510ef17-a7f0-434b-8477-2601f38bbe80" class="xr-var-data-in" type="checkbox"><label for="data-f510ef17-a7f0-434b-8477-2601f38bbe80" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[     1 187398]</dd><dt><span>description :</span></dt><dd>Raw count of eggs</dd><dt><span>ioos_category :</span></dt><dd>Fish Abundance</dd><dt><span>long_name :</span></dt><dd>Egg Count</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=int32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.eggs_10m2</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-1685c216-2fda-4f4f-bbc9-4ce507819b4d" class="xr-var-attrs-in" type="checkbox"><label for="attrs-1685c216-2fda-4f4f-bbc9-4ce507819b4d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-931064b2-db47-4161-9cac-caa370930cec" class="xr-var-data-in" type="checkbox"><label for="data-931064b2-db47-4161-9cac-caa370930cec" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[1.4000e-01 5.0064e+05]</dd><dt><span>description :</span></dt><dd>eggs per 10 meters squared of water sampled (oblique and vertical tows)</dd><dt><span>ioos_category :</span></dt><dd>Fish Abundance</dd><dt><span>long_name :</span></dt><dd>Eggs 10/M^2</dd><dt><span>units :</span></dt><dd>Eggs 10/M^2</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>s.eggs_100m3</span></div><div class="xr-var-dims">(s)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">...</div><input id="attrs-44bc63b0-0aa5-4bde-a30b-d96a813c9b59" class="xr-var-attrs-in" type="checkbox"><label for="attrs-44bc63b0-0aa5-4bde-a30b-d96a813c9b59" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-6de76160-a09c-4660-a2db-c738be20c6e2" class="xr-var-data-in" type="checkbox"><label for="data-6de76160-a09c-4660-a2db-c738be20c6e2" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>actual_range :</span></dt><dd>[2.077533e-03 2.061584e+05]</dd><dt><span>description :</span></dt><dd>eggs per 100 cubic meters of water sampled (Manta and mocness tows)</dd><dt><span>ioos_category :</span></dt><dd>Fish Abundance</dd><dt><span>long_name :</span></dt><dd>Eggs 100/M^3</dd><dt><span>units :</span></dt><dd>Eggs 100/M^3</dd></dl></div><div class="xr-var-data"><pre>[93502 values with dtype=float32]</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-b833b0c7-ae2e-4439-8174-44eafc3d003a" class="xr-section-summary-in" type="checkbox"><label for="section-b833b0c7-ae2e-4439-8174-44eafc3d003a" class="xr-section-summary">Attributes: <span>(26)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>cdm_data_type :</span></dt><dd>Other</dd><dt><span>Conventions :</span></dt><dd>COARDS, CF-1.6, ACDD-1.3, NCCSV-1.2</dd><dt><span>defaultGraphQuery :</span></dt><dd>longitude,latitude,egg_count&amp;cruise="202301"&amp;.marker=5|5&amp;.colorBar=|||0|100|</dd><dt><span>Easternmost_Easting :</span></dt><dd>-77.22833</dd><dt><span>geospatial_lat_max :</span></dt><dd>53.27666</dd><dt><span>geospatial_lat_min :</span></dt><dd>0.001666</dd><dt><span>geospatial_lat_units :</span></dt><dd>degrees_north</dd><dt><span>geospatial_lon_max :</span></dt><dd>-77.22833</dd><dt><span>geospatial_lon_min :</span></dt><dd>-179.8217</dd><dt><span>geospatial_lon_units :</span></dt><dd>degrees_east</dd><dt><span>history :</span></dt><dd>2026-04-17T18:35:08Z (local files)
+2026-04-17T18:35:08Z https://coastwatch.pfeg.noaa.gov/erddap/tabledap/erdCalCOFIeggcnt.das</dd><dt><span>infoUrl :</span></dt><dd>https://oceanview.pfeg.noaa.gov/CalCOFI/calcofi_info.html</dd><dt><span>institution :</span></dt><dd>NOAA SWFSC</dd><dt><span>license :</span></dt><dd>The data may be used and redistributed for free but is not intended
+for legal use, since it may contain inaccuracies. Neither the data
+Contributor, ERD, NOAA, nor the United States Government, nor any
+of their employees or contractors, makes any warranty, express or
+implied, including warranties of merchantability and fitness for a
+particular purpose, or assumes any legal liability for the accuracy,
+completeness, or usefulness, of this information.</dd><dt><span>Northernmost_Northing :</span></dt><dd>53.27666</dd><dt><span>publisher_email :</span></dt><dd>ed.weber@noaa.gov</dd><dt><span>publisher_name :</span></dt><dd>Ed Weber</dd><dt><span>sourceUrl :</span></dt><dd>(local files)</dd><dt><span>Southernmost_Northing :</span></dt><dd>0.001666</dd><dt><span>standard_name_vocabulary :</span></dt><dd>CF-12</dd><dt><span>subsetVariables :</span></dt><dd>cruise, station, line, tow_type, tow_number,net_location, calcofi_species_code,common_name,scientific_name</dd><dt><span>summary :</span></dt><dd>Fish egg counts and standardized counts for eggs captured in CalCOFI icthyoplankton nets (primarily vertical [Calvet or Pairovet], oblique [bongo or ring nets], and surface tows [Manta nets]). Surface tows are normally standardized to count per 100 m^3 strained. Oblique tows are normally standardized to count per 10 m^2 of surface sampled.</dd><dt><span>time_coverage_end :</span></dt><dd>2023-01-25T18:45:00Z</dd><dt><span>time_coverage_start :</span></dt><dd>1951-01-09T18:16:00Z</dd><dt><span>title :</span></dt><dd>CalCOFI NOAA Fish Egg Counts</dd><dt><span>Westernmost_Easting :</span></dt><dd>-179.8217</dd></dl></div></li></ul></div></div>
+</div>
+</div>
+<div id="6bf3ac34-3f7a-46cd-a90d-e98159e22680" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://gliders.ioos.us/erddap/tabledap/amelia-20180501T0000.ncCFMA"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>xr.open_dataset(url, engine<span class="op">=</span><span class="st">"erddapy"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">HTTPStatusError</span>                           Traceback (most recent call last)
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/core/url.py:80</span>, in <span class="ansi-cyan-fg">_urlopen</span><span class="ansi-blue-fg">(url, auth, **kwargs)</span>
+<span class="ansi-green-fg">     79</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">80</span>     <span class="ansi-yellow-bg">response</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">raise_for_status</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">     81</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> httpx.HTTPError <span style="font-weight:bold;color:rgb(0,135,0)">as</span> err:
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/httpx/_models.py:829</span>, in <span class="ansi-cyan-fg">Response.raise_for_status</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-fg">    828</span> message = message.format(<span style="color:rgb(0,135,0)">self</span>, error_type=error_type)
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">829</span> <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> HTTPStatusError(message, request=request, response=<span style="color:rgb(0,135,0)">self</span>)
+
+<span class="ansi-red-fg">HTTPStatusError</span>: Server error '503 ' for url 'https://gliders.ioos.us/erddap/tabledap/amelia-20180501T0000.ncCFMA'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+
+The above exception was the direct cause of the following exception:
+
+<span class="ansi-red-fg">HTTPError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[8]</span><span class="ansi-green-fg">, line 3</span>
+<span class="ansi-green-fg">      1</span> url = <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">https://gliders.ioos.us/erddap/tabledap/amelia-20180501T0000.ncCFMA</span><span class="ansi-yellow-fg">"</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">3</span> <span class="ansi-yellow-bg">xr</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">open_dataset</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">url</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">engine</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-fg ansi-yellow-bg">erddapy</span><span class="ansi-yellow-fg ansi-yellow-bg">"</span><span class="ansi-yellow-bg">)</span>
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/xarray/backends/api.py:606</span>, in <span class="ansi-cyan-fg">open_dataset</span><span class="ansi-blue-fg">(filename_or_obj, engine, chunks, cache, decode_cf, mask_and_scale, decode_times, decode_timedelta, use_cftime, concat_characters, decode_coords, drop_variables, create_default_indexes, inline_array, chunked_array_type, from_array_kwargs, backend_kwargs, **kwargs)</span>
+<span class="ansi-green-fg">    594</span> decoders = _resolve_decoders_kwargs(
+<span class="ansi-green-fg">    595</span>     decode_cf,
+<span class="ansi-green-fg">    596</span>     open_backend_dataset_parameters=backend.open_dataset_parameters,
+<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    602</span>     decode_coords=decode_coords,
+<span class="ansi-green-fg">    603</span> )
+<span class="ansi-green-fg">    605</span> overwrite_encoded_chunks = kwargs.pop(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">overwrite_encoded_chunks</span><span class="ansi-yellow-fg">"</span>, <span style="font-weight:bold;color:rgb(0,135,0)">None</span>)
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">606</span> backend_ds = <span class="ansi-yellow-bg">backend</span><span class="ansi-yellow-bg">.</span><span class="ansi-yellow-bg">open_dataset</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-fg">    607</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">filename_or_obj</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    608</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">drop_variables</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">drop_variables</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    609</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">decoders</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    610</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">    611</span> <span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    612</span> ds = _dataset_from_backend_dataset(
+<span class="ansi-green-fg">    613</span>     backend_ds,
+<span class="ansi-green-fg">    614</span>     filename_or_obj,
+<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    625</span>     **kwargs,
+<span class="ansi-green-fg">    626</span> )
+<span class="ansi-green-fg">    627</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> ds
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/xarray_erddap.py:74</span>, in <span class="ansi-cyan-fg">ERDDAPyBackendEntrypoint.open_dataset</span><span class="ansi-blue-fg">(self, filename_or_obj, drop_variables)</span>
+<span class="ansi-green-fg">     67</span> <span style="font-weight:bold;color:rgb(0,135,0)">def</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg">open_dataset</span>(
+<span class="ansi-green-fg">     68</span>     <span style="color:rgb(0,135,0)">self</span>,
+<span class="ansi-green-fg">     69</span>     filename_or_obj: <span style="color:rgb(0,135,0)">str</span>,
+<span class="ansi-green-fg">     70</span>     *,
+<span class="ansi-green-fg">     71</span>     drop_variables: <span style="color:rgb(0,135,0)">list</span> | <span style="font-weight:bold;color:rgb(0,135,0)">None</span> = <span style="font-weight:bold;color:rgb(0,135,0)">None</span>,  <span style="font-style:italic;color:rgb(95,135,135)"># noqa: ARG002</span>
+<span class="ansi-green-fg">     72</span> ) -&gt; xr.Dataset:
+<span class="ansi-green-fg">     73</span> <span style="color:rgb(188,188,188)">    </span><span style="font-style:italic" class="ansi-yellow-fg">"""Open ERDDAP URLs as xarray datasets."""</span>
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">74</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">open_erddap_dataset</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">filename_or_obj</span><span class="ansi-yellow-bg">)</span>
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/xarray_erddap.py:93</span>, in <span class="ansi-cyan-fg">open_erddap_dataset</span><span class="ansi-blue-fg">(filename_or_obj)</span>
+<span class="ansi-green-fg">     90</span>     filename_or_obj = _make_opendap(filename_or_obj)
+<span class="ansi-green-fg">     91</span>     response = <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">opendap</span><span class="ansi-yellow-fg">"</span>
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">93</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">to_xarray</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">filename_or_obj</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">response</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">response</span><span class="ansi-yellow-bg">)</span>
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/core/interfaces.py:89</span>, in <span class="ansi-cyan-fg">to_xarray</span><span class="ansi-blue-fg">(url, response, requests_kwargs, xarray_kwargs)</span>
+<span class="ansi-green-fg">     86</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> response == <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">opendap</span><span class="ansi-yellow-fg">"</span>:
+<span class="ansi-green-fg">     87</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> xr.open_dataset(url, engine=<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">netcdf4</span><span class="ansi-yellow-fg">"</span>, **(xarray_kwargs <span style="font-weight:bold;color:rgb(175,0,255)">or</span> {}))
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">89</span> nc = <span class="ansi-yellow-bg">_nc_dataset</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">url</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">requests_kwargs</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">     90</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> xr.open_dataset(
+<span class="ansi-green-fg">     91</span>     xr.backends.NetCDF4DataStore(nc),
+<span class="ansi-green-fg">     92</span>     **(xarray_kwargs <span style="font-weight:bold;color:rgb(175,0,255)">or</span> {}),
+<span class="ansi-green-fg">     93</span> )
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/core/netcdf.py:36</span>, in <span class="ansi-cyan-fg">_nc_dataset</span><span class="ansi-blue-fg">(url, requests_kwargs)</span>
+<span class="ansi-green-fg">     33</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> _is_quoted(url):
+<span class="ansi-green-fg">     34</span>     quote = <span style="font-weight:bold;color:rgb(0,135,0)">True</span>
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">36</span> data = <span class="ansi-yellow-bg">urlopen</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-fg">     37</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">url</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">     38</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">quote</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">quote</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">     39</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">requests_kwargs</span><span class="ansi-yellow-bg">=</span><span class="ansi-yellow-bg">requests_kwargs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-fg">     40</span> <span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">     41</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">     42</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> Dataset(Path(urlparse(url).path).name, memory=data.read())
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/core/url.py:114</span>, in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(url, quote, requests_kwargs)</span>
+<span class="ansi-green-fg">    112</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> quote:
+<span class="ansi-green-fg">    113</span>     url = quote_url(url)
+<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">114</span> data = <span class="ansi-yellow-bg">_urlopen</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">url</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">*</span><span class="ansi-yellow-bg">requests_kwargs</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-fg">    115</span> data.seek(<span class="ansi-green-fg">0</span>)
+<span class="ansi-green-fg">    116</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> data
+
+<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">/srv/conda/envs/notebook/lib/python3.12/site-packages/erddapy/core/url.py:83</span>, in <span class="ansi-cyan-fg">_urlopen</span><span class="ansi-blue-fg">(url, auth, **kwargs)</span>
+<span class="ansi-green-fg">     81</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> httpx.HTTPError <span style="font-weight:bold;color:rgb(0,135,0)">as</span> err:
+<span class="ansi-green-fg">     82</span>     msg = <span style="color:rgb(0,135,0)">str</span>(response.content.decode())
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">83</span>     <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> httpx.HTTPError(msg) <span style="font-weight:bold;color:rgb(0,135,0)">from</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg ansi-bold">err</span>
+<span class="ansi-green-fg">     84</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> io.BytesIO(response.content)
+
+<span class="ansi-red-fg">HTTPError</span>: Error {
+    code=503;
+    message="Service Unavailable: There was a (temporary?) problem.  Wait a minute, then try again.  (In a browser, click the Reload button.)";
+}
+</pre>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nmfs-opensci\.github\.io\/NMFSHackDays-2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="NMFS Open Science logo" style="width:150px"><br>NMFS Open Science</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-04-17/erddap_tabledap.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-04-17/erddap_tabledap.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

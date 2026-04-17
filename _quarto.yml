@@ -69,6 +69,8 @@ website:
           href: topics/2026-04-03/index.html
         - text: "3 xarray + argopy"
           href: topics/2026-04-10/index.html
+        - text: "4 xarray + erddap"
+          href: topics/2026-04-17/index.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
