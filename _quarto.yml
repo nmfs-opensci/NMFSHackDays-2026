@@ -52,7 +52,7 @@ website:
       contents:
         - href: content/hackhours.md
           text: About
-        - section: JupyterHub Skills
+        - text: JupyterHub Skills
           href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
         - text: "---"
         - text: "1 Intro to BRTs"
