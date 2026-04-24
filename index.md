@@ -20,10 +20,10 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Apr 3 - [Intro to xarray with OPeNDAP](topics/2026-04-03/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}}
 * Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html) {{< fa brands python >}} and R
 * Apr 17 - [Intro to accessing data on ERDDAP servers with xarray](topics/2026-04-17/index.html) {{< fa brands python >}}
-* Apr 24 - Accessing Modeled Ocean Data (ERDDAP+xarray): PacIOOS’ ROMS
-* May 1 - Accessing Modeled Ocean Data (OPenDAP+xarray): NE Atlantic ROMS (CEFI)
+* Apr 24 - Cancelled
+* May 1 - Accessing Modeled Ocean Data with xarray {{< fa brands python >}}
 * May 8 - Intro to xbatcher for fitting models to larger than memory data. (Keenan Ganz, UW) {{< fa brands python >}}
-* May 15 - TBD
+* May 15 - VirtualiZarr and IceChunk, demo of the pipeline for ISMIP6 data (Shane Grigsby, Astera)
 * May 22 - skipping for Memorial Day long weekend
 * May 29 - QGIS + JupyterLab (Matt Fisher, UC Berkeley Center for Data Science and Environment)
-* June 5 - VizualiZarr and IceChunk (Rich Signell, Open Science Computing, LLC) {{< fa brands python >}}
+* June 5 - More VirtualiZarr and IceChunk (Rich Signell, Open Science Computing, LLC) {{< fa brands python >}}
