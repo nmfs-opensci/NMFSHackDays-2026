@@ -1,0 +1,2580 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.34">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Adapted from Kerchunk and Rich Signell">
+
+<title>Kerchunk Basics with one HYCOM NetCDF file – NMFS HackHours 2026</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon-16x16.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-69259211bff4de149c509f6620516e6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-97f26fc3793c6110c90497156cd7511e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">NMFS HackHours 2026</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://nmfs-openscapes.2i2c.cloud/"> <i class="bi bi-server" role="img">
+</i> 
+<span class="menu-text">JupyterHub</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/orgs/nmfs-openscapes/discussions/categories/hackhours"> <i class="bi bi-wechat" role="img">
+</i> 
+<span class="menu-text">Discussions</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nmfs-opensci/NMFSHackDays-2026"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">repo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/nmfs-opensci"> <i class="bi bi-globe" role="img">
+</i> 
+<span class="menu-text">GH org</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#big-picture" id="toc-big-picture" class="nav-link active" data-scroll-target="#big-picture">Big picture</a></li>
+  <li><a href="#what-is-special-about-this-hycom-example" id="toc-what-is-special-about-this-hycom-example" class="nav-link" data-scroll-target="#what-is-special-about-this-hycom-example">What is special about this HYCOM example?</a></li>
+  <li><a href="#imports" id="toc-imports" class="nav-link" data-scroll-target="#imports">Imports</a></li>
+  <li><a href="#connect-to-the-public-hycom-s3-bucket" id="toc-connect-to-the-public-hycom-s3-bucket" class="nav-link" data-scroll-target="#connect-to-the-public-hycom-s3-bucket">Connect to the public HYCOM S3 bucket</a></li>
+  <li><a href="#find-the-hycom-netcdf-files" id="toc-find-the-hycom-netcdf-files" class="nav-link" data-scroll-target="#find-the-hycom-netcdf-files">Find the HYCOM NetCDF files</a></li>
+  <li><a href="#create-references-for-one-netcdf-file" id="toc-create-references-for-one-netcdf-file" class="nav-link" data-scroll-target="#create-references-for-one-netcdf-file">Create references for one NetCDF file</a></li>
+  <li><a href="#inspect-the-reference-dictionary" id="toc-inspect-the-reference-dictionary" class="nav-link" data-scroll-target="#inspect-the-reference-dictionary">Inspect the reference dictionary</a></li>
+  <li><a href="#subchunk-the-large-4d-timelatlondepth-variables" id="toc-subchunk-the-large-4d-timelatlondepth-variables" class="nav-link" data-scroll-target="#subchunk-the-large-4d-timelatlondepth-variables">Subchunk the large 4D (time/lat/lon/depth) variables</a></li>
+  <li><a href="#open-the-kerchunk-references-with-xarray" id="toc-open-the-kerchunk-references-with-xarray" class="nav-link" data-scroll-target="#open-the-kerchunk-references-with-xarray">Open the kerchunk references with xarray</a></li>
+  <li><a href="#what-did-we-get" id="toc-what-did-we-get" class="nav-link" data-scroll-target="#what-did-we-get">What did we get?</a></li>
+  <li><a href="#read-a-small-subset" id="toc-read-a-small-subset" class="nav-link" data-scroll-target="#read-a-small-subset">Read a small subset</a></li>
+  <li><a href="#plot-the-small-subset" id="toc-plot-the-small-subset" class="nav-link" data-scroll-target="#plot-the-small-subset">Plot the small subset</a></li>
+  <li><a href="#recap" id="toc-recap" class="nav-link" data-scroll-target="#recap">Recap</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.dev/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<div id="google_translate_element"></div>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+    function openJupyterWidget(notebookUrl) {
+        let encodedNotebookUrl = encodeURIComponent(notebookUrl);
+        let popupUrl = `https://nmfs-opensci.github.io/NMFSHackDays-2025/widgets/jupyterhub_link_widget.html?notebook=${encodedNotebookUrl}`;
+        let popupWindow = window.open(popupUrl, "JupyterWidget", "width=600,height=400");
+        if (!popupWindow) {
+            alert("Popup blocked! Please allow popups for this site.");
+        }
+    }
+</script>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Kerchunk Basics with one HYCOM NetCDF file</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Adapted from Kerchunk and Rich Signell </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="https://colab.research.google.com/github/nmfs-opensci/nmfshackdays-2026/blob/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb"><img src="https://img.shields.io/badge/Open_in_Colab-blue?style=for-the-badge" class="img-fluid" alt="Colab Badge"></a> <a href="https://github.com/nmfs-opensci/nmfshackdays-2026/blob/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb"><img src="https://img.shields.io/badge/Download-grey?style=for-the-badge" class="img-fluid" alt="Download Badge"></a> <a href="https://nmfs-openscapes.2i2c.cloud/hub/user-redirect/lab?fromURL=https://raw.githubusercontent.com/nmfs-opensci/nmfshackdays-2026/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb"><img src="https://img.shields.io/badge/Jupyter_Hub-orange?style=for-the-badge" class="img-fluid" alt="JupyterHub"></a></p>
+<p>This notebook introduces the basic idea behind <strong>kerchunk</strong> using the first HYCOM NetCDF file from Rich Signell’s HYCOM kerchunk example. The multi-file workflow comes later. The goal is to show how one ordinary NetCDF file can be scanned and represented as a <strong>virtual Zarr dataset</strong> without copying the data.</p>
+<p><a href="https://registry.opendata.aws/hycom-gofs-3pt1-reanalysis/">HYCOM</a>: HYbrid Coordinate Ocean Model Global Ocean Forecast System Reanalysis 1994-2015. A global ocean dataset that combines a numerical ocean model with observations (like satellites and Argo floats) to provide a consistent, time-varying estimate of ocean conditions such as temperature, currents, and salinity.</p>
+<p><strong>Zarr vs NetCDF and why Zarr is considered cloud-native</strong></p>
+<p>NetCDF and Zarr both store multidimensional scientific data (arrays with dimensions, coordinates, and metadata), but they differ fundamentally in how the data are physically organized. Traditional NetCDF files are typically stored as a single monolithic binary file, which works well on local disks but can be inefficient in cloud environments where data are accessed over networks.</p>
+<p>Zarr, in contrast, stores data as many small, independently addressable chunks organized in a <strong>directory-like</strong> structure. Each chunk can be read directly without scanning the whole dataset. This design makes Zarr “cloud-native” or “cloud-read-optimized” because it aligns with how cloud object storage systems (like S3 or GCS) operate: fast access to individual objects via HTTP requests. As a result, Zarr enables efficient parallel reads, scalable analysis with tools like Dask, and responsive subsetting of large datasets without downloading entire files.</p>
+<p><strong>But kerchunk does not change the file chunk structure</strong></p>
+<p>So chunks still might be big, but still smaller since you can load single variables and in the case of HYCOM, single depths. And you can create multi-file Zarr that you use to make a xarray data cube.</p>
+<section id="big-picture" class="level2">
+<h2 class="anchored" data-anchor-id="big-picture">Big picture</h2>
+<p>Kerchunk is a tool for creating <strong>reference metadata</strong>.</p>
+<p>It does not convert the NetCDF file into Zarr. Instead, it builds a small dictionary that says:</p>
+<pre class="text"><code>Zarr metadata or chunk key  →  byte range inside the original NetCDF file</code></pre>
+<p><strong>That reference dictionary can then be opened by xarray as if it were a Zarr store.</strong></p>
+<p>The original data remain where they are:</p>
+<pre class="text"><code>HYCOM NetCDF file on public S3
+        ↓
+kerchunk scans metadata and byte ranges
+        ↓
+reference dictionary in memory (or written to json or parquet)
+        ↓
+xarray opens kerchunk dictionary like Zarr</code></pre>
+<p>This is why kerchunk is often described as making a <strong>virtual dataset</strong>.</p>
+</section>
+<section id="what-is-special-about-this-hycom-example" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-special-about-this-hycom-example">What is special about this HYCOM example?</h2>
+<p>The HYCOM files in this archive are <strong>NetCDF3 / NetCDF 64-bit offset</strong> files, not NetCDF4/HDF5 files. That matters because kerchunk has different translators for different file formats.</p>
+<p>For NetCDF4/HDF5 files, many examples use:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kerchunk.hdf.SingleHdf5ToZarr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For this HYCOM example, we use:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>kerchunk.netCDF3.NetCDF3ToZarr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The output idea is the same: create a reference mapping that lets xarray treat the original NetCDF file like a Zarr dataset.</p>
+</section>
+<section id="imports" class="level2">
+<h2 class="anchored" data-anchor-id="imports">Imports</h2>
+<p>We import:</p>
+<ul>
+<li><code>fsspec</code> to access cloud object storage</li>
+<li><code>NetCDF3ToZarr</code> to scan a NetCDF3 file and create kerchunk references</li>
+<li><code>subchunk</code> to create smaller virtual chunks for large uncompressed arrays</li>
+<li><code>xarray</code> to open the reference mapping as a dataset</li>
+</ul>
+<div id="cell-6" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> fsspec</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kerchunk.netCDF3 <span class="im">import</span> NetCDF3ToZarr</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kerchunk.utils <span class="im">import</span> subchunk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="connect-to-the-public-hycom-s3-bucket" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-the-public-hycom-s3-bucket">Connect to the public HYCOM S3 bucket</h2>
+<p>The source NetCDF files are stored in a public S3 bucket. Because the bucket is public, we use anonymous access: <code>anon=True</code>. This tells <code>s3fs</code> / <code>fsspec</code> not to look for AWS credentials.</p>
+<div id="cell-8" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fs <span class="op">=</span> fsspec.filesystem(<span class="st">"s3"</span>, anon<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="find-the-hycom-netcdf-files" class="level2">
+<h2 class="anchored" data-anchor-id="find-the-hycom-netcdf-files">Find the HYCOM NetCDF files</h2>
+<p>We will list all files in the S3 <code>hycom-gofs-3pt1-reanalysis</code> bucket, but for this basics lesson we will only use the first file.</p>
+<ol type="1">
+<li><strong>Single-file kerchunking</strong>: make one NetCDF file look like Zarr</li>
+<li><strong>Multi-file kerchunking</strong>: combine many single-file references along time</li>
+</ol>
+<p>This notebook focuses only on the first idea.</p>
+<div id="cell-10" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>flist <span class="op">=</span> fs.glob(<span class="st">"hycom-gofs-3pt1-reanalysis/*/*.nc"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(flist), flist[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>(63341,
+ 'hycom-gofs-3pt1-reanalysis/1994/hycom_GLBv0.08_530_1994010112_t000.nc')</code></pre>
+</div>
+</div>
+</section>
+<section id="create-references-for-one-netcdf-file" class="level2">
+<h2 class="anchored" data-anchor-id="create-references-for-one-netcdf-file">Create references for one NetCDF file</h2>
+<p>This is the core kerchunk step.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>NetCDF3ToZarr(...).translate()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol type="1">
+<li>Kerchunk opens the NetCDF file remotely.</li>
+<li>It reads the NetCDF metadata.</li>
+<li>It identifies where variables and array data are located in the file.</li>
+<li>It builds a reference dictionary that describes the file as a Zarr-like store.</li>
+</ol>
+<p>The important point is that this does <strong>not</strong> copy the HYCOM data.</p>
+<p>The resulting object, <code>d0</code>, is a Python dictionary containing references.</p>
+<section id="why-inline_threshold400" class="level3">
+<h3 class="anchored" data-anchor-id="why-inline_threshold400">Why <code>inline_threshold=400</code>?</h3>
+<p>Small pieces of metadata can be embedded directly in the reference dictionary. Larger byte ranges remain as references to the original file. This reduces the number of tiny remote reads needed later.</p>
+</section>
+<section id="why-version2" class="level3">
+<h3 class="anchored" data-anchor-id="why-version2">Why <code>version=2</code>?</h3>
+<p>This asks kerchunk to produce a reference mapping compatible with Zarr version 2.</p>
+<div id="cell-12" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>time</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>first_file <span class="op">=</span> <span class="st">"s3://"</span> <span class="op">+</span> flist[<span class="dv">0</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create kerchunk references for one HYCOM NetCDF file.</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>d0 <span class="op">=</span> NetCDF3ToZarr(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    first_file,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    storage_options<span class="op">=</span>{<span class="st">"anon"</span>: <span class="va">True</span>},</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    inline_threshold<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    version<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>).translate()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 306 ms, sys: 119 ms, total: 425 ms
+Wall time: 2.71 s</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="inspect-the-reference-dictionary" class="level2">
+<h2 class="anchored" data-anchor-id="inspect-the-reference-dictionary">Inspect the reference dictionary</h2>
+<p>The reference dictionary is the virtual Zarr store. It contains entries for things like:</p>
+<ul>
+<li><code>.zgroup</code></li>
+<li><code>.zattrs</code></li>
+<li>variable metadata such as <code>water_temp/.zarray</code></li>
+<li>chunk references such as <code>water_temp/0.0.0.0</code></li>
+</ul>
+<p>Some entries are metadata stored directly in the dictionary. Others point to byte ranges in the original NetCDF file.</p>
+<div id="cell-14" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(d0), <span class="bu">list</span>(d0.keys())[:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>(dict, ['version', 'refs'])</code></pre>
+</div>
+</div>
+<div id="cell-15" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Show a few reference keys.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(d0[<span class="st">"refs"</span>].keys())[:<span class="dv">20</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>['lat/0',
+ 'lon/0',
+ 'water_u/0.0.0.0',
+ 'water_u_bottom/0.0.0',
+ 'water_v/0.0.0.0',
+ 'water_v_bottom/0.0.0',
+ 'water_temp/0.0.0.0',
+ 'water_temp_bottom/0.0.0',
+ 'salinity/0.0.0.0',
+ 'salinity_bottom/0.0.0',
+ 'surf_el/0.0.0',
+ '.zgroup',
+ '.zattrs',
+ 'lat/.zarray',
+ 'lat/.zattrs',
+ 'lon/.zarray',
+ 'lon/.zattrs',
+ 'water_u/.zarray',
+ 'water_u/.zattrs',
+ 'water_u_bottom/.zarray']</code></pre>
+</div>
+</div>
+</section>
+<section id="subchunk-the-large-4d-timelatlondepth-variables" class="level2">
+<h2 class="anchored" data-anchor-id="subchunk-the-large-4d-timelatlondepth-variables">Subchunk the large 4D (time/lat/lon/depth) variables</h2>
+<p>The HYCOM NetCDF files are uncompressed and not chunked like cloud-native Zarr.</p>
+<p>Kerchunk can create <strong>virtual chunks</strong> by splitting large arrays into smaller byte-range references. In Rich’s notebook this is done with <code>subchunk</code>. Here the 4D variables are: salinity, water_temp, water_u, water_v.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>subchunk(store<span class="op">=</span>d0, variable<span class="op">=</span>v, factor<span class="op">=</span><span class="dv">40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>splits each variable along the vertical dimension so that each vertical layer can be treated more like a chunk. Without subchunking, reading a single depth layer might require reading a much larger block than needed.</p>
+<div id="cell-17" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> v <span class="kw">in</span> [<span class="st">"salinity"</span>, <span class="st">"water_temp"</span>, <span class="st">"water_u"</span>, <span class="st">"water_v"</span>]:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    d0 <span class="op">=</span> subchunk(store<span class="op">=</span>d0, variable<span class="op">=</span>v, factor<span class="op">=</span><span class="dv">40</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>nb. It does change the layout of the dictionary, moving <code>refs</code> key to base.</p>
+<div id="cell-19" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(d0), <span class="bu">list</span>(d0.keys())[:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>(dict,
+ ['lat/0',
+  'lon/0',
+  'water_u/0.0.0.0',
+  'water_u_bottom/0.0.0',
+  'water_v/0.0.0.0',
+  'water_v_bottom/0.0.0',
+  'water_temp/0.0.0.0',
+  'water_temp_bottom/0.0.0',
+  'salinity/0.0.0.0',
+  'salinity_bottom/0.0.0'])</code></pre>
+</div>
+</div>
+</section>
+<section id="open-the-kerchunk-references-with-xarray" class="level2">
+<h2 class="anchored" data-anchor-id="open-the-kerchunk-references-with-xarray">Open the kerchunk references with xarray</h2>
+<p>Now we open the reference dictionary as a dataset using <code>engine="kerchunk"</code>. Notice that <code>d0</code> is not a filename here. It is the reference dictionary in memory.</p>
+<p><code>engine="kerchunk"</code> tells xarray to use kerchunk’s backend, and:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>remote_protocol<span class="op">=</span><span class="st">"s3"</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>remote_options<span class="op">=</span>{<span class="st">"anon"</span>: <span class="va">True</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>tell kerchunk how to read the original HYCOM NetCDF file. The original file is still on S3. Kerchunk only provides the map that tells xarray which byte ranges to read.</p>
+<div id="cell-21" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tell it that the HYCOM S3 bucket is public</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>so <span class="op">=</span> <span class="bu">dict</span>(anon<span class="op">=</span><span class="va">True</span>, skip_instance_cache<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>single <span class="op">=</span> xr.open_dataset(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    d0,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    engine<span class="op">=</span><span class="st">"kerchunk"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    chunks<span class="op">=</span>{},</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    drop_variables<span class="op">=</span><span class="st">"tau"</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    backend_kwargs<span class="op">=</span><span class="bu">dict</span>(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        storage_options<span class="op">=</span><span class="bu">dict</span>(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            remote_protocol<span class="op">=</span><span class="st">"s3"</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            lazy<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            remote_options<span class="op">=</span>so,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>single</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in notebooks */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-obj-name,
+.xr-group-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-group-name::before {
+  content: "📁";
+  padding-right: 0.3em;
+}
+
+.xr-group-name,
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-group-box {
+  display: inline-grid;
+  grid-template-columns: 0px 20px auto;
+  width: 100%;
+}
+
+.xr-group-box-vline {
+  grid-column-start: 1;
+  border-right: 0.2em solid;
+  border-color: var(--xr-border-color);
+  width: 0px;
+}
+
+.xr-group-box-hline {
+  grid-column-start: 2;
+  grid-row-start: 1;
+  height: 1em;
+  width: 20px;
+  border-bottom: 0.2em solid;
+  border-color: var(--xr-border-color);
+}
+
+.xr-group-box-contents {
+  grid-column-start: 3;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.Dataset&gt; Size: 19GB
+Dimensions:            (time: 1, depth: 40, lat: 3251, lon: 4500)
+Coordinates:
+  * time               (time) datetime64[ns] 8B 1994-01-01T12:00:00
+  * depth              (depth) float64 320B 0.0 2.0 4.0 ... 3e+03 4e+03 5e+03
+  * lat                (lat) float64 26kB -80.0 -79.96 -79.92 ... 89.96 90.0
+  * lon                (lon) float64 36kB -180.0 -179.9 -179.8 ... 179.8 179.9
+Data variables:
+    water_u            (time, depth, lat, lon) float64 5GB dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;
+    water_u_bottom     (time, lat, lon) float64 117MB dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;
+    water_v            (time, depth, lat, lon) float64 5GB dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;
+    water_v_bottom     (time, lat, lon) float64 117MB dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;
+    water_temp         (time, depth, lat, lon) float64 5GB dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;
+    water_temp_bottom  (time, lat, lon) float64 117MB dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;
+    salinity           (time, depth, lat, lon) float64 5GB dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;
+    salinity_bottom    (time, lat, lon) float64 117MB dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;
+    surf_el            (time, lat, lon) float64 117MB dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;
+Attributes:
+    classification_level:      UNCLASSIFIED
+    distribution_statement:    Approved for public release. Distribution unli...
+    downgrade_date:            not applicable
+    classification_authority:  not applicable
+    institution:               Naval Oceanographic Office
+    source:                    HYCOM archive file
+    history:                   archv2ncdf3z
+    field_type:                instantaneous
+    Conventions:               CF-1.6 NAVO_netcdf_v1.1</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.Dataset</div></div><ul class="xr-sections"><li class="xr-section-item"><input id="section-6663b137-3a2d-4845-ac9c-f58793dad33c" class="xr-section-summary-in" type="checkbox" disabled=""><label for="section-6663b137-3a2d-4845-ac9c-f58793dad33c" class="xr-section-summary" title="Expand/collapse section">Dimensions:</label><div class="xr-section-inline-details"><ul class="xr-dim-list"><li><span class="xr-has-index">time</span>: 1</li><li><span class="xr-has-index">depth</span>: 40</li><li><span class="xr-has-index">lat</span>: 3251</li><li><span class="xr-has-index">lon</span>: 4500</li></ul></div><div class="xr-section-details"></div></li><li class="xr-section-item"><input id="section-af24b5af-56a5-4a15-9dc3-7e5da67e7af2" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-af24b5af-56a5-4a15-9dc3-7e5da67e7af2" class="xr-section-summary">Coordinates: <span>(4)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">time</span></div><div class="xr-var-dims">(time)</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">1994-01-01T12:00:00</div><input id="attrs-2c5de1c5-366c-41b3-b815-ad26233aea45" class="xr-var-attrs-in" type="checkbox"><label for="attrs-2c5de1c5-366c-41b3-b815-ad26233aea45" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-557b6c13-9846-471b-bb59-7688d0614ecc" class="xr-var-data-in" type="checkbox"><label for="data-557b6c13-9846-471b-bb59-7688d0614ecc" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Valid Time</dd><dt><span>time_origin :</span></dt><dd>2000-01-01 00:00:00</dd><dt><span>axis :</span></dt><dd>T</dd><dt><span>NAVO_code :</span></dt><dd>13</dd></dl></div><div class="xr-var-data"><pre>array(['1994-01-01T12:00:00.000000000'], dtype='datetime64[ns]')</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">depth</span></div><div class="xr-var-dims">(depth)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.0 2.0 4.0 ... 3e+03 4e+03 5e+03</div><input id="attrs-bef67db7-09d2-4a92-8ce0-c5a5232ae5e7" class="xr-var-attrs-in" type="checkbox"><label for="attrs-bef67db7-09d2-4a92-8ce0-c5a5232ae5e7" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-5dfab02a-3a11-416c-86c9-136a45a3881b" class="xr-var-data-in" type="checkbox"><label for="data-5dfab02a-3a11-416c-86c9-136a45a3881b" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Depth</dd><dt><span>standard_name :</span></dt><dd>depth</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>axis :</span></dt><dd>Z</dd><dt><span>NAVO_code :</span></dt><dd>5</dd></dl></div><div class="xr-var-data"><pre>array([0.00e+00, 2.00e+00, 4.00e+00, 6.00e+00, 8.00e+00, 1.00e+01, 1.20e+01,
+       1.50e+01, 2.00e+01, 2.50e+01, 3.00e+01, 3.50e+01, 4.00e+01, 4.50e+01,
+       5.00e+01, 6.00e+01, 7.00e+01, 8.00e+01, 9.00e+01, 1.00e+02, 1.25e+02,
+       1.50e+02, 2.00e+02, 2.50e+02, 3.00e+02, 3.50e+02, 4.00e+02, 5.00e+02,
+       6.00e+02, 7.00e+02, 8.00e+02, 9.00e+02, 1.00e+03, 1.25e+03, 1.50e+03,
+       2.00e+03, 2.50e+03, 3.00e+03, 4.00e+03, 5.00e+03])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lat</span></div><div class="xr-var-dims">(lat)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-80.0 -79.96 -79.92 ... 89.96 90.0</div><input id="attrs-8f67e20c-d640-4eed-ab2d-d4ea42f53cc7" class="xr-var-attrs-in" type="checkbox"><label for="attrs-8f67e20c-d640-4eed-ab2d-d4ea42f53cc7" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-4a82c474-2f37-4407-90a4-bbf9110ffa10" class="xr-var-data-in" type="checkbox"><label for="data-4a82c474-2f37-4407-90a4-bbf9110ffa10" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Latitude</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>axis :</span></dt><dd>Y</dd><dt><span>NAVO_code :</span></dt><dd>1</dd></dl></div><div class="xr-var-data"><pre>array([-80.      , -79.959999, -79.919998, ...,  89.919998,  89.959999,
+        90.      ], shape=(3251,))</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lon</span></div><div class="xr-var-dims">(lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-180.0 -179.9 ... 179.8 179.9</div><input id="attrs-d8cbb002-5c3a-4e50-bab5-0ca5760ad7f2" class="xr-var-attrs-in" type="checkbox"><label for="attrs-d8cbb002-5c3a-4e50-bab5-0ca5760ad7f2" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-4faf4f80-82d6-4404-9663-754763a422e4" class="xr-var-data-in" type="checkbox"><label for="data-4faf4f80-82d6-4404-9663-754763a422e4" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Longitude</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>point_spacing :</span></dt><dd>even</dd><dt><span>modulo :</span></dt><dd>360 degrees</dd><dt><span>axis :</span></dt><dd>X</dd><dt><span>NAVO_code :</span></dt><dd>2</dd></dl></div><div class="xr-var-data"><pre>array([-180.      , -179.919983, -179.839966, ...,  179.76001 ,  179.839966,
+        179.920044], shape=(4500,))</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-5858099c-c297-4530-8962-389a7ef58b5b" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-5858099c-c297-4530-8962-389a7ef58b5b" class="xr-section-summary">Data variables: <span>(9)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span>water_u</span></div><div class="xr-var-dims">(time, depth, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-17a64fb5-82b7-4fe0-9704-016027d252f8" class="xr-var-attrs-in" type="checkbox"><label for="attrs-17a64fb5-82b7-4fe0-9704-016027d252f8" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-ef15ba59-3c60-469b-ba55-437713ac2115" class="xr-var-data-in" type="checkbox"><label for="data-ef15ba59-3c60-469b-ba55-437713ac2115" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Eastward Water Velocity</dd><dt><span>standard_name :</span></dt><dd>eastward_sea_water_velocity</dd><dt><span>units :</span></dt><dd>m/s</dd><dt><span>NAVO_code :</span></dt><dd>17</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>4.36 GiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 40, 3251, 4500)</td>
+<td>(1, 1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">40 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="374" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="25" y2="0" style="stroke-width:2"></line> <line x1="0" y1="25" x2="25" y2="25" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="25" style="stroke-width:2"></line> <line x1="25" y1="0" x2="25" y2="25" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 25.412616514582485,0.0 25.412616514582485,25.412616514582485 0.0,25.412616514582485" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="12.706308" y="45.412617" font-size="1.0rem" font-weight="100" text-anchor="middle">1</text> <text x="45.412617" y="12.706308" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,45.412617,12.706308)">1</text> <!-- Horizontal lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="95" y1="86" x2="109" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="95" y2="86" style="stroke-width:2"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="96" y1="1" x2="96" y2="87"></line> <line x1="96" y1="1" x2="96" y2="88"></line> <line x1="97" y1="2" x2="97" y2="88"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="98" y1="3" x2="98" y2="90"></line> <line x1="99" y1="4" x2="99" y2="90"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="103" y1="8" x2="103" y2="94"></line> <line x1="103" y1="8" x2="103" y2="95"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="105" y1="10" x2="105" y2="96"></line> <line x1="105" y1="10" x2="105" y2="97"></line> <line x1="106" y1="11" x2="106" y2="97"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="107" y1="12" x2="107" y2="99"></line> <line x1="108" y1="13" x2="108" y2="99"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="109" y1="14" x2="109" y2="100"></line> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 109.9485979497544,14.948597949754403 109.9485979497544,101.64193128308773 95.0,86.69333333333333" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="95" y1="0" x2="215" y2="0" style="stroke-width:2"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="98" y1="3" x2="218" y2="3"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="107" y1="12" x2="227" y2="12"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="109" y1="14" x2="229" y2="14"></line> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="215" y1="0" x2="229" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 215.0,0.0 229.9485979497544,14.948597949754403 109.9485979497544,14.948597949754403" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <line x1="109" y1="101" x2="229" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <line x1="229" y1="14" x2="229" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="109.9485979497544,14.948597949754403 229.9485979497544,14.948597949754403 229.9485979497544,101.64193128308773 109.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="169.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="249.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,249.948598,58.295265)">3251</text> <text x="92.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,92.474299,114.167632)">40</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>water_u_bottom</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-1b4b0fca-f1a4-41a5-a00f-09ee60925d67" class="xr-var-attrs-in" type="checkbox"><label for="attrs-1b4b0fca-f1a4-41a5-a00f-09ee60925d67" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-1f96cb03-c725-42e5-9fc3-2919a773797c" class="xr-var-data-in" type="checkbox"><label for="data-1f96cb03-c725-42e5-9fc3-2919a773797c" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Eastward Water Velocity</dd><dt><span>standard_name :</span></dt><dd>eastward_sea_water_velocity_at_bottom</dd><dt><span>units :</span></dt><dd>m/s</dd><dt><span>NAVO_code :</span></dt><dd>17</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>111.61 MiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 3251, 4500)</td>
+<td>(1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="194" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="10" y1="86" x2="24" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="86" style="stroke-width:2"></line> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 24.9485979497544,14.948597949754403 24.9485979497544,101.64193128308773 10.0,86.69333333333333" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="130" y2="0" style="stroke-width:2"></line> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="130" y1="0" x2="144" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 130.0,0.0 144.9485979497544,14.948597949754403 24.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <line x1="24" y1="101" x2="144" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <line x1="144" y1="14" x2="144" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="24.9485979497544,14.948597949754403 144.9485979497544,14.948597949754403 144.9485979497544,101.64193128308773 24.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="84.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="164.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,164.948598,58.295265)">3251</text> <text x="7.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,7.474299,114.167632)">1</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>water_v</span></div><div class="xr-var-dims">(time, depth, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-b7363679-e06c-4243-86e6-b325d29c4620" class="xr-var-attrs-in" type="checkbox"><label for="attrs-b7363679-e06c-4243-86e6-b325d29c4620" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-7fde6a2c-77bf-454b-8e26-17db0a904370" class="xr-var-data-in" type="checkbox"><label for="data-7fde6a2c-77bf-454b-8e26-17db0a904370" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Northward Water Velocity</dd><dt><span>standard_name :</span></dt><dd>northward_sea_water_velocity</dd><dt><span>units :</span></dt><dd>m/s</dd><dt><span>NAVO_code :</span></dt><dd>18</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>4.36 GiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 40, 3251, 4500)</td>
+<td>(1, 1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">40 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="374" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="25" y2="0" style="stroke-width:2"></line> <line x1="0" y1="25" x2="25" y2="25" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="25" style="stroke-width:2"></line> <line x1="25" y1="0" x2="25" y2="25" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 25.412616514582485,0.0 25.412616514582485,25.412616514582485 0.0,25.412616514582485" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="12.706308" y="45.412617" font-size="1.0rem" font-weight="100" text-anchor="middle">1</text> <text x="45.412617" y="12.706308" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,45.412617,12.706308)">1</text> <!-- Horizontal lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="95" y1="86" x2="109" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="95" y2="86" style="stroke-width:2"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="96" y1="1" x2="96" y2="87"></line> <line x1="96" y1="1" x2="96" y2="88"></line> <line x1="97" y1="2" x2="97" y2="88"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="98" y1="3" x2="98" y2="90"></line> <line x1="99" y1="4" x2="99" y2="90"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="103" y1="8" x2="103" y2="94"></line> <line x1="103" y1="8" x2="103" y2="95"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="105" y1="10" x2="105" y2="96"></line> <line x1="105" y1="10" x2="105" y2="97"></line> <line x1="106" y1="11" x2="106" y2="97"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="107" y1="12" x2="107" y2="99"></line> <line x1="108" y1="13" x2="108" y2="99"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="109" y1="14" x2="109" y2="100"></line> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 109.9485979497544,14.948597949754403 109.9485979497544,101.64193128308773 95.0,86.69333333333333" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="95" y1="0" x2="215" y2="0" style="stroke-width:2"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="98" y1="3" x2="218" y2="3"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="107" y1="12" x2="227" y2="12"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="109" y1="14" x2="229" y2="14"></line> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="215" y1="0" x2="229" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 215.0,0.0 229.9485979497544,14.948597949754403 109.9485979497544,14.948597949754403" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <line x1="109" y1="101" x2="229" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <line x1="229" y1="14" x2="229" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="109.9485979497544,14.948597949754403 229.9485979497544,14.948597949754403 229.9485979497544,101.64193128308773 109.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="169.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="249.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,249.948598,58.295265)">3251</text> <text x="92.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,92.474299,114.167632)">40</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>water_v_bottom</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-e345df29-8ea0-44be-8b74-560da5c963fd" class="xr-var-attrs-in" type="checkbox"><label for="attrs-e345df29-8ea0-44be-8b74-560da5c963fd" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-6761160a-9599-4fd3-abb8-92b0a210b8cf" class="xr-var-data-in" type="checkbox"><label for="data-6761160a-9599-4fd3-abb8-92b0a210b8cf" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Northward Water Velocity</dd><dt><span>standard_name :</span></dt><dd>northward_sea_water_velocity_at_bottom</dd><dt><span>units :</span></dt><dd>m/s</dd><dt><span>NAVO_code :</span></dt><dd>18</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>111.61 MiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 3251, 4500)</td>
+<td>(1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="194" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="10" y1="86" x2="24" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="86" style="stroke-width:2"></line> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 24.9485979497544,14.948597949754403 24.9485979497544,101.64193128308773 10.0,86.69333333333333" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="130" y2="0" style="stroke-width:2"></line> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="130" y1="0" x2="144" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 130.0,0.0 144.9485979497544,14.948597949754403 24.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <line x1="24" y1="101" x2="144" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <line x1="144" y1="14" x2="144" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="24.9485979497544,14.948597949754403 144.9485979497544,14.948597949754403 144.9485979497544,101.64193128308773 24.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="84.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="164.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,164.948598,58.295265)">3251</text> <text x="7.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,7.474299,114.167632)">1</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>water_temp</span></div><div class="xr-var-dims">(time, depth, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-a34c7e6c-7571-4409-a369-def11fcf1630" class="xr-var-attrs-in" type="checkbox"><label for="attrs-a34c7e6c-7571-4409-a369-def11fcf1630" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-d3d7b7ad-365b-4845-9c6c-e7750401db7a" class="xr-var-data-in" type="checkbox"><label for="data-d3d7b7ad-365b-4845-9c6c-e7750401db7a" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Water Temperature</dd><dt><span>standard_name :</span></dt><dd>sea_water_temperature</dd><dt><span>units :</span></dt><dd>degC</dd><dt><span>NAVO_code :</span></dt><dd>15</dd><dt><span>comment :</span></dt><dd>in-situ temperature</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>4.36 GiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 40, 3251, 4500)</td>
+<td>(1, 1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">40 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="374" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="25" y2="0" style="stroke-width:2"></line> <line x1="0" y1="25" x2="25" y2="25" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="25" style="stroke-width:2"></line> <line x1="25" y1="0" x2="25" y2="25" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 25.412616514582485,0.0 25.412616514582485,25.412616514582485 0.0,25.412616514582485" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="12.706308" y="45.412617" font-size="1.0rem" font-weight="100" text-anchor="middle">1</text> <text x="45.412617" y="12.706308" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,45.412617,12.706308)">1</text> <!-- Horizontal lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="95" y1="86" x2="109" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="95" y2="86" style="stroke-width:2"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="96" y1="1" x2="96" y2="87"></line> <line x1="96" y1="1" x2="96" y2="88"></line> <line x1="97" y1="2" x2="97" y2="88"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="98" y1="3" x2="98" y2="90"></line> <line x1="99" y1="4" x2="99" y2="90"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="103" y1="8" x2="103" y2="94"></line> <line x1="103" y1="8" x2="103" y2="95"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="105" y1="10" x2="105" y2="96"></line> <line x1="105" y1="10" x2="105" y2="97"></line> <line x1="106" y1="11" x2="106" y2="97"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="107" y1="12" x2="107" y2="99"></line> <line x1="108" y1="13" x2="108" y2="99"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="109" y1="14" x2="109" y2="100"></line> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 109.9485979497544,14.948597949754403 109.9485979497544,101.64193128308773 95.0,86.69333333333333" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="95" y1="0" x2="215" y2="0" style="stroke-width:2"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="98" y1="3" x2="218" y2="3"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="107" y1="12" x2="227" y2="12"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="109" y1="14" x2="229" y2="14"></line> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="215" y1="0" x2="229" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 215.0,0.0 229.9485979497544,14.948597949754403 109.9485979497544,14.948597949754403" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <line x1="109" y1="101" x2="229" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <line x1="229" y1="14" x2="229" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="109.9485979497544,14.948597949754403 229.9485979497544,14.948597949754403 229.9485979497544,101.64193128308773 109.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="169.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="249.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,249.948598,58.295265)">3251</text> <text x="92.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,92.474299,114.167632)">40</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>water_temp_bottom</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-f6505fbb-25b3-4f46-8208-8a393df92603" class="xr-var-attrs-in" type="checkbox"><label for="attrs-f6505fbb-25b3-4f46-8208-8a393df92603" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-bcb4cf9f-1137-44a0-a68a-2e6b4565a628" class="xr-var-data-in" type="checkbox"><label for="data-bcb4cf9f-1137-44a0-a68a-2e6b4565a628" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Water Temperature</dd><dt><span>standard_name :</span></dt><dd>sea_water_temperature_at_bottom</dd><dt><span>units :</span></dt><dd>degC</dd><dt><span>NAVO_code :</span></dt><dd>15</dd><dt><span>comment :</span></dt><dd>in-situ temperature</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>111.61 MiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 3251, 4500)</td>
+<td>(1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="194" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="10" y1="86" x2="24" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="86" style="stroke-width:2"></line> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 24.9485979497544,14.948597949754403 24.9485979497544,101.64193128308773 10.0,86.69333333333333" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="130" y2="0" style="stroke-width:2"></line> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="130" y1="0" x2="144" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 130.0,0.0 144.9485979497544,14.948597949754403 24.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <line x1="24" y1="101" x2="144" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <line x1="144" y1="14" x2="144" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="24.9485979497544,14.948597949754403 144.9485979497544,14.948597949754403 144.9485979497544,101.64193128308773 24.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="84.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="164.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,164.948598,58.295265)">3251</text> <text x="7.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,7.474299,114.167632)">1</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>salinity</span></div><div class="xr-var-dims">(time, depth, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-7c1e119e-cd3e-4c37-9e56-ad9dbbc7d259" class="xr-var-attrs-in" type="checkbox"><label for="attrs-7c1e119e-cd3e-4c37-9e56-ad9dbbc7d259" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-eea9d6b3-1354-49ce-ad06-cdf70c6b0f27" class="xr-var-data-in" type="checkbox"><label for="data-eea9d6b3-1354-49ce-ad06-cdf70c6b0f27" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Salinity</dd><dt><span>standard_name :</span></dt><dd>sea_water_salinity</dd><dt><span>units :</span></dt><dd>psu</dd><dt><span>NAVO_code :</span></dt><dd>16</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>4.36 GiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 40, 3251, 4500)</td>
+<td>(1, 1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">40 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="374" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="25" y2="0" style="stroke-width:2"></line> <line x1="0" y1="25" x2="25" y2="25" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="25" style="stroke-width:2"></line> <line x1="25" y1="0" x2="25" y2="25" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 25.412616514582485,0.0 25.412616514582485,25.412616514582485 0.0,25.412616514582485" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="12.706308" y="45.412617" font-size="1.0rem" font-weight="100" text-anchor="middle">1</text> <text x="45.412617" y="12.706308" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,45.412617,12.706308)">1</text> <!-- Horizontal lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="95" y1="86" x2="109" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="95" y2="86" style="stroke-width:2"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="95" y1="0" x2="95" y2="87"></line> <line x1="96" y1="1" x2="96" y2="87"></line> <line x1="96" y1="1" x2="96" y2="88"></line> <line x1="97" y1="2" x2="97" y2="88"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="97" y1="2" x2="97" y2="89"></line> <line x1="98" y1="3" x2="98" y2="90"></line> <line x1="99" y1="4" x2="99" y2="90"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="99" y1="4" x2="99" y2="91"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="100" y1="5" x2="100" y2="92"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="101" y1="6" x2="101" y2="93"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="102" y1="7" x2="102" y2="94"></line> <line x1="103" y1="8" x2="103" y2="94"></line> <line x1="103" y1="8" x2="103" y2="95"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="104" y1="9" x2="104" y2="96"></line> <line x1="105" y1="10" x2="105" y2="96"></line> <line x1="105" y1="10" x2="105" y2="97"></line> <line x1="106" y1="11" x2="106" y2="97"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="106" y1="11" x2="106" y2="98"></line> <line x1="107" y1="12" x2="107" y2="99"></line> <line x1="108" y1="13" x2="108" y2="99"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="108" y1="13" x2="108" y2="100"></line> <line x1="109" y1="14" x2="109" y2="100"></line> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 109.9485979497544,14.948597949754403 109.9485979497544,101.64193128308773 95.0,86.69333333333333" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="95" y1="0" x2="215" y2="0" style="stroke-width:2"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="95" y1="0" x2="215" y2="0"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="96" y1="1" x2="216" y2="1"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="97" y1="2" x2="217" y2="2"></line> <line x1="98" y1="3" x2="218" y2="3"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="99" y1="4" x2="219" y2="4"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="100" y1="5" x2="220" y2="5"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="101" y1="6" x2="221" y2="6"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="102" y1="7" x2="222" y2="7"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="103" y1="8" x2="223" y2="8"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="104" y1="9" x2="224" y2="9"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="105" y1="10" x2="225" y2="10"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="106" y1="11" x2="226" y2="11"></line> <line x1="107" y1="12" x2="227" y2="12"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="108" y1="13" x2="228" y2="13"></line> <line x1="109" y1="14" x2="229" y2="14"></line> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="95" y1="0" x2="109" y2="14" style="stroke-width:2"></line> <line x1="215" y1="0" x2="229" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="95.0,0.0 215.0,0.0 229.9485979497544,14.948597949754403 109.9485979497544,14.948597949754403" style="fill:#8B4903A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="109" y1="14" x2="229" y2="14" style="stroke-width:2"></line> <line x1="109" y1="101" x2="229" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="109" y1="14" x2="109" y2="101" style="stroke-width:2"></line> <line x1="229" y1="14" x2="229" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="109.9485979497544,14.948597949754403 229.9485979497544,14.948597949754403 229.9485979497544,101.64193128308773 109.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="169.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="249.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,249.948598,58.295265)">3251</text> <text x="92.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,92.474299,114.167632)">40</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>salinity_bottom</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-0ce58c5f-34ef-4c3a-88eb-7060f4be5e93" class="xr-var-attrs-in" type="checkbox"><label for="attrs-0ce58c5f-34ef-4c3a-88eb-7060f4be5e93" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-34ea81c4-fae5-41f7-8cc5-717564ffb498" class="xr-var-data-in" type="checkbox"><label for="data-34ea81c4-fae5-41f7-8cc5-717564ffb498" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Salinity</dd><dt><span>standard_name :</span></dt><dd>sea_water_salinity_at_bottom</dd><dt><span>units :</span></dt><dd>psu</dd><dt><span>NAVO_code :</span></dt><dd>16</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>111.61 MiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 3251, 4500)</td>
+<td>(1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="194" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="10" y1="86" x2="24" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="86" style="stroke-width:2"></line> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 24.9485979497544,14.948597949754403 24.9485979497544,101.64193128308773 10.0,86.69333333333333" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="130" y2="0" style="stroke-width:2"></line> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="130" y1="0" x2="144" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 130.0,0.0 144.9485979497544,14.948597949754403 24.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <line x1="24" y1="101" x2="144" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <line x1="144" y1="14" x2="144" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="24.9485979497544,14.948597949754403 144.9485979497544,14.948597949754403 144.9485979497544,101.64193128308773 24.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="84.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="164.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,164.948598,58.295265)">3251</text> <text x="7.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,7.474299,114.167632)">1</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li><li class="xr-var-item"><div class="xr-var-name"><span>surf_el</span></div><div class="xr-var-dims">(time, lat, lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">dask.array&lt;chunksize=(1, 3251, 4500), meta=np.ndarray&gt;</div><input id="attrs-b0d10693-b5c0-4501-8e93-4543c9b5fd9c" class="xr-var-attrs-in" type="checkbox"><label for="attrs-b0d10693-b5c0-4501-8e93-4543c9b5fd9c" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-893c2e4a-960e-4bf2-9684-e652822a50f3" class="xr-var-data-in" type="checkbox"><label for="data-893c2e4a-960e-4bf2-9684-e652822a50f3" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Water Surface Elevation</dd><dt><span>standard_name :</span></dt><dd>sea_surface_elevation</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>NAVO_code :</span></dt><dd>32</dd></dl></div><div class="xr-var-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>111.61 MiB</td>
+<td>111.61 MiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(1, 3251, 4500)</td>
+<td>(1, 3251, 4500)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 2 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="194" height="151" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="10" y1="86" x2="24" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="10" y2="86" style="stroke-width:2"></line> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 24.9485979497544,14.948597949754403 24.9485979497544,101.64193128308773 10.0,86.69333333333333" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="10" y1="0" x2="130" y2="0" style="stroke-width:2"></line> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="10" y1="0" x2="24" y2="14" style="stroke-width:2"></line> <line x1="130" y1="0" x2="144" y2="14" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="10.0,0.0 130.0,0.0 144.9485979497544,14.948597949754403 24.9485979497544,14.948597949754403" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Horizontal lines --> <line x1="24" y1="14" x2="144" y2="14" style="stroke-width:2"></line> <line x1="24" y1="101" x2="144" y2="101" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="24" y1="14" x2="24" y2="101" style="stroke-width:2"></line> <line x1="144" y1="14" x2="144" y2="101" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="24.9485979497544,14.948597949754403 144.9485979497544,14.948597949754403 144.9485979497544,101.64193128308773 24.9485979497544,101.64193128308773" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="84.948598" y="121.641931" font-size="1.0rem" font-weight="100" text-anchor="middle">4500</text> <text x="164.948598" y="58.295265" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(-90,164.948598,58.295265)">3251</text> <text x="7.474299" y="114.167632" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(45,7.474299,114.167632)">1</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></li></ul></div></li><li class="xr-section-item"><input id="section-1ce0d469-3969-4c02-9913-37feb59ec568" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-1ce0d469-3969-4c02-9913-37feb59ec568" class="xr-section-summary">Attributes: <span>(9)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>classification_level :</span></dt><dd>UNCLASSIFIED</dd><dt><span>distribution_statement :</span></dt><dd>Approved for public release. Distribution unlimited.</dd><dt><span>downgrade_date :</span></dt><dd>not applicable</dd><dt><span>classification_authority :</span></dt><dd>not applicable</dd><dt><span>institution :</span></dt><dd>Naval Oceanographic Office</dd><dt><span>source :</span></dt><dd>HYCOM archive file</dd><dt><span>history :</span></dt><dd>archv2ncdf3z</dd><dt><span>field_type :</span></dt><dd>instantaneous</dd><dt><span>Conventions :</span></dt><dd>CF-1.6 NAVO_netcdf_v1.1</dd></dl></div></li></ul></div></div>
+</div>
+</div>
+<div id="cell-22" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>single.chunks</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>Frozen({'time': (1,), 'depth': (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), 'lat': (3251,), 'lon': (4500,)})</code></pre>
+</div>
+</div>
+<div id="cell-23" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># each time slice is 19 GB</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>single.nbytes <span class="op">/</span> <span class="fl">1e9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>19.311002336</code></pre>
+</div>
+</div>
+</section>
+<section id="what-did-we-get" class="level2">
+<h2 class="anchored" data-anchor-id="what-did-we-get">What did we get?</h2>
+<p>We now have an xarray <code>Dataset</code> that behaves like it was opened from a Zarr store, but the physical data were not converted to Zarr.</p>
+<p>Instead:</p>
+<pre class="text"><code>xarray request
+    ↓
+kerchunk reference mapping
+    ↓
+byte ranges in the original NetCDF file
+    ↓
+array returned to xarray</code></pre>
+</section>
+<section id="read-a-small-subset" class="level2">
+<h2 class="anchored" data-anchor-id="read-a-small-subset">Read a small subset</h2>
+<p>Kerchunk is most useful when we read only the pieces of data we need. Here we select a small spatial window from one variable. This should read a small amount of data from the remote NetCDF file rather than downloading the full file.</p>
+<div id="cell-26" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>subset <span class="op">=</span> single[<span class="st">"water_temp"</span>].isel(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    lat<span class="op">=</span><span class="bu">slice</span>(<span class="dv">1000</span>, <span class="dv">1020</span>),</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    lon<span class="op">=</span><span class="bu">slice</span>(<span class="dv">1000</span>, <span class="dv">1020</span>),</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>subset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewbox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewbox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in notebooks */
+
+:root {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base rgba(0, 0, 0, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(0, 0, 0, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, white)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, white) h s calc(l - 15))
+  );
+}
+
+html[theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.vscode-dark {
+  --xr-font-color0: var(
+    --jp-content-font-color0,
+    var(--pst-color-text-base, rgba(255, 255, 255, 1))
+  );
+  --xr-font-color2: var(
+    --jp-content-font-color2,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.54))
+  );
+  --xr-font-color3: var(
+    --jp-content-font-color3,
+    var(--pst-color-text-base, rgba(255, 255, 255, 0.38))
+  );
+  --xr-border-color: var(
+    --jp-border-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 10))
+  );
+  --xr-disabled-color: var(
+    --jp-layout-color3,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 40))
+  );
+  --xr-background-color: var(
+    --jp-layout-color0,
+    var(--pst-color-on-background, #111111)
+  );
+  --xr-background-color-row-even: var(
+    --jp-layout-color1,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 5))
+  );
+  --xr-background-color-row-odd: var(
+    --jp-layout-color2,
+    hsl(from var(--pst-color-on-background, #111111) h s calc(l + 15))
+  );
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-obj-name,
+.xr-group-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-group-name::before {
+  content: "📁";
+  padding-right: 0.3em;
+}
+
+.xr-group-name,
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 0 20px 0 20px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: inline-block;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+  border: 2px solid transparent !important;
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:focus + label {
+  border: 2px solid var(--xr-font-color0) !important;
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: "►";
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: "▼";
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-group-box {
+  display: inline-grid;
+  grid-template-columns: 0px 20px auto;
+  width: 100%;
+}
+
+.xr-group-box-vline {
+  grid-column-start: 1;
+  border-right: 0.2em solid;
+  border-color: var(--xr-border-color);
+  width: 0px;
+}
+
+.xr-group-box-hline {
+  grid-column-start: 2;
+  grid-row-start: 1;
+  height: 1em;
+  width: 20px;
+  border-bottom: 0.2em solid;
+  border-color: var(--xr-border-color);
+}
+
+.xr-group-box-contents {
+  grid-column-start: 3;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: "(";
+}
+
+.xr-dim-list:after {
+  content: ")";
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ",";
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  border-color: var(--xr-background-color-row-odd);
+  margin-bottom: 0;
+  padding-top: 2px;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+  border-color: var(--xr-background-color-row-even);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  border-top: 2px dotted var(--xr-background-color);
+  padding-bottom: 20px !important;
+  padding-top: 10px !important;
+}
+
+.xr-var-attrs-in + label,
+.xr-var-data-in + label,
+.xr-index-data-in + label {
+  padding: 0 1px;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-data > pre,
+.xr-index-data > pre,
+.xr-var-data > table > tbody > tr {
+  background-color: transparent !important;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.xr-var-attrs-in:checked + label > .xr-icon-file-text2,
+.xr-var-data-in:checked + label > .xr-icon-database,
+.xr-index-data-in:checked + label > .xr-icon-database {
+  color: var(--xr-font-color0);
+  filter: drop-shadow(1px 1px 5px var(--xr-font-color2));
+  stroke-width: 0.8px;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.DataArray 'water_temp' (lat: 20, lon: 20)&gt; Size: 3kB
+dask.array&lt;getitem, shape=(20, 20), dtype=float64, chunksize=(20, 20), chunktype=numpy.ndarray&gt;
+Coordinates:
+  * lat      (lat) float64 160B -40.0 -39.92 -39.84 ... -38.64 -38.56 -38.48
+  * lon      (lon) float64 160B -100.0 -99.92 -99.84 ... -98.64 -98.56 -98.48
+    depth    float64 8B 0.0
+    time     datetime64[ns] 8B 1994-01-01T12:00:00
+Attributes:
+    long_name:      Water Temperature
+    standard_name:  sea_water_temperature
+    units:          degC
+    NAVO_code:      15
+    comment:        in-situ temperature</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-obj-name">'water_temp'</div><ul class="xr-dim-list"><li><span class="xr-has-index">lat</span>: 20</li><li><span class="xr-has-index">lon</span>: 20</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-b64a51f0-d3d0-4c57-9cb2-49eec9a24179" class="xr-array-in" type="checkbox" checked=""><label for="section-b64a51f0-d3d0-4c57-9cb2-49eec9a24179" title="Show/hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>dask.array&lt;chunksize=(20, 20), meta=np.ndarray&gt;</span></div><div class="xr-array-data">
+<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th></th>
+<th data-quarto-table-cell-role="th">Array</th>
+<th data-quarto-table-cell-role="th">Chunk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Bytes</td>
+<td>3.12 kiB</td>
+<td>3.12 kiB</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Shape</td>
+<td>(20, 20)</td>
+<td>(20, 20)</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dask graph</td>
+<td colspan="2">1 chunks in 3 graph layers</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Data type</td>
+<td colspan="2">float64 numpy.ndarray</td>
+</tr>
+</tbody>
+</table></td>
+<td><svg width="170" height="170" style="stroke:rgb(0,0,0);stroke-width:1">
+<!-- Horizontal lines --> <line x1="0" y1="0" x2="120" y2="0" style="stroke-width:2"></line> <line x1="0" y1="120" x2="120" y2="120" style="stroke-width:2"></line> <!-- Vertical lines --> <line x1="0" y1="0" x2="0" y2="120" style="stroke-width:2"></line> <line x1="120" y1="0" x2="120" y2="120" style="stroke-width:2"></line> <!-- Colored Rectangle --> <polygon points="0.0,0.0 120.0,0.0 120.0,120.0 0.0,120.0" style="fill:#ECB172A0;stroke-width:0"></polygon> <!-- Text --> <text x="60.000000" y="140.000000" font-size="1.0rem" font-weight="100" text-anchor="middle">20</text> <text x="140.000000" y="60.000000" font-size="1.0rem" font-weight="100" text-anchor="middle" transform="rotate(0,140.000000,60.000000)">20</text>
+</svg></td>
+</tr>
+</tbody>
+</table>
+</div></div></li><li class="xr-section-item"><input id="section-4e4ceb51-13fe-48d9-a7b8-60f3962628fd" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-4e4ceb51-13fe-48d9-a7b8-60f3962628fd" class="xr-section-summary">Coordinates: <span>(4)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lat</span></div><div class="xr-var-dims">(lat)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-40.0 -39.92 ... -38.56 -38.48</div><input id="attrs-acb39a14-e26b-4e92-8dbc-4f0eb8f0dd39" class="xr-var-attrs-in" type="checkbox"><label for="attrs-acb39a14-e26b-4e92-8dbc-4f0eb8f0dd39" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-4842e43d-1f01-4e13-82e2-f2d59a98e414" class="xr-var-data-in" type="checkbox"><label for="data-4842e43d-1f01-4e13-82e2-f2d59a98e414" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Latitude</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd><dt><span>axis :</span></dt><dd>Y</dd><dt><span>NAVO_code :</span></dt><dd>1</dd></dl></div><div class="xr-var-data"><pre>array([-40.      , -39.919998, -39.84    , -39.759998, -39.68    , -39.599998,
+       -39.52    , -39.439999, -39.360001, -39.279999, -39.200001, -39.119999,
+       -39.040001, -38.959999, -38.880001, -38.799999, -38.720001, -38.639999,
+       -38.560001, -38.48    ])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lon</span></div><div class="xr-var-dims">(lon)</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">-100.0 -99.92 ... -98.56 -98.48</div><input id="attrs-ae13c660-b195-4dc7-85f3-e5cb5b0b5279" class="xr-var-attrs-in" type="checkbox"><label for="attrs-ae13c660-b195-4dc7-85f3-e5cb5b0b5279" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-eb93ac9c-cb6d-4512-8fcf-5de6dffd6a2f" class="xr-var-data-in" type="checkbox"><label for="data-eb93ac9c-cb6d-4512-8fcf-5de6dffd6a2f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Longitude</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd><dt><span>point_spacing :</span></dt><dd>even</dd><dt><span>modulo :</span></dt><dd>360 degrees</dd><dt><span>axis :</span></dt><dd>X</dd><dt><span>NAVO_code :</span></dt><dd>2</dd></dl></div><div class="xr-var-data"><pre>array([-100.      ,  -99.919983,  -99.839966,  -99.76001 ,  -99.679993,
+        -99.599976,  -99.52002 ,  -99.440002,  -99.359985,  -99.280029,
+        -99.200012,  -99.119995,  -99.039978,  -98.960022,  -98.880005,
+        -98.799988,  -98.719971,  -98.640015,  -98.559998,  -98.47998 ])</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>depth</span></div><div class="xr-var-dims">()</div><div class="xr-var-dtype">float64</div><div class="xr-var-preview xr-preview">0.0</div><input id="attrs-641cad80-49be-4948-8c4f-59a46ad9280d" class="xr-var-attrs-in" type="checkbox"><label for="attrs-641cad80-49be-4948-8c4f-59a46ad9280d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-5e2ac2df-6bb8-43cd-94ed-0c4cce2c962a" class="xr-var-data-in" type="checkbox"><label for="data-5e2ac2df-6bb8-43cd-94ed-0c4cce2c962a" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Depth</dd><dt><span>standard_name :</span></dt><dd>depth</dd><dt><span>units :</span></dt><dd>m</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>axis :</span></dt><dd>Z</dd><dt><span>NAVO_code :</span></dt><dd>5</dd></dl></div><div class="xr-var-data"><pre>array(0.)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span>time</span></div><div class="xr-var-dims">()</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">1994-01-01T12:00:00</div><input id="attrs-c2c5b776-5d95-4399-8f16-2a360fd5d7ab" class="xr-var-attrs-in" type="checkbox"><label for="attrs-c2c5b776-5d95-4399-8f16-2a360fd5d7ab" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use href="#icon-file-text2"></use></svg></label><input id="data-97710732-cddc-494e-87df-608a366dac45" class="xr-var-data-in" type="checkbox"><label for="data-97710732-cddc-494e-87df-608a366dac45" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Valid Time</dd><dt><span>time_origin :</span></dt><dd>2000-01-01 00:00:00</dd><dt><span>axis :</span></dt><dd>T</dd><dt><span>NAVO_code :</span></dt><dd>13</dd></dl></div><div class="xr-var-data"><pre>array('1994-01-01T12:00:00.000000000', dtype='datetime64[ns]')</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-a23affca-6430-48d2-a769-3688402a5b89" class="xr-section-summary-in" type="checkbox" checked=""><label for="section-a23affca-6430-48d2-a769-3688402a5b89" class="xr-section-summary">Attributes: <span>(5)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"><dt><span>long_name :</span></dt><dd>Water Temperature</dd><dt><span>standard_name :</span></dt><dd>sea_water_temperature</dd><dt><span>units :</span></dt><dd>degC</dd><dt><span>NAVO_code :</span></dt><dd>15</dd><dt><span>comment :</span></dt><dd>in-situ temperature</dd></dl></div></li></ul></div></div>
+</div>
+</div>
+</section>
+<section id="plot-the-small-subset" class="level2">
+<h2 class="anchored" data-anchor-id="plot-the-small-subset">Plot the small subset</h2>
+<p>The previous cell creates a lazy xarray object. The actual data are read when we call <code>.load()</code>, <code>.compute()</code>, or make a plot.</p>
+<pre class="text"><code>creating the xarray object ≠ reading all the data</code></pre>
+<p>Only the requested subset will be read BUT we have to read full chunks so ~117 MB of temporary memory will be used to read the chunk and then it will be discarded.</p>
+<div id="cell-28" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>single.water_temp.isel(depth<span class="op">=</span><span class="dv">0</span>).nbytes <span class="op">/</span> <span class="fl">1e6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>117.036</code></pre>
+</div>
+</div>
+<div id="cell-29" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>subset.plot()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="0_kerchunk_basics_hycom_single_file_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="recap" class="level2">
+<h2 class="anchored" data-anchor-id="recap">Recap</h2>
+<p>This example teaches the basic unit of kerchunking:</p>
+<pre class="text"><code>one NetCDF file → one reference mapping</code></pre>
+<p>The full HYCOM workflow then repeats or adapts this idea across many files.</p>
+<p>In Rich’s larger notebook, the first file is used to define the schema because all HYCOM files have the same structure:</p>
+<ul>
+<li>same variables</li>
+<li>same grid</li>
+<li>same dimensions</li>
+<li>different time values</li>
+</ul>
+<p>The multi-file workflow combines many references along the time dimension to create one virtual dataset.</p>
+<p>Rich’s larger workflow produces a Parquet reference store (<code>hycom.parq</code>) because the combined references are too large for a convenient single JSON file.</p>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>In this notebook we:</p>
+<ol type="1">
+<li>Found the public HYCOM NetCDF files on S3</li>
+<li>Selected the first file</li>
+<li>Used <code>NetCDF3ToZarr</code> to create kerchunk references</li>
+<li>Subchunked large 4D variables for more useful access patterns</li>
+<li>Opened the references with xarray</li>
+<li>Read a small subset without converting or downloading the full dataset</li>
+</ol>
+<p>The key lesson is:</p>
+<blockquote class="blockquote">
+<p>Kerchunk turns existing files into virtual Zarr-like datasets by creating references, not by copying data.</p>
+</blockquote>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/nmfs-opensci\.github\.io\/NMFSHackDays-2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><img src="https://github.com/nmfs-opensci/assets/blob/main/logo/nmfs-opensci-logo2.png?raw=true" alt="NMFS Open Science logo" style="width:150px"><br>NMFS Open Science</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.dev/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/nmfs-opensci/NMFSHackDays-2026/blob/main/topics/2026-05-01/0_kerchunk_basics_hycom_single_file.ipynb" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -21,7 +21,7 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html) {{< fa brands python >}} and R
 * Apr 17 - [Intro to accessing data on ERDDAP servers with xarray](topics/2026-04-17/index.html) {{< fa brands python >}}
 * Apr 24 - Cancelled
-* May 1 - Accessing HYCOM Modeled Ocean Data with kerchunk and xarray {{< fa brands python >}}
+* May 1 - [Accessing HYCOM Modeled Ocean Data with kerchunk and xarray](topics/2026-05-01/index.html) {{< fa brands python >}}
 * May 8 - Intro to xbatcher for fitting models to larger than memory data. (Keenan Ganz, UW) {{< fa brands python >}}
 * May 15 - VirtualiZarr and IceChunk, demo of the pipeline for ISMIP6 data (Shane Grigsby, Astera)
 * May 22 - skipping for Memorial Day long weekend
