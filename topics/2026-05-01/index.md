@@ -4,6 +4,12 @@ title: Kerchunk and HYCOS
 
 In this session, we will work few a couple of [Rich Signell's notebooks](https://github.com/rsignell/hycom-kerchunk) on kerchunk and HYCOM.
 
+## Tutorials
+
+* [kerchunk basics with one netcdf](0_kerchunk_basics_hycom_single_file.html)
+
+* [multi-file kerchunk for all HYCOM files](1_hycom_generate_multifile_refs.html)
+
 
 ## How to download and open the tutorials
 
