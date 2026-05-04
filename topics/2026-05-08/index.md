@@ -1,5 +1,5 @@
 ---
-title: xbatcher for ML pipelines with larger than memory data
+title: xbatcher for deep-learning pipelines for imagery and remote-sensing data
 ---
 
 Keenan Ganz, UW Remote Sensing and Geospatial Analysis Laboratory, will give us a tutorial on using xbatcher for deep learning projects. xbatcher provides a simple way to generate training batches from multidimensional geoscience datasets (e.g., xarray), including extracting spatial or temporal subsets for model input. For this application, Keenan is training an autoencoder. An autoencoder is a type of neural network that learns to compress data into a lower-dimensional representation and then reconstruct the original input. Autoencoders are used for dimensionality reduction, feature extraction for downstream models, denoising and gap-filling, and detecting unusual patterns (anomalies). [Video giving a lay explanation](https://www.youtube.com/watch?v=qiUEgSCyY5o). 
