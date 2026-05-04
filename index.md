@@ -17,11 +17,11 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Mar 13 - [BRT application: predicting silver hake fishing hotspots in the Northwest Atlantic](topics/silver_hake.html) (Haley Synan, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/WpxvZXMMYfQ)
 * Mar 20 - [Intro to convolutional neural networks: comparison of BRT and CNNs](topics/2026-03-20/CNN_2D.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/_KTio48Dxi0)
 * Mar 27 - [Intro to xarray](topics/2026-03-27/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/DqiNYOGGHxE)
-* Apr 3 - [Intro to xarray with OPeNDAP](topics/2026-04-03/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}}
-* Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html) {{< fa brands python >}} and R
-* Apr 17 - [Intro to accessing data on ERDDAP servers with xarray](topics/2026-04-17/index.html) {{< fa brands python >}}
+* Apr 3 - [Intro to xarray with OPeNDAP](topics/2026-04-03/index.html) (Eli Holmes, NOAAF) {{< fa brands python >}} [Video](https://youtu.be/xUhEzmwhDIg) *I was having trouble loading data due to OPeNDAP data loading limits.*
+* Apr 10 - [Accessing and Vizualizing Argo Buoy Data with xarray and argopy](topics/2026-04-10/index.html) {{< fa brands python >}} and R [Video](https://youtu.be/0c5tHHZaaV4)
+* Apr 17 - [Intro to accessing data on ERDDAP servers with xarray](topics/2026-04-17/index.html) {{< fa brands python >}} [Video](https://youtu.be/s2nUso5Tp0k)
 * Apr 24 - Cancelled
-* May 1 - [Accessing HYCOM Modeled Ocean Data with kerchunk and xarray](topics/2026-05-01/index.html) {{< fa brands python >}}
+* May 1 - [Accessing HYCOM Modeled Ocean Data with kerchunk and xarray](topics/2026-05-01/index.html) {{< fa brands python >}} [Video](https://youtu.be/vRR25w0ZXdI)
 * May 8 - Intro to xbatcher for fitting models to larger than memory data. (Keenan Ganz, UW) {{< fa brands python >}}
 * May 15 - VirtualiZarr and IceChunk, demo of the pipeline for ISMIP6 data (Shane Grigsby, Astera)
 * May 22 - skipping for Memorial Day long weekend

@@ -18,11 +18,13 @@ For more data science trainings and resource, see:
 
 ### Sign ups
 
-See the [2025 Hackhour](https://nmfs-opensci.github.io/NMFSHackDays-2025/topics-2025/) page for info.
+**When:** Fridays 12pm Pacific/3pm Eastern. **Register (open to all)** [Zoom registration](https://zoom.us/meeting/register/r-Zx5bztTdyylSEHe4Snug)
 
 Contact or questions: Eli Holmes (NOAA) - Type my name in your NOAA email, and my contact will pop up. Note, it uses "Eli" not "Elizabeth"! There are two Elizabeth Holmes's in NOAA.
 
 ### Orientation
+
+**How to run tutorials** Colab (anyone), [NOAA Hub](https://noaa.nmfs-openscapes.2i2c.cloud/) (anyone with NOAA email) or use [NMFS persistent hub](https://nmfs-openscapes.2i2c.cloud/) with a persistent home directory. For NOAA staff, [request to be added](https://forms.gle/xRQzm7KxW4Bn2JXo9) to the NMFS Hub.
 
 See the Quick Start in left nav bar or go to the "JupyterHub Skills" section.
 
