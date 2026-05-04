@@ -52,6 +52,8 @@ website:
       contents:
         - href: content/hackhours.md
           text: About
+        - href: index.html
+          text: Schedule
         - section: JupyterHub Skills
           href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
         - text: "---"
@@ -73,6 +75,8 @@ website:
           href: topics/2026-04-17/index.html
         - text: "1 virtualization - kerchunk"
           href: topics/2026-05-01/index.html
+        - text: "2 xbatcher for deep-learning"
+          href: topics/2026-05-08/index.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement
