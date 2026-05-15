@@ -23,7 +23,7 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * Apr 24 - Cancelled
 * May 1 - [Accessing HYCOM Modeled Ocean Data with kerchunk and xarray](topics/2026-05-01/index.html) {{< fa brands python >}} [Video](https://youtu.be/vRR25w0ZXdI)
 * May 8 - [Intro to xbatcher for training on image and remote-sensing data](topics/2026-05-08/index.html) (Keenan Ganz, UW) {{< fa brands python >}}
-* May 15 - VirtualiZarr and IceChunk, demo of the pipeline for ISMIP6 data (Shane Grigsby, Astera)
+* May 15 - [VirtualiZarr and IceChunk, demo of the pipeline for ISMIP6 data](https://github.com/englacial/ismip-indexing) (Shane Grigsby, Astera)
 * May 22 - skipping for Memorial Day long weekend
 * May 29 - QGIS + JupyterLab (Matt Fisher, UC Berkeley Center for Data Science and Environment)
 * June 5 - More VirtualiZarr and IceChunk (Rich Signell, Open Science Computing, LLC) {{< fa brands python >}}
