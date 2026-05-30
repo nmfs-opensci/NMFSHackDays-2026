@@ -67,16 +67,20 @@ website:
           href: topics/2026-03-20/CNN_2D.html
         - text: "1 Intro to xarray"
           href: topics/2026-03-27/index.html
-        - text: "2 xarray + ERDDAP"
+        - text: "2 xarray + OPeNDAP"
           href: topics/2026-04-03/index.html
         - text: "3 xarray + argopy"
           href: topics/2026-04-10/index.html
         - text: "4 xarray + erddap"
           href: topics/2026-04-17/index.html
-        - text: "1 virtualization - kerchunk"
+        - text: "1 ARCO data - kerchunk"
           href: topics/2026-05-01/index.html
         - text: "2 xbatcher for deep-learning"
           href: topics/2026-05-08/index.html
+        - text: "GeoJupyter"
+          href: https://mfisher87.github.io/presentation-nmfs2026/
+        - text: "2 ARCO data - VirtualiZarr+Icechunk"
+          href: topics/2026-05-15/index.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement

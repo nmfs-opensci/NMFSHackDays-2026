@@ -11,5 +11,6 @@ __pycache__
 
 topics/2026-03-27/littlecube2.nc
 topics/2026-05-01/hycom_refs_full.parq
-topics/2026-06-12/my_icechunk_repo
-topics/2026-06-12/patched_json
+topics/2026-06-12/
+docs/topics/2026-06-12/
+
