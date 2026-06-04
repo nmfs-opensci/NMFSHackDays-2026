@@ -57,14 +57,16 @@ website:
         - section: JupyterHub Skills
           href: https://nmfs-opensci.github.io/NOAAHackDays/topics-skills/
         - text: "---"
-        - text: "1 Intro to BRTs"
+        - text: "1 ML - Intro to BRTs"
           href: topics/2026-02-27/BRT_Argo_CHLA.html
-        - text: "2 Intro to BRTs"
+        - text: "2 ML - Matchups for BRTs"
           href: topics/2026-03-06/matchups.html
-        - text: "3 Intro to BRTs"
+        - text: "3 ML - BRT fishery example"
           href: topics/silver_hake.html
-        - text: "4 Intro to CNNs"
+        - text: "4 ML - Intro to CNNs"
           href: topics/2026-03-20/CNN_2D.html
+        - text: "ML - xbatcher for deep-learning"
+          href: topics/2026-05-08/index.html
         - text: "1 Intro to xarray"
           href: topics/2026-03-27/index.html
         - text: "2 xarray + OPeNDAP"
@@ -73,14 +75,14 @@ website:
           href: topics/2026-04-10/index.html
         - text: "4 xarray + erddap"
           href: topics/2026-04-17/index.html
-        - text: "1 ARCO data - kerchunk"
-          href: topics/2026-05-01/index.html
-        - text: "2 xbatcher for deep-learning"
-          href: topics/2026-05-08/index.html
         - text: "GeoJupyter"
           href: https://mfisher87.github.io/presentation-nmfs2026/
-        - text: "2 ARCO data - VirtualiZarr+Icechunk"
+        - text: "1 ARCO data - kerchunk"
+          href: topics/2026-05-01/index.html
+        - text: "2 ARCO data - ISMIP6 Icechunk workflow"
           href: topics/2026-05-15/index.html
+        - text: "3 ARCO data - VirtualiZarr+Icechunk"
+          href: topics/2026-06-05/index.html
         - text: "---"
         - href: content/reuse.md
           text: Reuse Statement

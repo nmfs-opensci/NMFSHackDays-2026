@@ -2,6 +2,8 @@
 title: VirtualiZarr and Icechunk, part 2
 ---
 
+This presentation by Rich in March 2026 is a good intro to the current state of cloud-native geospatial and discusses some of the tools that we will learn in these 2 sessions: https://youtu.be/OPLZQpBADow?si=Y4-a1oJwA0iTXIoO
+
 ## Talk 1 May 15
 
 Shane Grigsby (Astera) will demo creating a production Analysis Ready Cloud-Optimized (ARCO) dataset for ISMIP6 data with VirtualiZarr and IceChunk.
