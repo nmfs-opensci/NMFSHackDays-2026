@@ -330,7 +330,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#workflow" id="toc-workflow" class="nav-link active" data-scroll-target="#workflow">Workflow</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#helper-remove-problematic-_fillvalue-attrs" id="toc-helper-remove-problematic-_fillvalue-attrs" class="nav-link" data-scroll-target="#helper-remove-problematic-_fillvalue-attrs">Helper: remove problematic <code>_FillValue</code> attrs</a></li>
   <li><a href="#open-one-netcdf-virtually" id="toc-open-one-netcdf-virtually" class="nav-link" data-scroll-target="#open-one-netcdf-virtually">1. Open one NetCDF virtually</a></li>
   <li><a href="#write-one-kerchunk-reference-artifact-per-netcdf" id="toc-write-one-kerchunk-reference-artifact-per-netcdf" class="nav-link" data-scroll-target="#write-one-kerchunk-reference-artifact-per-netcdf">2. Write one Kerchunk reference artifact per NetCDF</a></li>
@@ -383,8 +384,12 @@ function googleTranslateElementInit() {
 </header>
 
 
-<p>This teaching version uses only <strong>5 NetCDF files</strong>.</p>
-<p>Workflow:</p>
+<section id="author-eli-holmes-modification-of-rich-signells-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="author-eli-holmes-modification-of-rich-signells-notebook">Author: Eli Holmes modification of Rich Signell’s notebook</h3>
+<p><a href="https://colab.research.google.com/github/nmfs-opensci/nmfshackdays-2026/blob/main/topics/2026-06-05/virtualizarr_ndvi_cdr_kerchunk.ipynb"><img src="https://img.shields.io/badge/Open_in_Colab-blue?style=for-the-badge" class="img-fluid" alt="Colab Badge"></a> <a href="https://github.com/nmfs-opensci/nmfshackdays-2026/blob/main/topics/2026-06-05/virtualizarr_ndvi_cdr_kerchunk.ipynb"><img src="https://img.shields.io/badge/Download-grey?style=for-the-badge" class="img-fluid" alt="Download Badge"></a> <a href="https://nmfs-openscapes.2i2c.cloud/hub/user-redirect/lab?fromURL=https://raw.githubusercontent.com/nmfs-opensci/nmfshackdays-2026/main/topics/2026-06-05/virtualizarr_ndvi_cdr_kerchunk.ipynb"><img src="https://img.shields.io/badge/Jupyter_Hub-orange?style=for-the-badge" class="img-fluid" alt="JupyterHub"></a></p>
+</section>
+<section id="workflow" class="level2">
+<h2 class="anchored" data-anchor-id="workflow">Workflow</h2>
 <ol type="1">
 <li>Open one NetCDF virtually</li>
 <li>Write one Kerchunk json file per NetCDF file</li>
@@ -393,55 +398,60 @@ function googleTranslateElementInit() {
 <li>Write the combined virtual dataset to Icechunk</li>
 </ol>
 <p>For this demo, <code>REF_FORMAT = "json"</code> by default because JSON is easy to inspect. Change it to <code>"parquet"</code> for the same workflow using Parquet reference artifacts.</p>
-<div id="846f8392" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> icechunk</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> obstore.store <span class="im">import</span> from_url</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> obspec_utils.registry <span class="im">import</span> ObjectStoreRegistry</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> virtualizarr <span class="im">import</span> open_virtual_dataset</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> virtualizarr.parsers <span class="im">import</span> HDFParser, KerchunkJSONParser, KerchunkParquetParser</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ignore"</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    message<span class="op">=</span><span class="st">"Numcodecs codecs are not in the Zarr version 3 specification*"</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    category<span class="op">=</span><span class="pp">UserWarning</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="24586e1a-0145-4726-a4c6-d56feefedbeb" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Colab users, uncomment and run this</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#!pip install -q icechunk  virtualizarr xarray obspec_utils obstore hvplot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div id="846f8392" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> icechunk</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> obstore.store <span class="im">import</span> from_url</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> obspec_utils.registry <span class="im">import</span> ObjectStoreRegistry</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> virtualizarr <span class="im">import</span> open_virtual_dataset</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> virtualizarr.parsers <span class="im">import</span> HDFParser, KerchunkJSONParser, KerchunkParquetParser</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ignore"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    message<span class="op">=</span><span class="st">"Numcodecs codecs are not in the Zarr version 3 specification*"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    category<span class="op">=</span><span class="pp">UserWarning</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <p>Use 5 consecutive daily NDVI files from the public NOAA CDR NDVI S3 bucket.</p>
 <div id="c6642bac" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bucket <span class="op">=</span> <span class="st">"s3://noaa-cdr-ndvi-pds"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>base <span class="op">=</span> <span class="st">"data/2000"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>filenames <span class="op">=</span> [</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000101_c20170623095628.nc"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000102_c20170623101557.nc"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000103_c20170623103338.nc"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000104_c20170623105028.nc"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000105_c20170623110559.nc"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>urls <span class="op">=</span> [<span class="ss">f"</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> name <span class="kw">in</span> filenames]</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>store <span class="op">=</span> from_url(bucket, region<span class="op">=</span><span class="st">"us-east-1"</span>, skip_signature<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>registry <span class="op">=</span> ObjectStoreRegistry({bucket: store})</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>parser <span class="op">=</span> HDFParser()</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># For teaching, JSON is easier to inspect.</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Change to "parquet" to write Kerchunk Parquet reference directories instead.</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>REF_FORMAT <span class="op">=</span> <span class="st">"json"</span>  <span class="co"># "json" or "parquet"</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>REF_SUFFIX <span class="op">=</span> <span class="st">".json"</span> <span class="cf">if</span> REF_FORMAT <span class="op">==</span> <span class="st">"json"</span> <span class="cf">else</span> <span class="st">".parquet"</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>ref_dir <span class="op">=</span> Path(<span class="ss">f"ndvi_refs_</span><span class="sc">{</span>REF_FORMAT<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>urls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bucket <span class="op">=</span> <span class="st">"s3://noaa-cdr-ndvi-pds"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>base <span class="op">=</span> <span class="st">"data/2000"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>filenames <span class="op">=</span> [</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000101_c20170623095628.nc"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000102_c20170623101557.nc"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000103_c20170623103338.nc"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000104_c20170623105028.nc"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AVHRR-Land_v005_AVH13C1_NOAA-14_20000105_c20170623110559.nc"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>urls <span class="op">=</span> [<span class="ss">f"</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>base<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> name <span class="kw">in</span> filenames]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>store <span class="op">=</span> from_url(bucket, region<span class="op">=</span><span class="st">"us-east-1"</span>, skip_signature<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>registry <span class="op">=</span> ObjectStoreRegistry({bucket: store})</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>parser <span class="op">=</span> HDFParser()</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># For teaching, JSON is easier to inspect.</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Change to "parquet" to write Kerchunk Parquet reference directories instead.</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>REF_FORMAT <span class="op">=</span> <span class="st">"json"</span>  <span class="co"># "json" or "parquet"</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>REF_SUFFIX <span class="op">=</span> <span class="st">".json"</span> <span class="cf">if</span> REF_FORMAT <span class="op">==</span> <span class="st">"json"</span> <span class="cf">else</span> <span class="st">".parquet"</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>ref_dir <span class="op">=</span> Path(<span class="ss">f"ndvi_refs_</span><span class="sc">{</span>REF_FORMAT<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>urls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>['s3://noaa-cdr-ndvi-pds/data/2000/AVHRR-Land_v005_AVH13C1_NOAA-14_20000101_c20170623095628.nc',
  's3://noaa-cdr-ndvi-pds/data/2000/AVHRR-Land_v005_AVH13C1_NOAA-14_20000102_c20170623101557.nc',
@@ -456,46 +466,46 @@ function googleTranslateElementInit() {
 <p>The NDVI source files can carry <code>_FillValue: NaN</code> on coordinate metadata such as <code>latitude</code>. That is not valid strict JSON metadata, and it can also confuse the xarray/Zarr v3 read path.</p>
 <p>For this teaching demo, we keep this simple: remove attr-level <code>_FillValue</code> entries before writing refs and before writing Icechunk. The actual virtual chunk references are unchanged.</p>
 <div id="c0026fe6" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean_attrs(ds):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Drop attr-level _FillValue and any NaN attrs so refs/Icechunk metadata are strict JSON.</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    ds <span class="op">=</span> ds.copy(deep<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> clean_one(attrs):</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> {}</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> key, value <span class="kw">in</span> <span class="bu">dict</span>(attrs).items():</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> key <span class="op">==</span> <span class="st">"_FillValue"</span>:</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(value, np.generic):</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                value <span class="op">=</span> value.item()</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(value, <span class="bu">float</span>) <span class="kw">and</span> math.isnan(value):</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            out[key] <span class="op">=</span> value</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> out</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    ds.attrs <span class="op">=</span> clean_one(ds.attrs)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> ds.variables:</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        ds[name].attrs <span class="op">=</span> clean_one(ds[name].attrs)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean_attrs(ds):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Drop attr-level _FillValue and any NaN attrs so refs/Icechunk metadata are strict JSON.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    ds <span class="op">=</span> ds.copy(deep<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> clean_one(attrs):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> {}</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> key, value <span class="kw">in</span> <span class="bu">dict</span>(attrs).items():</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> key <span class="op">==</span> <span class="st">"_FillValue"</span>:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(value, np.generic):</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                value <span class="op">=</span> value.item()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(value, <span class="bu">float</span>) <span class="kw">and</span> math.isnan(value):</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            out[key] <span class="op">=</span> value</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> out</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ds.attrs <span class="op">=</span> clean_one(ds.attrs)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> ds.variables:</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        ds[name].attrs <span class="op">=</span> clean_one(ds[name].attrs)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="open-one-netcdf-virtually" class="level2">
 <h2 class="anchored" data-anchor-id="open-one-netcdf-virtually">1. Open one NetCDF virtually</h2>
 <p>This checks that VirtualiZarr can read the NetCDF metadata. This does not download the NDVI data chunks.</p>
 <div id="164f612d" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vds <span class="op">=</span> open_virtual_dataset(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    url<span class="op">=</span>urls[<span class="dv">0</span>],</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    parser<span class="op">=</span>parser,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    registry<span class="op">=</span>registry,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    loadable_variables<span class="op">=</span>[<span class="st">"time"</span>, <span class="st">"latitude"</span>, <span class="st">"longitude"</span>],</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    decode_times<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>).drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>vds <span class="op">=</span> clean_attrs(vds)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>vds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vds <span class="op">=</span> open_virtual_dataset(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    url<span class="op">=</span>urls[<span class="dv">0</span>],</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    parser<span class="op">=</span>parser,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    registry<span class="op">=</span>registry,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    loadable_variables<span class="op">=</span>[<span class="st">"time"</span>, <span class="st">"latitude"</span>, <span class="st">"longitude"</span>],</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    decode_times<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>).drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>vds <span class="op">=</span> clean_attrs(vds)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>vds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -1007,8 +1017,8 @@ Attributes: (12/48)
 </div>
 </div>
 <div id="7559ca98" class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NDVI is virtual: the data are references back to the original NetCDF file.</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>vds[<span class="st">"NDVI"</span>].data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NDVI is virtual: the data are references back to the original NetCDF file.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>vds[<span class="st">"NDVI"</span>].data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="write-one-kerchunk-reference-artifact-per-netcdf" class="level2">
@@ -1016,35 +1026,35 @@ Attributes: (12/48)
 <p>This is intentionally serial and simple for teaching. In a real batch run, each machine could run this same loop for its assigned files.</p>
 <p>With <code>REF_FORMAT = "json"</code>, each output is one <code>.json</code> file. With <code>REF_FORMAT = "parquet"</code>, each output is a <code>.parquet</code> directory.</p>
 <div id="924ef3f0" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start clean for the demo so stale refs do not cause confusing errors.</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>shutil.rmtree(ref_dir, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ref_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ref_files <span class="op">=</span> []</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> url <span class="kw">in</span> urls:</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> ref_dir <span class="op">/</span> Path(url).name.replace(<span class="st">".nc"</span>, REF_SUFFIX)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    vds <span class="op">=</span> open_virtual_dataset(</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        url<span class="op">=</span>url,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        parser<span class="op">=</span>parser,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        registry<span class="op">=</span>registry,</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        loadable_variables<span class="op">=</span>[<span class="st">"time"</span>, <span class="st">"latitude"</span>, <span class="st">"longitude"</span>],</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        decode_times<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    ).drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    vds <span class="op">=</span> clean_attrs(vds)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    vds.vz.to_kerchunk(</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        filepath<span class="op">=</span><span class="bu">str</span>(out),</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">format</span><span class="op">=</span>REF_FORMAT,</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    ref_files.append(out)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"wrote"</span>, out)</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>ref_files <span class="op">=</span> <span class="bu">sorted</span>(ref_files)</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>ref_files</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start clean for the demo so stale refs do not cause confusing errors.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>shutil.rmtree(ref_dir, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ref_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ref_files <span class="op">=</span> []</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> url <span class="kw">in</span> urls:</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> ref_dir <span class="op">/</span> Path(url).name.replace(<span class="st">".nc"</span>, REF_SUFFIX)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    vds <span class="op">=</span> open_virtual_dataset(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        url<span class="op">=</span>url,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        parser<span class="op">=</span>parser,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        registry<span class="op">=</span>registry,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        loadable_variables<span class="op">=</span>[<span class="st">"time"</span>, <span class="st">"latitude"</span>, <span class="st">"longitude"</span>],</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        decode_times<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    ).drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    vds <span class="op">=</span> clean_attrs(vds)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    vds.vz.to_kerchunk(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        filepath<span class="op">=</span><span class="bu">str</span>(out),</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">format</span><span class="op">=</span>REF_FORMAT,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    ref_files.append(out)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"wrote"</span>, out)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>ref_files <span class="op">=</span> <span class="bu">sorted</span>(ref_files)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>ref_files</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>wrote ndvi_refs_json/AVHRR-Land_v005_AVH13C1_NOAA-14_20000101_c20170623095628.json
 wrote ndvi_refs_json/AVHRR-Land_v005_AVH13C1_NOAA-14_20000102_c20170623101557.json
@@ -1066,9 +1076,9 @@ wrote ndvi_refs_json/AVHRR-Land_v005_AVH13C1_NOAA-14_20000105_c20170623110559.js
 <p>Important: we reopen the Kerchunk refs with the parser directly instead of <code>open_virtual_dataset(...)</code>. That avoids an xarray/Zarr v3 metadata decoding path that can fail on these files.</p>
 <p>The files have a scalar CRS coordinate in the original NetCDF metadata, so we do not use coordinate-based combining. We explicitly concatenate in filename order along <code>time</code>.</p>
 <div id="6e6e9dd3" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ref_files <span class="op">=</span> <span class="bu">sorted</span>(ref_dir.glob(<span class="ss">f"*</span><span class="sc">{</span>REF_SUFFIX<span class="sc">}</span><span class="ss">"</span>))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(ref_files), <span class="st">"reference artifacts"</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>ref_files[:<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ref_files <span class="op">=</span> <span class="bu">sorted</span>(ref_dir.glob(<span class="ss">f"*</span><span class="sc">{</span>REF_SUFFIX<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(ref_files), <span class="st">"reference artifacts"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ref_files[:<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>5 reference artifacts</code></pre>
 </div>
@@ -1078,40 +1088,40 @@ wrote ndvi_refs_json/AVHRR-Land_v005_AVH13C1_NOAA-14_20000105_c20170623110559.js
 </div>
 </div>
 <div id="ae091f78" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ref_root <span class="op">=</span> <span class="ss">f"file://</span><span class="sc">{</span>ref_dir<span class="sc">.</span>resolve()<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ref_store <span class="op">=</span> from_url(ref_root)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>merge_registry <span class="op">=</span> ObjectStoreRegistry({</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    bucket: store,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    ref_root: ref_store,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>ref_parser <span class="op">=</span> KerchunkJSONParser() <span class="cf">if</span> REF_FORMAT <span class="op">==</span> <span class="st">"json"</span> <span class="cf">else</span> KerchunkParquetParser()</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>vds_list <span class="op">=</span> []</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ref_file <span class="kw">in</span> ref_files:</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    manifest_store <span class="op">=</span> ref_parser(</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        url<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>ref_root<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>ref_file<span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span>,</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        registry<span class="op">=</span>merge_registry,</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fully virtual dataset; avoids open_virtual_dataset(...), which internally calls xr.open_zarr(...).</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    ds_one <span class="op">=</span> manifest_store._group.to_virtual_dataset()</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    ds_one <span class="op">=</span> ds_one.drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    ds_one <span class="op">=</span> clean_attrs(ds_one)</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    vds_list.append(ds_one)</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>combined_vds <span class="op">=</span> xr.concat(</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    vds_list,</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    dim<span class="op">=</span><span class="st">"time"</span>,</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    data_vars<span class="op">=</span><span class="st">"minimal"</span>,</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    coords<span class="op">=</span><span class="st">"minimal"</span>,</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    combine_attrs<span class="op">=</span><span class="st">"drop_conflicts"</span>,</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    compat<span class="op">=</span><span class="st">"override"</span>,</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>).drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>combined_vds <span class="op">=</span> clean_attrs(combined_vds)</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>combined_vds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ref_root <span class="op">=</span> <span class="ss">f"file://</span><span class="sc">{</span>ref_dir<span class="sc">.</span>resolve()<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ref_store <span class="op">=</span> from_url(ref_root)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>merge_registry <span class="op">=</span> ObjectStoreRegistry({</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    bucket: store,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    ref_root: ref_store,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>ref_parser <span class="op">=</span> KerchunkJSONParser() <span class="cf">if</span> REF_FORMAT <span class="op">==</span> <span class="st">"json"</span> <span class="cf">else</span> KerchunkParquetParser()</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>vds_list <span class="op">=</span> []</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ref_file <span class="kw">in</span> ref_files:</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    manifest_store <span class="op">=</span> ref_parser(</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        url<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>ref_root<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>ref_file<span class="sc">.</span>name<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        registry<span class="op">=</span>merge_registry,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fully virtual dataset; avoids open_virtual_dataset(...), which internally calls xr.open_zarr(...).</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    ds_one <span class="op">=</span> manifest_store._group.to_virtual_dataset()</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    ds_one <span class="op">=</span> ds_one.drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    ds_one <span class="op">=</span> clean_attrs(ds_one)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    vds_list.append(ds_one)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>combined_vds <span class="op">=</span> xr.concat(</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    vds_list,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    dim<span class="op">=</span><span class="st">"time"</span>,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    data_vars<span class="op">=</span><span class="st">"minimal"</span>,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    coords<span class="op">=</span><span class="st">"minimal"</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    combine_attrs<span class="op">=</span><span class="st">"drop_conflicts"</span>,</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    compat<span class="op">=</span><span class="st">"override"</span>,</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>).drop_vars([<span class="st">"nv"</span>, <span class="st">"ncrs"</span>, <span class="st">"crs"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>combined_vds <span class="op">=</span> clean_attrs(combined_vds)</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>combined_vds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -1625,26 +1635,26 @@ Attributes: (12/32)
 <h2 class="anchored" data-anchor-id="write-the-combined-virtual-dataset-to-icechunk">4. Write the combined virtual dataset to Icechunk</h2>
 <p>The final Icechunk repo contains virtual references to the original S3 NetCDF chunks. It does not copy the NDVI data.</p>
 <div id="f2300fc1" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>repo_path <span class="op">=</span> Path(<span class="st">"ndvi-icechunk-kerchunk"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>shutil.rmtree(repo_path, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> icechunk.RepositoryConfig.default()</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>config.set_virtual_chunk_container(</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    icechunk.VirtualChunkContainer(</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        url_prefix<span class="op">=</span><span class="st">"s3://noaa-cdr-ndvi-pds/"</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        store<span class="op">=</span>icechunk.s3_store(region<span class="op">=</span><span class="st">"us-east-1"</span>, anonymous<span class="op">=</span><span class="va">True</span>),</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>storage <span class="op">=</span> icechunk.local_filesystem_storage(<span class="bu">str</span>(repo_path))</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>repo <span class="op">=</span> icechunk.Repository.create(storage, config)</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> repo.writable_session(<span class="st">"main"</span>)</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>combined_vds <span class="op">=</span> clean_attrs(combined_vds)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>combined_vds.vz.to_icechunk(session.store)</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>snapshot_id <span class="op">=</span> session.commit(<span class="st">"Add 5-day NDVI CDR virtual references"</span>)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Committed:"</span>, snapshot_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>repo_path <span class="op">=</span> Path(<span class="st">"ndvi-icechunk-kerchunk"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>shutil.rmtree(repo_path, ignore_errors<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> icechunk.RepositoryConfig.default()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>config.set_virtual_chunk_container(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    icechunk.VirtualChunkContainer(</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        url_prefix<span class="op">=</span><span class="st">"s3://noaa-cdr-ndvi-pds/"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        store<span class="op">=</span>icechunk.s3_store(region<span class="op">=</span><span class="st">"us-east-1"</span>, anonymous<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>storage <span class="op">=</span> icechunk.local_filesystem_storage(<span class="bu">str</span>(repo_path))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>repo <span class="op">=</span> icechunk.Repository.create(storage, config)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> repo.writable_session(<span class="st">"main"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>combined_vds <span class="op">=</span> clean_attrs(combined_vds)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>combined_vds.vz.to_icechunk(session.store)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>snapshot_id <span class="op">=</span> session.commit(<span class="st">"Add 5-day NDVI CDR virtual references"</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Committed:"</span>, snapshot_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <div class="ansi-escaped-output">
 <pre>  2026-06-04T02:47:05.659155Z <span class="ansi-yellow-fg"> WARN</span> <span class="ansi-yellow-fg ansi-bold">icechunk_arrow_object_store</span><span class="ansi-yellow-fg">: </span><span class="ansi-yellow-fg">The LocalFileSystem storage is not safe for concurrent commits. If more than one thread/process will attempt to commit at the same time, prefer using object stores.</span>
@@ -1663,25 +1673,25 @@ Committed: 48090R4J16894CSXRW1G
 <h2 class="anchored" data-anchor-id="read-back-the-icechunk-store">5. Read back the Icechunk store</h2>
 <p>Authorize Icechunk to read the original public S3 chunks, then open the Icechunk store with xarray.</p>
 <div id="4460be8b" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>credentials <span class="op">=</span> icechunk.containers_credentials({</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3://noaa-cdr-ndvi-pds/"</span>: icechunk.s3_credentials(anonymous<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>repo2 <span class="op">=</span> icechunk.Repository.<span class="bu">open</span>(</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    storage,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    config,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    authorize_virtual_chunk_access<span class="op">=</span>credentials,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>session2 <span class="op">=</span> repo2.readonly_session(<span class="st">"main"</span>)</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> xr.open_zarr(</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    session2.store,</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    consolidated<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    chunks<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>ds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>credentials <span class="op">=</span> icechunk.containers_credentials({</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3://noaa-cdr-ndvi-pds/"</span>: icechunk.s3_credentials(anonymous<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>repo2 <span class="op">=</span> icechunk.Repository.<span class="bu">open</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    storage,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    config,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    authorize_virtual_chunk_access<span class="op">=</span>credentials,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>session2 <span class="op">=</span> repo2.readonly_session(<span class="st">"main"</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> xr.open_zarr(</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    session2.store,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    consolidated<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    chunks<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>ds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
 <defs>
@@ -2195,29 +2205,29 @@ Attributes: (12/32)
 </div>
 </div>
 <div id="c67cbec7" class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional quick check: read one small-ish slice from the virtual dataset.</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ds[<span class="st">"NDVI"</span>].isel(time<span class="op">=</span><span class="dv">0</span>, latitude<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">10</span>), longitude<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">10</span>)).values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional quick check: read one small-ish slice from the virtual dataset.</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ds[<span class="st">"NDVI"</span>].isel(time<span class="op">=</span><span class="dv">0</span>, latitude<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">10</span>), longitude<span class="op">=</span><span class="bu">slice</span>(<span class="dv">0</span>, <span class="dv">10</span>)).values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="optional-plot" class="level2">
 <h2 class="anchored" data-anchor-id="optional-plot">Optional plot</h2>
 <p>This reads data lazily from the original S3 NetCDF files through Icechunk.</p>
 <div id="8e03ead1" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> hvplot.xarray  <span class="co"># noqa</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>ds[<span class="st">"NDVI"</span>].isel(time<span class="op">=</span><span class="dv">0</span>).hvplot(</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    rasterize<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    geo<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    global_extent<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"longitude"</span>,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"latitude"</span>,</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">"OSM"</span>,</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"YlGn"</span>,</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    clim<span class="op">=</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.0</span>),</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"AVHRR NDVI — 2000-01-01"</span>,</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">800</span>,</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> hvplot.xarray  <span class="co"># noqa</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>ds[<span class="st">"NDVI"</span>].isel(time<span class="op">=</span><span class="dv">0</span>).hvplot(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    rasterize<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    geo<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    global_extent<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"longitude"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"latitude"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    tiles<span class="op">=</span><span class="st">"OSM"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"YlGn"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    clim<span class="op">=</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.0</span>),</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"AVHRR NDVI — 2000-01-01"</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">800</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="esms-options">{"shimMode": true}</script><style>*[data-root-id],
 *[data-root-id] > * {
