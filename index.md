@@ -25,5 +25,5 @@ Schedule will be tweaked as guest speakers confirm, but this shows the planned t
 * May 8 - [Intro to xbatcher for training on image and remote-sensing data](topics/2026-05-08/index.html) (Keenan Ganz, UW) {{< fa brands python >}} [Video](https://youtu.be/aGyyBRkN5UM)
 * May 15 - [VirtualiZarr and IceChunk, demo of the pipeline for ISMIP6 data](https://github.com/englacial/ismip-indexing) (Shane Grigsby, Astera) [Video](https://youtu.be/lDBfSLEZnhA)
 * May 22 - skipping for Memorial Day long weekend
-* May 29 - [GeoJupyter - Exploring more approachable geospatial data workflows as an open community](https://mfisher87.github.io/presentation-nmfs2026/#/title-slide) (Matt Fisher, UC Berkeley Center for Data Science and Environment) [Video](www.youtube.com/watch?v=ylO0BT426RI)
+* May 29 - [GeoJupyter - Exploring more approachable geospatial data workflows as an open community](https://mfisher87.github.io/presentation-nmfs2026/#/title-slide) (Matt Fisher, UC Berkeley Center for Data Science and Environment) [Video](https://www.youtube.com/watch?v=ylO0BT426RI)
 * June 5 - [More VirtualiZarr and IceChunk](topics/2026-06-05/index.html) - Let's create some stores! {{< fa brands python >}}
